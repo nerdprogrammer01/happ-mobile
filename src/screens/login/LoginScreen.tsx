@@ -13,11 +13,21 @@ type TProps = {};
 export const LoginScreen: React.FC<TProps> = props => {
     //const navigation = useNavigation();
     const { getString, changeLanguage } = useLocalization();
-    this.state = {
-        email: '',
-        password: '',
-    };
+    
+    let [email, setEmail] = useState('');
+    let [password, setPassword] = useState('');
 
+    const loginHandler = () => {
+        if (!email) {
+            alert('Please fill Email');
+            return;
+          }
+          if (!password) {
+            alert('Please fill Password');
+            return;
+          }
+
+    }
 
     return (
         <View style={styles.main}>
@@ -28,17 +38,15 @@ export const LoginScreen: React.FC<TProps> = props => {
                 <TextInput
                     style={styles.input}
                     placeholder="Enter Email"
-                    value={this.state.email}
-                    onChangeText={(email) => this.setState({ email })}
+                    onChangeText={Email => setEmail(Email)}
                     type='email'
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Enter Password"
-                    value={this.state.password}
-                    onChangeText={(password) => this.setState({ password })}
+                    onChangeText={Password => setPassword(Password)}
                     secureTextEntry={true} />
-                <TouchableOpacity style={styles.btn} >
+                <TouchableOpacity style={styles.btn} onPress={loginHandler} >
                     <Text>Login</Text>
                 </TouchableOpacity>
                 {/* <TouchableOpacity onPress={this._onPressButton}>
