@@ -1,73 +1,56 @@
-import React from 'react';
-import { TextInput, View, StyleSheet, Text, TouchableOpacity, Image, Alert, Button } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {
+    TextInput, View, StyleSheet, Text, TouchableOpacity, Image, Alert, Button
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { DashboardItemsModel } from "../../models";
+import { DashboardService } from "../../services";
+import { useLocalization } from "../../localization";
+import NavigationNames from "../../navigations/NavigationNames";
 
-export default class LoginScreen extends React.Component {
+type TProps = {};
 
-    constructor(props) {
-        super(props);
+export const LoginScreen: React.FC<TProps> = props => {
+    //const navigation = useNavigation();
+    const { getString, changeLanguage } = useLocalization();
+    this.state = {
+        email: '',
+        password: '',
+    };
 
-        this.state = {
-            email: '',
-            password: '',
-        };
-    }
 
-    onLogin() {
-        const { email, password } = this.state;
-        fetch('https://localhost:5001/api/users/', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                userName: email,
-                Password: password
-            })
-        })
-            .then((response) => response.json())
-            .then((json) => {
-                console.log(json);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-        //Alert.alert('Credentials', `${email} + ${password}`);
-    }
-
-    render() {
-        return (
-            <View style={styles.main}>
-                <View style={styles.logo}>
-                    <Image source={require('../../../assets/logo.png')} style={{ width: 150, height: 150, resizeMode: 'contain' }} />
-                </View>
-                <View style={styles.container}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter Email"
-                        value={this.state.email}
-                        onChangeText={(email) => this.setState({ email })}
-                        type='email'
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter Password"
-                        value={this.state.password}
-                        onChangeText={(password) => this.setState({ password })}
-                        secureTextEntry={true} />
-                    <TouchableOpacity style={styles.btn} onPress={this.onLogin.bind(this)} >
-                        <Text>Login</Text>
-                    </TouchableOpacity>
-                    {/* <TouchableOpacity onPress={this._onPressButton}>
+    return (
+        <View style={styles.main}>
+            <View style={styles.logo}>
+                <Image source={require('../../../assets/logo.png')} style={{ width: 150, height: 150, resizeMode: 'contain' }} />
+            </View>
+            <View style={styles.container}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter Email"
+                    value={this.state.email}
+                    onChangeText={(email) => this.setState({ email })}
+                    type='email'
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter Password"
+                    value={this.state.password}
+                    onChangeText={(password) => this.setState({ password })}
+                    secureTextEntry={true} />
+                <TouchableOpacity style={styles.btn} >
+                    <Text>Login</Text>
+                </TouchableOpacity>
+                {/* <TouchableOpacity onPress={this._onPressButton}>
                         <View style={styles.button}>
                             <Text style={styles.buttonText}>TouchableOpacity</Text>
                         </View>
                     </TouchableOpacity> */}
-                </View>
             </View>
-        );
-    }
-}
+        </View>
+    );
+};
+
 
 const styles = StyleSheet.create({
     main: {
