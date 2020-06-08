@@ -9,3 +9,4 @@ export * from "./departments";
 export * from "./doctors";
 export * from "./events";
 export * from "./memberprofile";
+export * from "./login";

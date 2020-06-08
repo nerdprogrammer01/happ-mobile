@@ -24,4 +24,5 @@ export default {
   MemberProfileScreen:"MemberProfileScreen",
   CreateAppointmentScreen:"CreateAppointmentScreen",
   AppointmentsScreen:"AppointmentsScreen"
+  //LoginScreen: "LoginScreen"
 };
