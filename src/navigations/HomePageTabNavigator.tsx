@@ -19,7 +19,10 @@ import {
   NewAppointmentScreen,
   DoctorListScreen,
   DoctorDetailScreen,
-  EventListScreen
+  EventListScreen,
+  MemberProfileScreen,
+  CreateAppointmentScreen,
+  AppointmentsScreen
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
 
@@ -136,6 +139,21 @@ const MenuTabStack = () => {
         name={NavigationNames.EventListScreen}
         component={EventListScreen}
         options={{ title: getString("Events") }}
+      />
+       <Stack.Screen
+        name={NavigationNames.MemberProfileScreen}
+        component={MemberProfileScreen}
+        options={{ title: getString("Profile Member") }}
+      />
+         <Stack.Screen
+        name={NavigationNames.CreateAppointmentScreen}
+        component={CreateAppointmentScreen}
+        options={{ title: getString("Create New Appointment") }}
+      />
+       <Stack.Screen
+        name={NavigationNames.AppointmentsScreen}
+        component={AppointmentsScreen}
+        options={{ title: getString("My Appointments") }}
       />
     </Stack.Navigator>
   );

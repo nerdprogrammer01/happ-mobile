@@ -16,11 +16,13 @@ const getMenuItems = (getString: (key: string) => string) => [
   },
   {
     title: getString("Blog"),
-    iconName: "ios-paper"
+    iconName: "ios-paper",
+    navigateToScreen: NavigationNames.MemberProfileScreen
   },
   {
     title: getString("Youtube"),
-    iconName: "logo-youtube"
+    iconName: "logo-youtube",
+    navigateToScreen: NavigationNames.AppointmentsScreen
   },
   {
     title: getString("Instagram"),

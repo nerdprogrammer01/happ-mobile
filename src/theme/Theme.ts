@@ -1,5 +1,5 @@
-const PRIMARY_COLOR = "#73CEC1";
-const PRIMARY_COLOR_DARK = "#5eada2";
+const PRIMARY_COLOR = "#2D9CDB";
+const PRIMARY_COLOR_DARK = "#2D9CDB";
 
 export const Theme = {
   colors: {

@@ -20,5 +20,8 @@ export default {
   DepartmentDetailScreen: "DepartmentDetailScreen",
   NewAppointmentScreen: "NewAppointmentScreen",
   DoctorListScreen: "DoctorListScreen",
-  DoctorDetailScreen: "DoctorDetailScreen"
+  DoctorDetailScreen: "DoctorDetailScreen",
+  MemberProfileScreen:"MemberProfileScreen",
+  CreateAppointmentScreen:"CreateAppointmentScreen",
+  AppointmentsScreen:"AppointmentsScreen"
 };
