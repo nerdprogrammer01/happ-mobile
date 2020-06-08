@@ -10,6 +10,11 @@ import { useNavigation } from "@react-navigation/native";
 
 const getMenuItems = (getString: (key: string) => string) => [
   {
+    title: getString("My Profile"),
+    iconName: "md-person",
+    navigateToScreen: NavigationNames.ProfileScreen
+  },
+  {
     title: getString("Events"),
     iconName: "ios-musical-notes",
     navigateToScreen: NavigationNames.EventListScreen

@@ -6,6 +6,7 @@ export default {
   MediaTab: "MediaTab",
   ProfileTab: "ProfileTab",
   MenuTab: "MenuTab",
+  AppointmentsTab:"AppointmentsTab",
 
   // Screens
   CalendarScreen: "CalendarScreen",
