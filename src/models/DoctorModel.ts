@@ -1,4 +1,5 @@
 import { ReviewModel } from "./ReviewModel";
+import {AppointmentTimeModal} from "./AppointmentTimeModal";
 
 export type DoctorModel = {
   fullName: string;
@@ -8,4 +9,5 @@ export type DoctorModel = {
   isOnline: boolean;
   rating: number;
   reviews: ReviewModel[];
+  times : AppointmentTimeModal[];
 };

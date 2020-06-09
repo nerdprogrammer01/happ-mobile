@@ -22,25 +22,6 @@ type TProps = {};
 
 const SCREEN_WIDTH = Dimensions.get("screen").width;
 
-const TIMES: AppointmentTimeModal[] = [
-  { time: "09:00", available: false },
-  { time: "09:30", available: false },
-  { time: "10:00", available: true },
-  { time: "10:30", available: true },
-  { time: "11:00", available: true },
-  { time: "11:30", available: true },
-  { time: "12:00", available: false },
-  { time: "13:00", available: true },
-  { time: "13:30", available: true },
-  { time: "14:00", available: true },
-  { time: "14:30", available: false },
-  { time: "15:00", available: false },
-  { time: "15:30", available: false },
-  { time: "16:00", available: true },
-  { time: "16:30", available: true },
-  { time: "17:00", available: false }
-];
-
 const AppoinmentTime: React.FC<{
   doctor: DoctorModel;
   times: AppointmentTimeModal[];
@@ -50,7 +31,7 @@ const AppoinmentTime: React.FC<{
     <View style={styles.itemContainer}>
       <DoctorItemRow item={props.doctor} style={styles.doctorItemRow} />
       <FlatList
-        data={TIMES}
+        data={props.doctor.times}
         numColumns={4}
         style={styles.flatListStyle}
         columnWrapperStyle={styles.columnWrapperStyle}
@@ -131,7 +112,7 @@ export const NewAppointmentScreen: React.FC<TProps> = props => {
         renderItem={({ item }) => (
           <AppoinmentTime
             doctor={item}
-            times={TIMES}
+            times={item.times}
             onTimeSelected={(model: AppointmentTimeModal) => {
               setAppointmentModal({
                 isVisible: true,

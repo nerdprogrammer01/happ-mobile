@@ -126,6 +126,24 @@ const ProfileTabStack = () => {
   );
 };
 
+const MyAppointmentsTabStack = () => {
+  const { getString } = useLocalization();
+  return (
+    <Stack.Navigator headerMode="screen" screenOptions={stackScreenOptions}>
+      <Stack.Screen
+        name={NavigationNames.AppointmentsScreen}
+        component={AppointmentsScreen}
+        options={{ title: getString("My Appointments") }}
+      />
+        <Stack.Screen
+        name={NavigationNames.NewAppointmentScreen}
+        component={NewAppointmentScreen}
+        options={{ title: getString("New Appointment") }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const MenuTabStack = () => {
   const { getString } = useLocalization();
   return (
@@ -168,12 +186,10 @@ const HomePageTabNavigator = () => (
     }}
   >
     <Tab.Screen name={NavigationNames.HomeTab} component={HomeTabStack} />
-    <Tab.Screen
-      name={NavigationNames.CalendarTab}
-      component={CalendarTabStack}
-    />
+    <Tab.Screen name={NavigationNames.CalendarTab} component={CalendarTabStack} />
+    <Tab.Screen name={NavigationNames.AppointmentsTab} component={MyAppointmentsTabStack} />
     <Tab.Screen name={NavigationNames.MediaTab} component={MediaTabStack} />
-    <Tab.Screen name={NavigationNames.ProfileTab} component={ProfileTabStack} />
+     {/* <Tab.Screen name={NavigationNames.ProfileTab} component={ProfileTabStack} /> */}
     <Tab.Screen name={NavigationNames.MenuTab} component={MenuTabStack} />
   </Tab.Navigator>
 );

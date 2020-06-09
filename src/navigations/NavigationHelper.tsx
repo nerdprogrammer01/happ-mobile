@@ -19,6 +19,8 @@ const getTabTitle = (routeName: string): string => {
     return getString("Profile");
   } else if (routeName === NavigationNames.MenuTab) {
     return getString("Menu");
+  } else if (routeName === NavigationNames.AppointmentsTab) {
+    return getString("Appointments");
   }
   return "";
 };
@@ -45,6 +47,9 @@ export const tabScreenOptions: (props: {
         break;
       case NavigationNames.MenuTab:
         iconName = "ios-menu";
+        break;
+      case NavigationNames.AppointmentsTab:
+        iconName = "md-alarm";
         break;
     }
     return <Ionicons name={iconName} size={28} color={color} />;
