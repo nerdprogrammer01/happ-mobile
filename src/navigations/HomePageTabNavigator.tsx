@@ -73,8 +73,8 @@ const HomeTabStack = () => {
         component={DepartmentDetailScreen}
       />
       <Stack.Screen
-        name={NavigationNames.NewAppointmentScreen}
-        component={NewAppointmentScreen}
+        name={NavigationNames.CreateAppointmentScreen}
+        component={CreateAppointmentScreen}
         options={{ title: getString("New Appointment") }}
       />
       <Stack.Screen
@@ -152,8 +152,8 @@ const MyAppointmentsTabStack = () => {
         options={{ title: getString("My Appointments") }}
       />
         <Stack.Screen
-        name={NavigationNames.NewAppointmentScreen}
-        component={NewAppointmentScreen}
+        name={NavigationNames.CreateAppointmentScreen}
+        component={CreateAppointmentScreen}
         options={{ title: getString("New Appointment") }}
       />
     </Stack.Navigator>
