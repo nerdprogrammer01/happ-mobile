@@ -30,7 +30,7 @@ const AppoinmentTime: React.FC<{
   return (
     <View style={styles.itemContainer}>
       <DoctorItemRow item={props.doctor} style={styles.doctorItemRow} />
-      <FlatList
+      {/* <FlatList
         data={props.doctor.times}
         numColumns={4}
         style={styles.flatListStyle}
@@ -52,7 +52,7 @@ const AppoinmentTime: React.FC<{
             <Text style={styles.timeText}>{item.time}</Text>
           </TouchableOpacity>
         )}
-      />
+      /> */}
     </View>
   );
 };
@@ -105,7 +105,7 @@ export const NewAppointmentScreen: React.FC<TProps> = props => {
       />
       <Divider style={{ marginTop: 12 }} />
       <Text style={styles.sectionTitle}>{getString("Available Doctors")}</Text>
-      <FlatList
+      {/* <FlatList
         data={doctorsList}
         style={{ marginTop: 8 }}
         keyExtractor={(item, index) => `key${index}ForDoctors`}
@@ -122,7 +122,7 @@ export const NewAppointmentScreen: React.FC<TProps> = props => {
           />
         )}
         ItemSeparatorComponent={() => <Divider />}
-      />
+      /> */}
       <ConfirmAppointmentModal
         isVisible={appointmentModal.isVisible}
         item={appointmentModal.item}
