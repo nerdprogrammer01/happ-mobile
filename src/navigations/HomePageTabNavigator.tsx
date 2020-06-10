@@ -22,12 +22,28 @@ import {
   EventListScreen,
   MemberProfileScreen,
   CreateAppointmentScreen,
-  AppointmentsScreen
+  AppointmentsScreen,
+  LoginScreen
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+
+const LoginTabStack = () => {
+  const { getString } = useLocalization();
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name={NavigationNames.LoginScreen}
+        component={LoginScreen}
+        options={{ headerTitle: () => <ToolbarBrandLogo /> }}
+      />
+      
+    </Stack.Navigator>
+  );
+};
 
 const HomeTabStack = () => {
   const { getString } = useLocalization();
@@ -185,13 +201,37 @@ const HomePageTabNavigator = () => (
       inactiveTintColor: Theme.colors.gray
     }}
   >
-    <Tab.Screen name={NavigationNames.HomeTab} component={HomeTabStack} />
+       <Tab.Screen name={NavigationNames.HomeTab} component={HomeTabStack} />
     <Tab.Screen name={NavigationNames.CalendarTab} component={CalendarTabStack} />
     <Tab.Screen name={NavigationNames.AppointmentsTab} component={MyAppointmentsTabStack} />
     <Tab.Screen name={NavigationNames.MediaTab} component={MediaTabStack} />
-     {/* <Tab.Screen name={NavigationNames.ProfileTab} component={ProfileTabStack} /> */}
+     
     <Tab.Screen name={NavigationNames.MenuTab} component={MenuTabStack} />
+    {/* <Tab.Screen name={NavigationNames.ProfileTab} component={ProfileTabStack} /> */}
   </Tab.Navigator>
 );
 
-export default HomePageTabNavigator;
+function MainStackNavigator() {
+  return (
+   
+      <Stack.Navigator
+        initialRouteName={NavigationNames.LoginTab}  screenOptions={{
+          headerShown: false
+        }}
+        >
+        <Stack.Screen
+          name={NavigationNames.LoginTab} component={LoginTabStack}
+         
+        />
+        <Stack.Screen
+          name='Home'
+          component={HomePageTabNavigator}
+       
+        />
+        
+      </Stack.Navigator>
+  
+  )
+}
+
+export default MainStackNavigator;

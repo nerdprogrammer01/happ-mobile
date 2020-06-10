@@ -11,13 +11,14 @@ import NavigationNames from "../../navigations/NavigationNames";
 type TProps = {};
 
 export const LoginScreen: React.FC<TProps> = props => {
-    //const navigation = useNavigation();
+    const navigation = useNavigation();
     const { getString, changeLanguage } = useLocalization();
     
     let [email, setEmail] = useState('');
     let [password, setPassword] = useState('');
 
     const loginHandler = () => {
+        navigation.navigate("Home");
         if (!email) {
             alert('Please fill Email');
             return;
@@ -26,7 +27,6 @@ export const LoginScreen: React.FC<TProps> = props => {
             alert('Please fill Password');
             return;
           }
-
     }
 
     return (
@@ -39,7 +39,7 @@ export const LoginScreen: React.FC<TProps> = props => {
                     style={styles.input}
                     placeholder="Enter Email"
                     onChangeText={Email => setEmail(Email)}
-                    type='email'
+                   
                 />
                 <TextInput
                     style={styles.input}
