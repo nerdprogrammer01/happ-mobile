@@ -9,5 +9,4 @@ export type DoctorModel = {
   isOnline: boolean;
   rating: number;
   reviews: ReviewModel[];
-  times : AppointmentTimeModal[];
 };

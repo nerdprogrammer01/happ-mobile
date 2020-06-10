@@ -66,7 +66,7 @@ export const HomeScreen: React.FC<TProps> = props => {
   const onClickMenu = (item: HomeMenuItemType) => {
     switch (item.action) {
       case "BookAnAppoinment":
-        navigation.navigate(NavigationNames.NewAppointmentScreen);
+        navigation.navigate(NavigationNames.CreateAppointmentScreen);
         break;
       case "LabTestsAtHome":
         //navigation.navigate(NavigationName);
