@@ -40,7 +40,6 @@ const LoginTabStack = () => {
       <Stack.Screen
         name={NavigationNames.LoginScreen}
         component={LoginScreen}
-        // options={{ headerTitle: () => <ToolbarBrandLogo /> }}
         options={{ headerShown: false }}
       />
       
