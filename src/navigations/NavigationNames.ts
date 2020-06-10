@@ -1,4 +1,5 @@
 export default {
+  
   HomeScreen: "HomeScreen",
   //Tabs
   HomeTab: "HomeTab",
@@ -7,6 +8,7 @@ export default {
   ProfileTab: "ProfileTab",
   MenuTab: "MenuTab",
   AppointmentsTab:"AppointmentsTab",
+  LoginTab: "LoginTab",
 
   // Screens
   CalendarScreen: "CalendarScreen",
@@ -27,5 +29,5 @@ export default {
   AppointmentsScreen:"AppointmentsScreen",
   AvailableClinicianScreen:"AvailableClinicianScreen",
   ConfirmAppointmentScreen:"ConfirmAppointmentScreen",
-  //LoginScreen: "LoginScreen"
+  LoginScreen: "LoginScreen"
 };
