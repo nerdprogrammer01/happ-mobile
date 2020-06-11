@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-    TextInput, View, StyleSheet, Text, TouchableOpacity, Image, Alert, Button,AsyncStorage
+    TextInput, View, StyleSheet, Text, TouchableOpacity, Image, Alert, Button,AsyncStorage,ActivityIndicator
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { DashboardItemsModel } from "../../models";
@@ -107,6 +107,10 @@ export const LoginScreen: React.FC<TProps> = props => {
                             <Text style={styles.buttonText}>TouchableOpacity</Text>
                         </View>
                     </TouchableOpacity> */}
+
+{loading &&
+                    <ActivityIndicator size='large' color='#6646ee' />
+                }
             </View>
         </View>
     );
