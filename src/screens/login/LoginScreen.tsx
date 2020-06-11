@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {
-    TextInput, View, StyleSheet, Text, TouchableOpacity, Image, Alert, Button
+    TextInput, View, StyleSheet, Text, TouchableOpacity, Image, ActivityIndicator
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { DashboardItemsModel } from "../../models";
-import { DashboardService } from "../../services";
 import { useLocalization } from "../../localization";
 import NavigationNames from "../../navigations/NavigationNames";
 
@@ -13,20 +11,61 @@ type TProps = {};
 export const LoginScreen: React.FC<TProps> = props => {
     const navigation = useNavigation();
     const { getString, changeLanguage } = useLocalization();
-    
+    const baseUrl = 'http://192.168.43.66/mhealth/api/users/authenticate';
     let [email, setEmail] = useState('');
     let [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [token, setToken] = useState('');
 
     const loginHandler = () => {
-        navigation.navigate("Home");
+        setLoading(true);
         if (!email) {
             alert('Please fill Email');
+            setLoading(false);
             return;
-          }
-          if (!password) {
+        }
+        if (!password) {
             alert('Please fill Password');
+            setLoading(false);
             return;
-          }
+        }
+        // fetch('/', {
+        //     method: 'post',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: {
+        //         "email": email,
+        //         "password": password
+        //     }
+        // });
+        var data = { Username: email, Password: password };
+        fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(data)
+        }).then((response) => response.json())
+            //If response is in json then in success
+            .then((responseJson) => {
+                //Success 
+                alert(responseJson.message);
+                setLoading(false);
+                if (responseJson.message === "Success") {
+                    setToken(responseJson.token);
+                    navigation.navigate("Home");
+                }
+            })
+            //If response is not in json then in error
+            .catch((error) => {
+                //Error 
+                alert(error);
+                setLoading(false);
+            });
+    }
+
+    const registerHandler = () => {
+        navigation.navigate(NavigationNames.RegisterScreen);
     }
 
     return (
@@ -39,7 +78,6 @@ export const LoginScreen: React.FC<TProps> = props => {
                     style={styles.input}
                     placeholder="Enter Email"
                     onChangeText={Email => setEmail(Email)}
-                   
                 />
                 <TextInput
                     style={styles.input}
@@ -49,11 +87,16 @@ export const LoginScreen: React.FC<TProps> = props => {
                 <TouchableOpacity style={styles.btn} onPress={loginHandler} >
                     <Text>Login</Text>
                 </TouchableOpacity>
+                <Text style={{ textAlign: 'center', color: 'blue' }} onPress={registerHandler}>Not Registered?</Text>
                 {/* <TouchableOpacity onPress={this._onPressButton}>
                         <View style={styles.button}>
                             <Text style={styles.buttonText}>TouchableOpacity</Text>
                         </View>
                     </TouchableOpacity> */}
+                {loading &&
+                    <ActivityIndicator size='large' color='#6646ee' />
+                }
+
             </View>
         </View>
     );
