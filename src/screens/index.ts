@@ -10,4 +10,3 @@ export * from "./doctors";
 export * from "./events";
 export * from "./memberprofile";
 export * from "./login";
-export * from "./register";

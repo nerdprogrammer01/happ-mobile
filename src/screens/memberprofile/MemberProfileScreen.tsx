@@ -1,5 +1,5 @@
 import React, { Component,useState,useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, ScrollView, StyleSheet, SafeAreaView ,AsyncStorage,ActivityIndicator} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar, Divider, TouchableHighlight } from "../../components";
 import { Theme } from "../../theme";
@@ -18,107 +18,125 @@ type TProps = {};
 export const MemberProfileScreen: React.FC<TProps> = props => {
   const { getString } = useLocalization();
   const navigation = useNavigation();
+  const [isLoading, setLoading] = useState(true);
+  const [profile, setProfile] = useState({});
 
   const onPressNewAppointment = () => {
     navigation.navigate(NavigationNames.CreateAppointmentScreen);
   };
 
-
-  return (
-    <SafeAreaView style={styles.flex1}>
-      <ScrollView
-        style={styles.flex1}
-        contentContainerStyle={styles.scrollContainer}
-      >
-        <Avatar
-          imageStyle={styles.imageStyle}
-          source={{
-            uri:
-              "https://raw.githubusercontent.com/publsoft/publsoft.github.io/master/projects/dentist-demo/assets/images/profile_photo.png"
-          }}
-        />
-        <Text style={styles.nameText}>Büşra Mutlu</Text>
-        <Text  style={styles.daysText}>00000003</Text>
-
-        <Text style={styles.titleText}>WHAT DO YOU WANT TO DO TODAY?</Text>
+  useEffect(() => {
+    async function load_profile() {
+      let profile = await AsyncStorage.getItem('profile'); 
+     
+      setProfile(JSON.parse(profile));
     
+    }
+   load_profile();
+   setLoading(false);
+  }, []);
 
-        <View style={{ marginTop: 14 }}>
-          {[
-            {
-              title: getString("Behavioral"),
-              subtitle: "13. days",
-              iconName: "md-calendar",
-              iconColor: Theme.colors.primaryColor
-            },
-            {
-              title: getString("Medical"),
-              subtitle: getString("Appointments"),
-              iconName: "md-calendar",
-              iconColor: Theme.colors.primaryColor
-            },
-            {
-              title: getString("Diagnostics"),
-              subtitle: getString("Programs"),
-              iconName: "md-calendar",
-              iconColor: Theme.colors.primaryColor
-            },
-           /*  {
-              title: getString("Notifications"),
-              subtitle: getString("Show All Notifications"),
-              iconName: "md-notifications",
-              iconColor: "#F2994A"
-            },
-            {
-              title: getString("Favorite Videos"),
-              subtitle: getString("Saved Videos"),
-              iconName: "ios-heart",
-              iconColor: "#EB5757"
-            } */
-          ].map((item, index) => {
-            return (
-              <TouchableHighlight key={index} onPress={onPressNewAppointment}>
-                <View>
-                  <View style={styles.menuRowContent} >
-                    <View style={styles.iconContent}>
-                   {/*    <Ionicons
-                        name={item.iconName}
-                        size={26}
-                        color={item.iconColor}
-                        style={{ alignSelf: "center" }}
-                      /> */}
-                    </View>
-                    <View style={styles.menuRowsContent}>
+  if (profile === null) {
+    return <Text>Loading</Text>;
+  }
+  return (
 
-                      <Text  style={styles.menuRowTitle}>{item.title}</Text>
-                      <Ionicons
-                        name={item.iconName}
-                        size={16}
-                        color={item.iconColor}
-                        style={{ alignSelf: "center" }}
-                      />
-                      <Text style={styles.menuRowSubtitle}>
-                       Schedule Appointment
-                      </Text>
-                     
-                    </View>
-                   {/*  <Ionicons
-                      name="ios-arrow-forward"
-                      size={24}
-                      color={Theme.colors.primaryColor}
-                      style={{ alignSelf: "center" }}
-                    /> */}
-                  </View>
-                  {/* <Divider style={styles.divider} /> */}
-                </View>
-              </TouchableHighlight>
-            );
-          })}
-         
-        </View>
-      </ScrollView>
-      {/* <FabButton onPress={onPressNewAppointment} /> */}
-    </SafeAreaView>
+            <SafeAreaView style={styles.flex1}>
+            <ScrollView
+              style={styles.flex1}
+              contentContainerStyle={styles.scrollContainer}
+            >
+              <Avatar
+                imageStyle={styles.imageStyle}
+                source={{
+                  uri:
+                    "https://raw.githubusercontent.com/publsoft/publsoft.github.io/master/projects/dentist-demo/assets/images/profile_photo.png"
+                }}
+              />
+              <Text style={styles.nameText}>{profile.fullName}</Text>
+              <Text  style={styles.daysText}>{profile.title}</Text>
+      
+              <Text style={styles.titleText}>WHAT DO YOU WANT TO DO TODAY?</Text>
+          
+      
+              <View style={{ marginTop: 14 }}>
+                {[
+                  {
+                    title: getString("Behavioral"),
+                    subtitle: "13. days",
+                    iconName: "md-calendar",
+                    iconColor: Theme.colors.primaryColor
+                  },
+                  {
+                    title: getString("Medical"),
+                    subtitle: getString("Appointments"),
+                    iconName: "md-calendar",
+                    iconColor: Theme.colors.primaryColor
+                  },
+                  {
+                    title: getString("Diagnostics"),
+                    subtitle: getString("Programs"),
+                    iconName: "md-calendar",
+                    iconColor: Theme.colors.primaryColor
+                  },
+                 /*  {
+                    title: getString("Notifications"),
+                    subtitle: getString("Show All Notifications"),
+                    iconName: "md-notifications",
+                    iconColor: "#F2994A"
+                  },
+                  {
+                    title: getString("Favorite Videos"),
+                    subtitle: getString("Saved Videos"),
+                    iconName: "ios-heart",
+                    iconColor: "#EB5757"
+                  } */
+                ].map((item, index) => {
+                  return (
+                    <TouchableHighlight key={index} onPress={onPressNewAppointment}>
+                      <View>
+                        <View style={styles.menuRowContent} >
+                          <View style={styles.iconContent}>
+                         {/*    <Ionicons
+                              name={item.iconName}
+                              size={26}
+                              color={item.iconColor}
+                              style={{ alignSelf: "center" }}
+                            /> */}
+                          </View>
+                          <View style={styles.menuRowsContent}>
+      
+                            <Text  style={styles.menuRowTitle}>{item.title}</Text>
+                            <Ionicons
+                              name={item.iconName}
+                              size={16}
+                              color={item.iconColor}
+                              style={{ alignSelf: "center" }}
+                            />
+                            <Text style={styles.menuRowSubtitle}>
+                             Schedule Appointment
+                            </Text>
+                           
+                          </View>
+                         {/*  <Ionicons
+                            name="ios-arrow-forward"
+                            size={24}
+                            color={Theme.colors.primaryColor}
+                            style={{ alignSelf: "center" }}
+                          /> */}
+                        </View>
+                        {/* <Divider style={styles.divider} /> */}
+                      </View>
+                    </TouchableHighlight>
+                  );
+                })}
+               
+              </View>
+            </ScrollView>
+            {/* <FabButton onPress={onPressNewAppointment} /> */}
+          </SafeAreaView>
+
+
   );
 };
 const styles = StyleSheet.create({

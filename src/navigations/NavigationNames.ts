@@ -1,5 +1,5 @@
 export default {
-
+  
   HomeScreen: "HomeScreen",
   //Tabs
   HomeTab: "HomeTab",
@@ -7,7 +7,7 @@ export default {
   MediaTab: "MediaTab",
   ProfileTab: "ProfileTab",
   MenuTab: "MenuTab",
-  AppointmentsTab: "AppointmentsTab",
+  AppointmentsTab:"AppointmentsTab",
   LoginTab: "LoginTab",
 
   // Screens
@@ -24,11 +24,9 @@ export default {
   NewAppointmentScreen: "NewAppointmentScreen",
   DoctorListScreen: "DoctorListScreen",
   DoctorDetailScreen: "DoctorDetailScreen",
-  MemberProfileScreen: "MemberProfileScreen",
-  CreateAppointmentScreen: "CreateAppointmentScreen",
-  AppointmentsScreen: "AppointmentsScreen",
-  AvailableClinicianScreen: "AvailableClinicianScreen",
-  ConfirmAppointmentScreen: "ConfirmAppointmentScreen",
+  MemberProfileScreen:"MemberProfileScreen",
+  CreateAppointmentScreen:"CreateAppointmentScreen",
+  AppointmentsScreen:"AppointmentsScreen",
   LoginScreen: "LoginScreen",
   RegisterScreen: "RegisterScreen"
 };
