@@ -3,22 +3,37 @@ import { View, Text, Picker, StyleSheet,TextInput } from 'react-native';
 import { Theme } from "../../theme";
 import { Button } from "../../components/buttons";
 import { useLocalization } from "../../localization";
+import { useNavigation } from "@react-navigation/native";
+import NavigationNames from "../../navigations/NavigationNames";
+import { NewAppointmentModel } from "../../models/NewAppointmentModel";
+
 
 type TProps = {};
 
 export const CreateAppointmentScreen: React.FC<TProps> = props => {
-    const [selectedValue, setSelectedValue] = useState("java");
+   
+    const [appointmentType, setAppointmentType] = useState();
+    const [appointmentCategory, setAppointmentCategory] = useState();
+    const [appointmentActivity, setAppointmentActivity] = useState();
+
     const { getString } = useLocalization();
+    const navigation = useNavigation();
+    
+    const nextForm  = () => {
+      const appointment: NewAppointmentModel = {
+        appointmentType:getString(appointmentType),
+        appointmentCategory:getString(appointmentCategory),
+        appointmentActivity:getString(appointmentActivity)
+        }
+      navigation.navigate(NavigationNames.AvailableClinicianScreen, {appointmentModel : JSON.stringify(appointment)})
+    }
+
     return (
         <View style={styles.container}>
-            
-
             <Text style={styles.titleText}>What type of appointment are you setting up?</Text>
             <View  style={styles.pickerstyle}>
-            <Picker
-            selectedValue={selectedValue}
-           
-            onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+            <Picker           
+            onValueChange={(itemValue, itemIndex) => setAppointmentType(itemValue)}
           >
             <Picker.Item label="Java" value="java" />
             <Picker.Item label="JavaScript" value="js" />
@@ -28,9 +43,9 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
             <Text style={styles.titleText}>What is the category of the appointment?</Text>
             <View  style={styles.pickerstyle}>
             <Picker
-            selectedValue={selectedValue}
+         
            
-            onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+            onValueChange={(itemValue, itemIndex) => setAppointmentCategory(itemValue)}
           >
             <Picker.Item label="Java" value="java" />
             <Picker.Item label="JavaScript" value="js" />
@@ -40,9 +55,9 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
             <Text style={styles.titleText}>Please specify the activity for the appointment</Text>
             <View  style={styles.pickerstyle}>
             <Picker
-            selectedValue={selectedValue}
            
-            onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+           
+            onValueChange={(itemValue, itemIndex) => setAppointmentActivity(itemValue)}
           >
             <Picker.Item label="Java" value="java" />
             <Picker.Item label="JavaScript" value="js" />
@@ -51,6 +66,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
      
             <Button
                   title={getString("Continue")}
+                  onPress = {nextForm}
                   type="outline"
                     style={styles.buttonStyle}
                 />
