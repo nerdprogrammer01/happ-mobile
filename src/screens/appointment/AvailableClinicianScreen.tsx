@@ -7,10 +7,11 @@ import {
   TouchableOpacity
 } from "react-native";
 import { useNavigation,useRoute } from "@react-navigation/native";
-import { doctorsList } from "../../datas";
+//import { doctorsList } from "../../datas";
 import { DoctorItemRow, Divider } from "../../components";
 import NavigationNames from "../../navigations/NavigationNames";
 import { NewAppointmentModel } from "../../models/NewAppointmentModel";
+import {DoctorModel} from "../../models/DoctorModel";
 
 
 type TProps = {};
@@ -19,6 +20,7 @@ export const AvailableClinicianScreen: React.FC<TProps> = props => {
   const route = useRoute();
   const navigation = useNavigation();
   const appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
+  const doctorsList = JSON.parse(route.params["doctorsList"]) as DoctorModel[];
   return (
     <FlatList
       data={doctorsList}

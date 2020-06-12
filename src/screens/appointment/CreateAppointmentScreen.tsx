@@ -15,17 +15,28 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
     const [appointmentType, setAppointmentType] = useState();
     const [appointmentCategory, setAppointmentCategory] = useState();
     const [appointmentActivity, setAppointmentActivity] = useState();
+    const [doctorList, setDoctorList] = useState();
 
     const { getString } = useLocalization();
     const navigation = useNavigation();
     
     const nextForm  = () => {
       const appointment: NewAppointmentModel = {
-        appointmentType:getString(appointmentType),
-        appointmentCategory:getString(appointmentCategory),
-        appointmentActivity:getString(appointmentActivity)
+        appointmentType: parseInt(appointmentType),
+        appointmentCategory:parseInt(appointmentCategory),
+        appointmentActivity:parseInt(appointmentActivity)
         }
-      navigation.navigate(NavigationNames.AvailableClinicianScreen, {appointmentModel : JSON.stringify(appointment)})
+
+        const requestOptions = {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+      //    body: JSON.stringify(appointment)
+      };
+      fetch('https://myspace-mytime.com/api/clinician/getdoctor', requestOptions)
+          .then(response => response.json())
+          .then(data => setDoctorList(data));
+
+      navigation.navigate(NavigationNames.AvailableClinicianScreen, {appointmentModel : JSON.stringify(appointment), doctorsList : doctorList})
     }
 
     return (
@@ -35,8 +46,8 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
             <Picker           
             onValueChange={(itemValue, itemIndex) => setAppointmentType(itemValue)}
           >
-            <Picker.Item label="Java" value="java" />
-            <Picker.Item label="JavaScript" value="js" />
+            <Picker.Item label="Java" value="1" />
+            <Picker.Item label="JavaScript" value="2" />
           </Picker>
             </View>
 
@@ -47,8 +58,8 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
            
             onValueChange={(itemValue, itemIndex) => setAppointmentCategory(itemValue)}
           >
-            <Picker.Item label="Java" value="java" />
-            <Picker.Item label="JavaScript" value="js" />
+            <Picker.Item label="Java" value="1" />
+            <Picker.Item label="JavaScript" value="2" />
           </Picker>
             </View>
 
@@ -59,8 +70,8 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
            
             onValueChange={(itemValue, itemIndex) => setAppointmentActivity(itemValue)}
           >
-            <Picker.Item label="Java" value="java" />
-            <Picker.Item label="JavaScript" value="js" />
+            <Picker.Item label="Java" value="1" />
+            <Picker.Item label="JavaScript" value="2" />
           </Picker>
             </View>
      

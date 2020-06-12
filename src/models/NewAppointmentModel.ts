@@ -2,10 +2,10 @@ import { DoctorModel } from "./DoctorModel";
 
 export type NewAppointmentModel = {
   appointmentDate?: Date;
-  appointmentType: string;
-  appointmentCategory:string;
-  appointmentActivity:string;
+  appointmentType: number;
+  appointmentCategory:number;
+  appointmentActivity:number;
   doctor?: DoctorModel;
-  appointmentService?:string;
+  appointmentService?:number;
   fee? : number;
 };
