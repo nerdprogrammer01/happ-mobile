@@ -20,8 +20,9 @@ export const AvailableClinicianScreen: React.FC<TProps> = props => {
   const route = useRoute();
   const navigation = useNavigation();
   const appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
-  const doctorsList = JSON.parse(route.params["doctorsList"]) as DoctorModel[];
-  return (
+  const doctorsList : DoctorModel[] = JSON.parse(route.params["doctors"]);
+
+  return (    
     <FlatList
       data={doctorsList}
       renderItem={({ item }) => (

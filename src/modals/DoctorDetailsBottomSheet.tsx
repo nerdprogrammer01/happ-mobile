@@ -88,21 +88,21 @@ export const DoctorDetailsBottomSheet: React.FC<TProps> = props => {
               selectedColor={"orange"}
               defaultRating={props.doctor.rating}
             />
-            <Text style={styles.ratingReviewsText}>
+            {/* <Text style={styles.ratingReviewsText}>
               {`(${props.doctor.reviews.length} ${getString("reviews")})`}
-            </Text>
+            </Text> */}
           </View>
 
           <Text style={{ fontWeight: "600" }}>
             {getString("Latest reviews")}
           </Text>
-          <FlatList<ReviewModel>
+          {/* <FlatList<ReviewModel>
             data={props.doctor.reviews.slice(0, 2)}
             keyExtractor={(item, index) => `key${index}ForReview`}
             ItemSeparatorComponent={() => <Divider style={styles.divider} />}
             renderItem={row => <DoctorReviewItemRow item={row.item} />}
             style={{ marginTop: 16 }}
-          />
+          /> */}
         </View>
       </SafeAreaView>
     </ReactNativeModal>

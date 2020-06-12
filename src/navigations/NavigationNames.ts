@@ -1,3 +1,5 @@
+import { AvailableClinicianScreen } from "../screens/appointment/AvailableClinicianScreen";
+
 export default {
   
   HomeScreen: "HomeScreen",
@@ -28,5 +30,7 @@ export default {
   CreateAppointmentScreen:"CreateAppointmentScreen",
   AppointmentsScreen:"AppointmentsScreen",
   LoginScreen: "LoginScreen",
-  RegisterScreen: "RegisterScreen"
+  RegisterScreen: "RegisterScreen",
+  AvailableClinicianScreen : "AvailableClinicianScreen",
+  ConfirmAppointmentScreen : "ConfirmAppointmentScreen"
 };

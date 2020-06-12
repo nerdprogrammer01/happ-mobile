@@ -15,28 +15,39 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
     const [appointmentType, setAppointmentType] = useState();
     const [appointmentCategory, setAppointmentCategory] = useState();
     const [appointmentActivity, setAppointmentActivity] = useState();
-    const [doctorList, setDoctorList] = useState();
-
+    
     const { getString } = useLocalization();
     const navigation = useNavigation();
     
     const nextForm  = () => {
-      const appointment: NewAppointmentModel = {
+      let appointment: NewAppointmentModel = {
         appointmentType: parseInt(appointmentType),
         appointmentCategory:parseInt(appointmentCategory),
         appointmentActivity:parseInt(appointmentActivity)
         }
 
         const requestOptions = {
-          method: 'GET',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-      //    body: JSON.stringify(appointment)
+          body: JSON.stringify(appointment)
       };
-      fetch('https://myspace-mytime.com/api/clinician/getdoctor', requestOptions)
-          .then(response => response.json())
-          .then(data => setDoctorList(data));
 
-      navigation.navigate(NavigationNames.AvailableClinicianScreen, {appointmentModel : JSON.stringify(appointment), doctorsList : doctorList})
+      fetch('https://myspace-mytime.com/api/clinician/getavailabledoctors', requestOptions)
+      .then(async response => {
+        const data = await response.json();
+        // check for error response
+        if (!response.ok) {
+            // get error message from body or default to response status
+            const error = (data && data.message) || response.status;
+            return Promise.reject(error);
+        }
+        navigation.navigate(NavigationNames.AvailableClinicianScreen, {appointmentModel : JSON.stringify(appointment), doctors : JSON.stringify(data)});
+    })
+    .catch(error => {
+        console.error('There was an error!', error);
+    });
+          // .then(response => response.json())
+          // .then(data => {setDoctorList(data); console.log(data)});
     }
 
     return (
@@ -46,6 +57,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
             <Picker           
             onValueChange={(itemValue, itemIndex) => setAppointmentType(itemValue)}
           >
+            <Picker.Item label="Select Type" value="0" />
             <Picker.Item label="Java" value="1" />
             <Picker.Item label="JavaScript" value="2" />
           </Picker>
@@ -58,6 +70,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
            
             onValueChange={(itemValue, itemIndex) => setAppointmentCategory(itemValue)}
           >
+            <Picker.Item label="Select Category" value="0" />
             <Picker.Item label="Java" value="1" />
             <Picker.Item label="JavaScript" value="2" />
           </Picker>
@@ -70,6 +83,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
            
             onValueChange={(itemValue, itemIndex) => setAppointmentActivity(itemValue)}
           >
+            <Picker.Item label="Select Activity" value="0" />
             <Picker.Item label="Java" value="1" />
             <Picker.Item label="JavaScript" value="2" />
           </Picker>
