@@ -23,11 +23,10 @@ import {
   MemberProfileScreen,
   CreateAppointmentScreen,
   AppointmentsScreen,
-  LoginScreen
+  LoginScreen,
+  RegisterScreen
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
-import { AvailableClinicianScreen } from "../screens/appointment/AvailableClinicianScreen";
-import { ConfirmAppointmentScreen } from "../screens/appointment/ConfirmAppointmentScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,11 +35,17 @@ const Tab = createBottomTabNavigator();
 const LoginTabStack = () => {
   const { getString } = useLocalization();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{
+      headerShown: false
+    }}>
       <Stack.Screen
         name={NavigationNames.LoginScreen}
         component={LoginScreen}
-        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={NavigationNames.RegisterScreen}
+        component={RegisterScreen}
+    /*     options={{ headerShown: false }} */
       />
       
     </Stack.Navigator>
@@ -51,6 +56,11 @@ const HomeTabStack = () => {
   const { getString } = useLocalization();
   return (
     <Stack.Navigator headerMode="screen" screenOptions={stackScreenOptions}>
+        <Stack.Screen
+        name={NavigationNames.MemberProfileScreen}
+        component={MemberProfileScreen}
+        options={{ title: getString("My Profile") }}
+      />
       <Stack.Screen
         name={NavigationNames.HomeScreen}
         component={HomeScreen}
@@ -157,16 +167,6 @@ const MyAppointmentsTabStack = () => {
         name={NavigationNames.CreateAppointmentScreen}
         component={CreateAppointmentScreen}
         options={{ title: getString("New Appointment") }}
-      />
-      <Stack.Screen
-        name={NavigationNames.AvailableClinicianScreen}
-        component={AvailableClinicianScreen}
-        options={{ title: getString("Available Doctors") }}
-      />
-      <Stack.Screen
-        name={NavigationNames.ConfirmAppointmentScreen}
-        component={ConfirmAppointmentScreen}
-        options={{ title: getString("Confirm Appointment") }}
       />
     </Stack.Navigator>
   );

@@ -27,7 +27,6 @@ export default {
   MemberProfileScreen:"MemberProfileScreen",
   CreateAppointmentScreen:"CreateAppointmentScreen",
   AppointmentsScreen:"AppointmentsScreen",
-  AvailableClinicianScreen:"AvailableClinicianScreen",
-  ConfirmAppointmentScreen:"ConfirmAppointmentScreen",
-  LoginScreen: "LoginScreen"
+  LoginScreen: "LoginScreen",
+  RegisterScreen: "RegisterScreen"
 };
