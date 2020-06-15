@@ -34,6 +34,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
             selectedValue={selectedValue}
            
             onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+            
           >
             <Picker.Item label="Java" value="java" />
             <Picker.Item label="JavaScript" value="js" />
