@@ -84,12 +84,6 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
     
    }, [appointmentType]);
 
-   useEffect(() => {
-    if (appointmentCategory > 0 && appointmentCategory != null){
-      getAppointmentActivities();
-    }
-   }, [appointmentCategory]);
-
   
   const getAppointmentTypes = () => {
     let request = {
@@ -135,7 +129,8 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
   }
 
 
-  const getAppointmentActivities = () => {
+  const getAppointmentActivities = (appointment_cateogory_id:number) => {
+    //alert(appointment_cateogory_id);
     let request = {
       method: "GET",
       headers: {
@@ -144,19 +139,16 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
       }
     };
 
-    fetch(Environment.SERVER_API+"/api/options/GetAppointmentSubActivities?parent_id=5", request)
-      .then((response) => { 
-        try{
-          console.log( JSON.stringify(response, null, 4));
-          return response.json();
-        }catch(error){
-          console.log( error);
-        }
+    fetch(Environment.SERVER_API+"/api/options/GetAppointmentSubActivities?parent_id="+appointment_cateogory_id, request)
+      .then(async response => {
+        console.log(JSON.stringify(response, null, 4));
+        //alert(response);
+        return await response.json();
         
       })
       .then(responseJson => {
         setAppointmentActivities(responseJson);
-       
+        setAppointmentCategory(appointment_cateogory_id);
       })
       .catch(error => {
         console.error(error);
@@ -180,7 +172,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
       <Text style={styles.titleText}>What is the category of the appointment?</Text>
       <View style={styles.pickerstyle}>
         <Picker
-          onValueChange={(itemValue, itemIndex) => setAppointmentCategory(itemValue)} selectedValue={appointmentCategory}
+          onValueChange={(itemValue, itemIndex) => getAppointmentActivities(itemValue)} selectedValue={appointmentCategory}
         >
            { appointment_categories.map((item, key)=>(
             <Picker.Item label={item.name} value={item.id} key={key} />)
