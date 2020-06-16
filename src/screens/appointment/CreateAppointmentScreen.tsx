@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { View, Text, Picker, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { Theme } from "../../theme";
@@ -7,9 +7,9 @@ import { useLocalization } from "../../localization";
 import { useNavigation } from "@react-navigation/native";
 import NavigationNames from "../../navigations/NavigationNames";
 import { NewAppointmentModel } from "../../models/NewAppointmentModel";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+//import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Moment from 'moment';
-
+import {Environment} from "../../datas";
 
 type TProps = {};
 
@@ -20,6 +20,9 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
   const [appointmentCategory, setAppointmentCategory] = useState(0);
   const [appointmentActivity, setAppointmentActivity] = useState(0);
   const [appointmentDate, setAppointmentDate] = useState(new Date());
+  const [appointment_types, setAppointmentTypes] = useState([]);
+  const [appointment_categories, setAppointmentCategories] = useState([]);
+  const [appointment_activities, setAppointmentActivities] = useState([]);
 
   //datepicker related 
   const [date, setDate] = useState("");
@@ -70,36 +73,134 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
       });
   }
 
+  useEffect(() => {
+   getAppointmentTypes();
+  }, []);
+
+  useEffect(() => {
+    if (appointmentType > 0 && appointmentType != null){
+      getAppointmentCategories();
+    }
+    
+   }, [appointmentType]);
+
+   useEffect(() => {
+    if (appointmentCategory > 0 && appointmentCategory != null){
+      getAppointmentActivities();
+    }
+   }, [appointmentCategory]);
+
+  
+  const getAppointmentTypes = () => {
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+        //'Token': profile.token
+      }
+    };
+
+    fetch(Environment.SERVER_API+"/api/options/GetAppointmentTypes", request)
+      .then((response) => response.json())
+      .then(responseJson => {
+        setAppointmentTypes(responseJson);
+       
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  const getAppointmentCategories = () => {
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+        //'Token': profile.token
+      }
+    };
+
+    fetch(Environment.SERVER_API+"/api/options/GetAppointmentActivities?parent_id="+appointmentType, request)
+      .then((response) =>{ 
+        JSON.stringify(response, null, 4)
+        return response.json();
+      })
+      .then(responseJson => {
+        setAppointmentCategories(responseJson);
+       
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+
+  const getAppointmentActivities = () => {
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+        //'Token': profile.token
+      }
+    };
+
+    fetch(Environment.SERVER_API+"/api/options/GetAppointmentSubActivities?parent_id=5", request)
+      .then((response) => { 
+        try{
+          console.log( JSON.stringify(response, null, 4));
+          return response.json();
+        }catch(error){
+          console.log( error);
+        }
+        
+      })
+      .then(responseJson => {
+        setAppointmentActivities(responseJson);
+       
+      })
+      .catch(error => {
+        console.error(error);
+       
+      });
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>What type of appointment are you setting up?</Text>
       <View style={styles.pickerstyle}>
         <Picker
-          onValueChange={(itemValue, itemIndex) => setAppointmentType(itemValue)}
+          onValueChange={(itemValue, itemIndex) => setAppointmentType(itemValue)} selectedValue={appointmentType}
         >
-          <Picker.Item label="Select Type" value="0" />
-          <Picker.Item label="Java" value="1" />
-          <Picker.Item label="JavaScript" value="2" />
+         
+          { appointment_types.map((item, key)=>(
+            <Picker.Item label={item.name} value={item.id} key={key} />)
+            )}
         </Picker>
       </View>
       <Text style={styles.titleText}>What is the category of the appointment?</Text>
       <View style={styles.pickerstyle}>
         <Picker
-          onValueChange={(itemValue, itemIndex) => setAppointmentCategory(itemValue)}
+          onValueChange={(itemValue, itemIndex) => setAppointmentCategory(itemValue)} selectedValue={appointmentCategory}
         >
-          <Picker.Item label="Select Category" value="0" />
+           { appointment_categories.map((item, key)=>(
+            <Picker.Item label={item.name} value={item.id} key={key} />)
+            )}
+          {/* <Picker.Item label="Select Category" value="0" />
           <Picker.Item label="Java" value="1" />
-          <Picker.Item label="JavaScript" value="2" />
+          <Picker.Item label="JavaScript" value="2" /> */}
         </Picker>
       </View>
       <Text style={styles.titleText}>Please specify the activity for the appointment</Text>
       <View style={styles.pickerstyle}>
         <Picker
-          onValueChange={(itemValue, itemIndex) => setAppointmentActivity(itemValue)}
+          onValueChange={(itemValue, itemIndex) => setAppointmentActivity(itemValue)} selectedValue={appointmentActivity}
         >
-          <Picker.Item label="Select Activity" value="0" />
+           { appointment_activities.map((item, key)=>(
+            <Picker.Item label={item.name} value={item.id} key={key} />)
+            )}
+          {/* <Picker.Item label="Select Activity" value="0" />
           <Picker.Item label="Java" value="1" />
-          <Picker.Item label="JavaScript" value="2" />
+          <Picker.Item label="JavaScript" value="2" /> */}
         </Picker>
       </View>
       <View>
@@ -118,12 +219,12 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
 
       </View>
       <View>
-        <DateTimePickerModal
+      {/*   <DateTimePickerModal
           isVisible={isDatePickerVisible}
           mode="datetime"
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
-        />
+        /> */}
       </View>
       <Button
         title={getString("Continue")}

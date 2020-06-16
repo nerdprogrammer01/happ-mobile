@@ -33,11 +33,8 @@ export default {
   AppointmentsScreen:"AppointmentsScreen",
   LoginScreen: "LoginScreen",
   RegisterScreen: "RegisterScreen",
-<<<<<<< HEAD
   AppointmentScreen:"AppointmentScreen",
-  InboxScreen:"InboxScreen"
-=======
+  InboxScreen:"InboxScreen",
   AvailableClinicianScreen : "AvailableClinicianScreen",
   ConfirmAppointmentScreen : "ConfirmAppointmentScreen"
->>>>>>> d0f1b0e86af309344497e42cc9c7c7203c2c9f64
 };
