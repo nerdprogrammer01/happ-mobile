@@ -1,7 +1,7 @@
 import { AvailableClinicianScreen } from "../screens/appointment/AvailableClinicianScreen";
 
 export default {
-  
+
   HomeScreen: "HomeScreen",
   //Tabs
   HomeTab: "HomeTab",
@@ -9,7 +9,7 @@ export default {
   MediaTab: "MediaTab",
   ProfileTab: "ProfileTab",
   MenuTab: "MenuTab",
-  AppointmentsTab:"AppointmentsTab",
+  AppointmentsTab: "AppointmentsTab",
   LoginTab: "LoginTab",
 
   // Screens
@@ -26,11 +26,12 @@ export default {
   NewAppointmentScreen: "NewAppointmentScreen",
   DoctorListScreen: "DoctorListScreen",
   DoctorDetailScreen: "DoctorDetailScreen",
-  MemberProfileScreen:"MemberProfileScreen",
-  CreateAppointmentScreen:"CreateAppointmentScreen",
-  AppointmentsScreen:"AppointmentsScreen",
+  MemberProfileScreen: "MemberProfileScreen",
+  CreateAppointmentScreen: "CreateAppointmentScreen",
+  AppointmentsScreen: "AppointmentsScreen",
   LoginScreen: "LoginScreen",
   RegisterScreen: "RegisterScreen",
-  AvailableClinicianScreen : "AvailableClinicianScreen",
-  ConfirmAppointmentScreen : "ConfirmAppointmentScreen"
+  RegisterContScreen: "RegisterContScreen",
+  AvailableClinicianScreen: "AvailableClinicianScreen",
+  ConfirmAppointmentScreen: "ConfirmAppointmentScreen"
 };
