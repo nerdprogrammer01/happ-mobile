@@ -31,7 +31,8 @@ const getMenuItems = (getString: (key: string) => string) => [
   },
   {
     title: getString("Instagram"),
-    iconName: "logo-instagram"
+    iconName: "logo-instagram",
+    // navigateToScreen: NavigationNames.AppointmentScreen
   },
   {
     title: getString("About Us"),

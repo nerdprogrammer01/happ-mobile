@@ -22,6 +22,13 @@ const getTabTitle = (routeName: string): string => {
   } else if (routeName === NavigationNames.AppointmentsTab) {
     return getString("Appointments");
   }
+  else if (routeName === NavigationNames.MessageTab) {
+    return getString("Inbox");
+  }
+  else if (routeName === NavigationNames.DoctorTab) {
+    return getString("Providers");
+  }
+  
   return "";
 };
 
@@ -51,6 +58,13 @@ export const tabScreenOptions: (props: {
       case NavigationNames.AppointmentsTab:
         iconName = "md-alarm";
         break;
+      case NavigationNames.MessageTab:
+        iconName = "ios-notifications";
+        break;
+      case NavigationNames.DoctorTab:
+        iconName = "ios-contact";
+        break;
+
     }
     return <Ionicons name={iconName} size={28} color={color} />;
   }
