@@ -8,6 +8,7 @@ import { DashboardService } from "../../services";
 import { useLocalization } from "../../localization";
 import NavigationNames from "../../navigations/NavigationNames";
 import { Theme } from "../../theme";
+import {Environment} from "../../datas";
 
 
 type TProps = {};
@@ -46,7 +47,7 @@ export const LoginScreen: React.FC<TProps> = props => {
         });
       
 
-        fetch('https://myspace-mytime.com/auth/GenerateToken', {
+        fetch(Environment.SERVER_API+'/auth/GenerateToken', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -62,7 +63,7 @@ export const LoginScreen: React.FC<TProps> = props => {
         }) 
         .then((responseData) => { 
             //navigation.navigate("Home");
-            alert(JSON.stringify(responseData));
+           // alert(JSON.stringify(responseData));
             //console.log("response: " + responseData); 
             //check the response, if the user is authenticated, save the data and navigate the user to another screen
             if (responseData.response==200){

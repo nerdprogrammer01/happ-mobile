@@ -5,10 +5,12 @@ export default {
   HomeTab: "HomeTab",
   CalendarTab: "CalendarTab",
   MediaTab: "MediaTab",
+  MessageTab: "MessageTab",
   ProfileTab: "ProfileTab",
   MenuTab: "MenuTab",
   AppointmentsTab:"AppointmentsTab",
   LoginTab: "LoginTab",
+  DoctorTab:"DoctorTab",
 
   // Screens
   CalendarScreen: "CalendarScreen",
@@ -28,5 +30,7 @@ export default {
   CreateAppointmentScreen:"CreateAppointmentScreen",
   AppointmentsScreen:"AppointmentsScreen",
   LoginScreen: "LoginScreen",
-  RegisterScreen: "RegisterScreen"
+  RegisterScreen: "RegisterScreen",
+  AppointmentScreen:"AppointmentScreen",
+  InboxScreen:"InboxScreen"
 };

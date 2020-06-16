@@ -1,31 +1,50 @@
-import React from "react";
+import React,{useState} from "react";
 import { View, Text, StyleSheet, ViewStyle } from "react-native";
 import { Theme } from "../../theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Avatar } from "../avatar";
 import { AppointmentModel } from "../../models/AppointmentModel";
 import moment from "moment";
+import {Environment} from "../../datas";
 
 type TProps = {
   style?: ViewStyle;
   item: AppointmentModel;
+  role:string;
 };
 
 export const UpcomingAppoinmentRow: React.FC<TProps> = props => {
+
+  const role = props.role as string;
+  let fullName="";
+  let imageUrl="";
+  if (role=="clinician"){
+    fullName=props.item.member.fullName;
+    imageUrl=props.item.member.imageUrl;
+  } 
+  else if (role=="client"){
+    fullName=props.item.doctor.fullName;
+    imageUrl=props.item.doctor.imageUrl;
+  }
   return (
+
+    
     <View style={[styles.container, props.style]}>
+    
       <Avatar
-        source={{
-          uri: props.item.doctor.imageUrl
+        source={{          
+           uri: Environment.SERVER_API+ imageUrl
+            // uri:
+            //          "https://raw.githubusercontent.com/publsoft/publsoft.github.io/master/projects/dentist-demo/assets/images/profile_photo.png"
         }}
-        status={props.item.doctor.isOnline ? "online" : "bussy"}
+        // status={props.item.doctor.isOnline ? "online" : "bussy"}
       />
       <View style={styles.rows}>
         <Text style={styles.titleText}>{props.item.title}</Text>
-        <Text style={styles.doctorNameText}>{props.item.doctor.fullName}</Text>
+        <Text style={styles.doctorNameText}>{fullName}</Text>
         <Text style={styles.locationText}>
-          {`${moment(props.item.appointmentDate).format("LT")} ${
-            props.item.locationName
+          {`${moment(props.item.appointmentDate,'YYYYMMDD').fromNow()} - ${
+            props.item.service
           }`}
         </Text>
       </View>

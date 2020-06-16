@@ -1,6 +1,7 @@
 export * from "./AppointmentModel";
 export * from "./AppointmentTimeModal";
 export * from "./DoctorModel";
+export * from "./MemberModel";
 export * from "./DashboardItemsModel";
 export * from "./CampaignModel";
 export * from "./EventModel";
@@ -12,3 +13,5 @@ export * from "./NewsPostModel";
 export * from "./ImageModel";
 export * from "./StoryModel";
 export * from "./MediaModel";
+export * from "./PersonModel";
+export * from "./InboxModel";
