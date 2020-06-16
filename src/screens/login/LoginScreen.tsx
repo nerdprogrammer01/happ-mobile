@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-    TextInput, View, StyleSheet, Text, TouchableOpacity, Image, Alert, Button,AsyncStorage,ActivityIndicator
+    TextInput, View, StyleSheet, Text, TouchableOpacity, Image, Alert, Button, AsyncStorage, ActivityIndicator
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { DashboardItemsModel } from "../../models";
@@ -8,7 +8,7 @@ import { DashboardService } from "../../services";
 import { useLocalization } from "../../localization";
 import NavigationNames from "../../navigations/NavigationNames";
 import { Theme } from "../../theme";
-import {Environment} from "../../datas";
+import { Environment } from "../../datas";
 
 
 type TProps = {};
@@ -23,31 +23,31 @@ export const LoginScreen: React.FC<TProps> = props => {
     let [password, setPassword] = useState('');
 
     const registerHandler = () => {
-        navigation.navigate(NavigationNames.RegisterScreen);
+        navigation.navigate(NavigationNames.RegisterContScreen);
     }
 
     const loginHandler = () => {
         setLoading(true);
-       //alert(email);
-       //alert(password);
+        //alert(email);
+        //alert(password);
         if (!email) {
             alert('Please fill Email');
             setLoading(false);
             return;
-          }
-          if (!password) {
+        }
+        if (!password) {
             alert('Please fill Password');
             setLoading(false);
             return;
-          }
+        }
 
-        let bd=JSON.stringify({
+        let bd = JSON.stringify({
             Email: email,
             Password: password
         });
-      
 
-        fetch(Environment.SERVER_API+'/auth/GenerateToken', {
+
+        fetch(Environment.SERVER_API + '/auth/GenerateToken', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -55,33 +55,27 @@ export const LoginScreen: React.FC<TProps> = props => {
             },
             body: bd
         })
-        .then((response) => {
-           // alert(JSON.stringify(response.json()));
-           let result= response.json();
-          
-           return result;
-        }) 
-        .then((responseData) => { 
-            //navigation.navigate("Home");
-           // alert(JSON.stringify(responseData));
-            //console.log("response: " + responseData); 
-            //check the response, if the user is authenticated, save the data and navigate the user to another screen
-            if (responseData.response==200){
-                AsyncStorage.setItem('profile',JSON.stringify(responseData));  
-                navigation.navigate("Home");
-                
+            .then((response) => {
+                // alert(JSON.stringify(response.json()));
+                let result = response.json();
 
-            }else{
-                alert("Error logging you in. Please chech your credentials.");
-                setLoading(false);
-            }
-          
-        })
-        .catch((err) => { 
-            //alert(err);
-            console.log(err); 
-            setLoading(false);
-        });
+                return result;
+            })
+            .then((responseData) => {
+                //navigation.navigate("Home");
+                // alert(JSON.stringify(responseData));
+                //console.log("response: " + responseData); 
+                //check the response, if the user is authenticated, save the data and navigate the user to another screen
+                if (responseData.response == 200) {
+                    AsyncStorage.setItem('profile', JSON.stringify(responseData));
+                    navigation.navigate("Home");
+
+
+                } else {
+                    alert("Error logging you in. Please chech your credentials.");
+                    setLoading(false);
+                }
+            });
     }
 
     return (
@@ -94,7 +88,7 @@ export const LoginScreen: React.FC<TProps> = props => {
                     style={styles.input}
                     placeholder="Enter Email"
                     onChangeText={Email => setEmail(Email)}
-                   
+
                 />
                 <TextInput
                     style={styles.input}
@@ -102,16 +96,16 @@ export const LoginScreen: React.FC<TProps> = props => {
                     onChangeText={Password => setPassword(Password)}
                     secureTextEntry={true} />
                 <TouchableOpacity style={styles.btn} onPress={loginHandler} >
-                    <Text style={{color:"white"}}>Login</Text>
+                    <Text style={{ color: "white" }}>Login</Text>
                 </TouchableOpacity>
-                <Text style={{ textAlign: 'center', color: 'blue' }} onPress={registerHandler}>Not Registered?</Text>
+                <Text style={{ textAlign: 'center', color: 'blue', padding: 20 }} onPress={registerHandler}>Not Registered?</Text>
                 {/* <TouchableOpacity onPress={this._onPressButton}>
                         <View style={styles.button}>
                             <Text style={styles.buttonText}>TouchableOpacity</Text>
                         </View>
                     </TouchableOpacity> */}
 
-{loading &&
+                {loading &&
                     <ActivityIndicator size='large' color='#6646ee' />
                 }
             </View>
@@ -156,6 +150,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 10,
-        color:"#ffffff"
+        color: "#ffffff"
     }
 });
