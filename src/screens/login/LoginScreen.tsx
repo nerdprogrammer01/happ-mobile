@@ -73,12 +73,14 @@ export const LoginScreen: React.FC<TProps> = props => {
 
             }else{
                 alert("Error logging you in. Please chech your credentials.");
+                setLoading(false);
             }
           
         })
         .catch((err) => { 
             //alert(err);
             console.log(err); 
+            setLoading(false);
         });
     }
 

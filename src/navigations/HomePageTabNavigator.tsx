@@ -29,6 +29,8 @@ import {
   InboxScreen
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
+import { AvailableClinicianScreen } from "../screens/appointment/AvailableClinicianScreen";
+import { ConfirmAppointmentScreen } from "../screens/appointment/ConfirmAppointmentScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -211,6 +213,16 @@ const MessageTabStack = () => {
         options={{ title: getString("My Inbox") }}
       />
         
+              <Stack.Screen
+        name={NavigationNames.AvailableClinicianScreen}
+        component={AvailableClinicianScreen}
+        options={{ title: getString("Available Doctors") }}
+      />
+              <Stack.Screen
+        name={NavigationNames.ConfirmAppointmentScreen}
+        component={ConfirmAppointmentScreen}
+        options={{ title: getString("Confirm Appointment") }}
+      />
     </Stack.Navigator>
   );
 };

@@ -8,5 +8,5 @@ export type DoctorModel = {
   about: string;
   isOnline: boolean;
   rating: number;
-  reviews: ReviewModel[];
+  reviews?: ReviewModel[];
 };

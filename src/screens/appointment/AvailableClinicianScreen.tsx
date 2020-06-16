@@ -1,4 +1,4 @@
-import React from "react";
+import React,{ useState } from "react";
 import {
   View,
   Text,
@@ -7,10 +7,11 @@ import {
   TouchableOpacity
 } from "react-native";
 import { useNavigation,useRoute } from "@react-navigation/native";
-import { doctorsList } from "../../datas";
+import { useLocalization } from "../../localization";
 import { DoctorItemRow, Divider } from "../../components";
 import NavigationNames from "../../navigations/NavigationNames";
 import { NewAppointmentModel } from "../../models/NewAppointmentModel";
+import {DoctorModel} from "../../models/DoctorModel";
 
 
 type TProps = {};
@@ -18,17 +19,20 @@ type TProps = {};
 export const AvailableClinicianScreen: React.FC<TProps> = props => {
   const route = useRoute();
   const navigation = useNavigation();
-  const appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
-  return (
+  let appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
+  const doctorsList : DoctorModel[] = JSON.parse(route.params["doctors"]);
+
+  const nextForm = (doctor : DoctorModel) => {
+    appointmentModel.doctor = doctor;
+    navigation.navigate(NavigationNames.ConfirmAppointmentScreen, {appointmentModel: JSON.stringify(appointmentModel)})
+    };
+
+  return (    
     <FlatList
       data={doctorsList}
       renderItem={({ item }) => (
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate(NavigationNames.ConfirmAppointmentScreen, {
-              model: JSON.stringify(item)
-            })
-          }
+          onPress={() => nextForm(item) }
           style={styles.itemRowContainer}
         >
           <DoctorItemRow item={item} />
