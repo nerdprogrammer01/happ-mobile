@@ -43,7 +43,7 @@ export const AppointmentsScreen: React.FC<TProps> = props => {
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     >
-      <UpcomingAppoinmentRow
+      <UpcomingAppoinmentRow role=""
         style={styles.upcomingAppoinmentRow}
         item={dashboardItem.appointment}
       />  

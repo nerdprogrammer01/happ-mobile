@@ -31,7 +31,8 @@ const getMenuItems = (getString: (key: string) => string) => [
   },
   {
     title: getString("Instagram"),
-    iconName: "logo-instagram"
+    iconName: "logo-instagram",
+    // navigateToScreen: NavigationNames.AppointmentScreen
   },
   {
     title: getString("About Us"),
@@ -50,8 +51,14 @@ const getMenuItems = (getString: (key: string) => string) => [
     iconName: "md-settings",
     openSettings: true
   }
+  ,
+  {
+    title: getString("Log out"),
+    iconName: "ios-power",
+    navigateToScreen: NavigationNames.LoginTab
+  }
 ];
-
+//
 type TProps = {};
 
 export const MenuScreen: React.FC<TProps> = props => {
