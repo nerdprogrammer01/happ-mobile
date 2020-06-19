@@ -12,11 +12,12 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/native";
 import numeral from "numeral";
 import { DoctorModel } from "../../models";
-import { Avatar, Divider } from "../../components";
+import { Avatar, Divider, Button } from "../../components";
 import { Theme } from "../../theme";
 import { AirbnbRating } from "react-native-ratings";
 import { DoctorReviewItemRow } from "../../components/reviews";
 import { Ionicons } from "@expo/vector-icons";
+import { NewAppointmentModel } from "../../models/NewAppointmentModel";
 
 type TProps = {};
 
@@ -24,15 +25,25 @@ export const DoctorDetailScreen: React.FC<TProps> = props => {
   const route = useRoute();
   const navigation = useNavigation();
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button onPress={() => alert('done')} size="small" title="Select" />
+      ),
+    });
+  }, [navigation]);
+
   const [toolbarTitleHided, setToolbarTitleHided] = useState(true);
 
-  const model = JSON.parse(route.params["model"]) as DoctorModel;
+  //const model = JSON.parse(route.params["model"]) as DoctorModel;
+  const appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+   
     const y = event.nativeEvent.contentOffset.y;
     if (toolbarTitleHided && y > 180) {
       setToolbarTitleHided(false);
-      navigation.setOptions({ title: model.fullName });
+      navigation.setOptions({ title: appointmentModel.doctor?.fullName });
     } else if (!toolbarTitleHided && y <= 180) {
       setToolbarTitleHided(true);
       navigation.setOptions({ title: " " });
@@ -61,17 +72,17 @@ export const DoctorDetailScreen: React.FC<TProps> = props => {
       <View style={styles.headerContainer}>
         <Avatar
           source={{
-            uri: model.imageUrl
+            uri: appointmentModel.doctor?.imageUrl
           }}
           imageStyle={styles.doctorPreviewImage}
         />
-        <Text style={styles.doctorInfoFullName}>{model.fullName}</Text>
-        <Text style={styles.doctorInfoTitle}>{model.title}</Text>
+        <Text style={styles.doctorInfoFullName}>{appointmentModel.doctor?.fullName}</Text>
+        <Text style={styles.doctorInfoTitle}>{appointmentModel.doctor?.title}</Text>
       </View>
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Details</Text>
         <Divider />
-        <Text style={styles.aboutText}>{model.about}</Text>
+        <Text style={styles.aboutText}>{appointmentModel.doctor?.about}</Text>
       </View>
 
       <View style={styles.sectionContainer}>
@@ -79,7 +90,7 @@ export const DoctorDetailScreen: React.FC<TProps> = props => {
         <Divider />
         <View style={styles.ratingContainer}>
           <Text style={styles.ratingNumberText}>
-            {numeral(model.rating).format("0.0")}
+            {numeral(appointmentModel.doctor?.rating).format("0.0")}
           </Text>
           <AirbnbRating
             showRating={false}
@@ -87,7 +98,7 @@ export const DoctorDetailScreen: React.FC<TProps> = props => {
             size={28}
             isDisabled
             selectedColor={"orange"}
-            defaultRating={model.rating}
+            defaultRating={appointmentModel.doctor?.rating}
           />
         </View>
         <TouchableOpacity style={styles.rateButtonContainer}>
@@ -104,7 +115,7 @@ export const DoctorDetailScreen: React.FC<TProps> = props => {
         <Text style={styles.sectionTitle}>Reviews</Text>
         <Divider />
         <FlatList
-          data={model.reviews}
+          data={appointmentModel.doctor?.reviews}
           keyExtractor={(item, index) => `key${index}ForReview`}
           ItemSeparatorComponent={() => <Divider style={styles.divider} />}
           renderItem={row => <DoctorReviewItemRow item={row.item} />}

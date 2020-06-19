@@ -5,6 +5,7 @@ import { Theme } from "../theme";
 import NavigationNames from "./NavigationNames";
 import { useLocalization } from "../localization";
 import { stackScreenOptions, tabScreenOptions } from "./NavigationHelper";
+import { Button } from "./../components/buttons";
 import {
   HomeScreen,
   ProfileScreen,

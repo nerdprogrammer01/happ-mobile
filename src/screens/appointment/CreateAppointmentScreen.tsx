@@ -66,7 +66,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
           const error = (data && data.message) || response.status;
           return Promise.reject(error);
         }
-        navigation.navigate(NavigationNames.AvailableClinicianScreen, { appointmentModel: JSON.stringify(appointment), doctors: JSON.stringify(data) });
+        navigation.navigate(NavigationNames.DoctorListScreen, { appointmentModel: JSON.stringify(appointment), doctors: JSON.stringify(data) });
       })
       .catch(error => {
         console.error('There was an error!', error);
