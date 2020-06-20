@@ -18,25 +18,29 @@ import { AirbnbRating } from "react-native-ratings";
 import { DoctorReviewItemRow } from "../../components/reviews";
 import { Ionicons } from "@expo/vector-icons";
 import { NewAppointmentModel } from "../../models/NewAppointmentModel";
+import { NavigationNames } from "../../navigations";
 
 type TProps = {};
 
 export const DoctorDetailScreen: React.FC<TProps> = props => {
   const route = useRoute();
   const navigation = useNavigation();
+  const appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
 
+  const nextForm = (doctor : DoctorModel) => {
+    appointmentModel.doctor = doctor;
+    navigation.navigate(NavigationNames.ConfirmAppointmentScreen, {appointmentModel: JSON.stringify(appointmentModel)})
+    };
+    
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button onPress={() => alert('done')} size="small" title="Select" />
+        <Button onPress={() => nextForm(appointmentModel.doctor)} size="small" title="Select" />
       ),
     });
   }, [navigation]);
 
   const [toolbarTitleHided, setToolbarTitleHided] = useState(true);
-
-  //const model = JSON.parse(route.params["model"]) as DoctorModel;
-  const appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
    

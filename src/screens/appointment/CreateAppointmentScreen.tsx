@@ -1,14 +1,11 @@
 import React, { useState ,useEffect} from "react";
 import { View, Text, Picker, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
-import { Ionicons } from "@expo/vector-icons";
 import { Theme } from "../../theme";
 import { Button } from "../../components/buttons";
 import { useLocalization } from "../../localization";
 import { useNavigation } from "@react-navigation/native";
 import NavigationNames from "../../navigations/NavigationNames";
 import { NewAppointmentModel } from "../../models/NewAppointmentModel";
-//import DateTimePickerModal from "react-native-modal-datetime-picker";
-import Moment from 'moment';
 import {Environment} from "../../datas";
 
 type TProps = {};
@@ -19,36 +16,15 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
   const [appointmentType, setAppointmentType] = useState(0);
   const [appointmentCategory, setAppointmentCategory] = useState(0);
   const [appointmentActivity, setAppointmentActivity] = useState(0);
-  const [appointmentDate, setAppointmentDate] = useState(new Date());
   const [appointment_types, setAppointmentTypes] = useState([]);
   const [appointment_categories, setAppointmentCategories] = useState([]);
   const [appointment_activities, setAppointmentActivities] = useState([]);
-
-  //datepicker related 
-  const [date, setDate] = useState("");
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date: Date) => {
-    let datestring = Moment(date).format('DD-MM-YYYY hh:mm:ss a')
-    setDate(datestring);
-    setAppointmentDate(date)
-    hideDatePicker();
-  };
 
   const nextForm = () => {
     let appointment: NewAppointmentModel = {
       appointmentType: parseInt(appointmentType.toString()),
       appointmentCategory: parseInt(appointmentCategory.toString()),
-      appointmentActivity: parseInt(appointmentActivity.toString()),
-      appointmentDate: appointmentDate
+      appointmentActivity: parseInt(appointmentActivity.toString())
     }
 
     const requestOptions = {
@@ -130,7 +106,6 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
 
 
   const getAppointmentActivities = (appointment_cateogory_id:number) => {
-    //alert(appointment_cateogory_id);
     let request = {
       method: "GET",
       headers: {
@@ -177,9 +152,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
            { appointment_categories.map((item, key)=>(
             <Picker.Item label={item.name} value={item.id} key={key} />)
             )}
-          {/* <Picker.Item label="Select Category" value="0" />
-          <Picker.Item label="Java" value="1" />
-          <Picker.Item label="JavaScript" value="2" /> */}
+        
         </Picker>
       </View>
       <Text style={styles.titleText}>Please specify the activity for the appointment</Text>
@@ -190,33 +163,8 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
            { appointment_activities.map((item, key)=>(
             <Picker.Item label={item.name} value={item.id} key={key} />)
             )}
-          {/* <Picker.Item label="Select Activity" value="0" />
-          <Picker.Item label="Java" value="1" />
-          <Picker.Item label="JavaScript" value="2" /> */}
+        
         </Picker>
-      </View>
-      <View>
-        <Text style={styles.titleText}>What time is convienent for you ?</Text>
-        <View style={styles.calendarSection} onTouchStart={showDatePicker}>
-          <Ionicons style={styles.calendarIcon} name="ios-calendar" size={40} color="#000" onTouchStart={showDatePicker} />
-          <TextInput
-            style={styles.input}
-            placeholder="Select Time"
-            pointerEvents="none"
-            onTouchStart={showDatePicker}
-            autoFocus={false}
-            value={date}
-          />
-        </View>
-
-      </View>
-      <View>
-      {/*   <DateTimePickerModal
-          isVisible={isDatePickerVisible}
-          mode="datetime"
-          onConfirm={handleConfirm}
-          onCancel={hideDatePicker}
-        /> */}
       </View>
       <Button
         title={getString("Continue")}
@@ -254,17 +202,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignSelf: 'stretch',
     fontSize: 20,
-  },
-  calendarSection: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    marginTop: 10,
-    marginRight: 10
-  },
-  calendarIcon: {
-    padding: 10,
   },
   input: {
     flex: 1,

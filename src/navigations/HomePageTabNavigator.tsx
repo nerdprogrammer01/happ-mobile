@@ -28,11 +28,13 @@ import {
   RegisterScreen,
   RegisterContScreen,
   AppointmentScreen,
-  InboxScreen
+  InboxScreen,
+  ConfirmAppointmentScreen
+
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
 import { AvailableClinicianScreen } from "../screens/appointment/AvailableClinicianScreen";
-import { ConfirmAppointmentScreen } from "../screens/appointment/ConfirmAppointmentScreen";
+import {  } from "../screens/appointment/ConfirmAppointmentScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -106,6 +108,10 @@ const HomeTabStack = () => {
       <Stack.Screen
         name={NavigationNames.DoctorDetailScreen}
         component={DoctorDetailScreen}
+      />
+      <Stack.Screen
+        name={NavigationNames.ConfirmAppointmentScreen}
+        component={ConfirmAppointmentScreen}
       />
       <Stack.Screen
         name={NavigationNames.AppointmentScreen}
