@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Picker, StyleSheet, TextInput } from 'react-native';
 import { Theme } from "../../theme";
 import { Button } from "../../components/buttons";
@@ -9,20 +9,82 @@ import { Ionicons } from "@expo/vector-icons";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Moment from 'moment';
 import { ScrollView } from "react-native-gesture-handler";
+import { Environment } from "../../datas/Config";
+import { DoctorServicesModel } from "../../models/DoctorServicesModel";
+import { DoctorsService } from "../../services";
+import {Times} from "../../datas/Times";
+
+
 
 type TProps = {};
 
 export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
-  const [selectedValue, setSelectedValue] = useState("java");
+  const [serviceId, setServiceId] = useState(0);
   const navigation = useNavigation();
   const route = useRoute()
   const { getString } = useLocalization();
+  const  [doctorServices, setDoctorServices] = useState([] as DoctorServicesModel[]);
+  const [amount, setAmount] = useState(0.00);
+
+  let appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
+  
+  const getClinicianServices = () => {
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+        //'Token': profile.token
+      }
+    };
+   
+    fetch(Environment.SERVER_API+"/api/clinician/GetClinicianServices?clinician_id="+appointmentModel.doctor.id, request)
+      .then((response) =>{ 
+        JSON.stringify(response, null, 4)
+        return response.json();
+      })
+      .then(responseJson => {
+        setDoctorServices(responseJson as DoctorServicesModel[])       
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  const getServiceCost = (service_id : number) => {
+    
+    setServiceId(service_id)
+
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+        //'Token': profile.token
+      }
+    };
+   
+    fetch(Environment.SERVER_API+"/api/servicecost/GetClinicianServiceCost?service_id="+service_id+"&clinician_id="+appointmentModel.doctor.id, request)
+      .then((response) =>{ 
+        JSON.stringify(response, null, 4)
+        return response.json();
+      })
+      .then(responseJson => {
+        console.log(responseJson.cost);
+        setAmount(responseJson.cost)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  useEffect(() => {
+    getClinicianServices();
+    }, []);
+
   const [appointmentDate, setAppointmentDate] = useState(new Date());
 
     //datepicker related 
     const [date, setDate] = useState("");
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);  
   
     const showDatePicker = () => {
       setDatePickerVisibility(true);
@@ -38,9 +100,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       setAppointmentDate(date)
       hideDatePicker();
     };
-
-
-  let appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
 
   return (
     <ScrollView style={styles.container}>
@@ -58,12 +117,13 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       <View style={styles.pickerstyle}>
 
         <Picker
-          selectedValue={selectedValue}
-
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-
+          onValueChange={(itemValue, itemIndex) => getServiceCost(itemValue)} selectedValue={serviceId}
         >
-          <Picker.Item label="Select Service" value="Select Service" />
+          <Picker.Item label="Select Service" value={0} />
+          { doctorServices.map((item, key)=>(
+            <Picker.Item label={item.name} value={item.id} key={key} />)
+            )}
+
         </Picker>
       </View>
 
@@ -80,11 +140,12 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
             value={date}
           />
                 <View style={styles.pickerstyle2}>
-      <Picker
-  selectedValue={selectedValue}
-  onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
->
+      <Picker>
   <Picker.Item label="Select Time" value="Select Time" />
+  { Times.map((item, key)=>(
+            <Picker.Item label={item} value={item} key={key} />)
+            )}
+
 </Picker>
       </View>
         </View>
@@ -113,6 +174,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         borderColor: Theme.colors.primaryColor,
         padding: 10, marginRight:"5%"}}
         placeholder="Amount"
+        value = {amount.toString()}
         editable={false}
       />
       <Button
