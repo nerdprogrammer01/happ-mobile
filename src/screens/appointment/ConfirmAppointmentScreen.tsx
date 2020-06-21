@@ -12,9 +12,9 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Environment } from "../../datas/Config";
 import { DoctorServicesModel } from "../../models/DoctorServicesModel";
 import { DoctorsService } from "../../services";
-import {Times} from "../../datas/Times";
-
-
+import { Times } from "../../datas/Times";
+import RNPaystack from 'react-native-paystack';
+import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-input";
 
 type TProps = {};
 
@@ -23,11 +23,15 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   const navigation = useNavigation();
   const route = useRoute()
   const { getString } = useLocalization();
-  const  [doctorServices, setDoctorServices] = useState([] as DoctorServicesModel[]);
+  const [doctorServices, setDoctorServices] = useState([] as DoctorServicesModel[]);
   const [amount, setAmount] = useState(0.00);
+  const [available, setAvailable] = useState(false)
+  const [appointmentDate, setAppointmentDate] = useState(new Date());
+  const [appointmentTime, setAppointmentTime] = useState("");
+  const [validDebitCard, setValidDebitCard] = useState(false)
 
   let appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
-  
+
   const getClinicianServices = () => {
     let request = {
       method: "GET",
@@ -36,22 +40,22 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         //'Token': profile.token
       }
     };
-   
-    fetch(Environment.SERVER_API+"/api/clinician/GetClinicianServices?clinician_id="+appointmentModel.doctor.id, request)
-      .then((response) =>{ 
+
+    fetch(Environment.SERVER_API + "/api/clinician/GetClinicianServices?clinician_id=" + appointmentModel.doctor.id, request)
+      .then((response) => {
         JSON.stringify(response, null, 4)
         return response.json();
       })
       .then(responseJson => {
-        setDoctorServices(responseJson as DoctorServicesModel[])       
+        setDoctorServices(responseJson as DoctorServicesModel[])
       })
       .catch(error => {
         console.error(error);
       });
   }
 
-  const getServiceCost = (service_id : number) => {
-    
+  const getServiceCost = (service_id: number) => {
+
     setServiceId(service_id)
 
     let request = {
@@ -61,9 +65,9 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         //'Token': profile.token
       }
     };
-   
-    fetch(Environment.SERVER_API+"/api/servicecost/GetClinicianServiceCost?service_id="+service_id+"&clinician_id="+appointmentModel.doctor.id, request)
-      .then((response) =>{ 
+
+    fetch(Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id, request)
+      .then((response) => {
         JSON.stringify(response, null, 4)
         return response.json();
       })
@@ -76,30 +80,44 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       });
   }
 
+  const checkAvailability = () => {
+    setAvailable(!available)
+  }
+
+  const paymentFormHandler = (form) => {
+    if (form.valid)
+      setValidDebitCard(form.valid)
+  }
+
+  const pay = () =>
+  {
+    RNPaystack.init({ publicKey: 'hellllo' })   
+    alert('i done pay')
+
+  }
+
   useEffect(() => {
     getClinicianServices();
-    }, []);
+  }, []);
 
-  const [appointmentDate, setAppointmentDate] = useState(new Date());
+  //datepicker related 
+  const [date, setDate] = useState("");
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-    //datepicker related 
-    const [date, setDate] = useState("");
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);  
-  
-    const showDatePicker = () => {
-      setDatePickerVisibility(true);
-    };
-  
-    const hideDatePicker = () => {
-      setDatePickerVisibility(false);
-    };
-  
-    const handleConfirm = (date: Date) => {
-      let datestring = Moment(date).format('DD-MM-YYYY')
-      setDate(datestring);
-      setAppointmentDate(date)
-      hideDatePicker();
-    };
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date: Date) => {
+    let datestring = Moment(date).format('DD-MM-YYYY')
+    setDate(datestring);
+    setAppointmentDate(date)
+    hideDatePicker();
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -120,9 +138,9 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
           onValueChange={(itemValue, itemIndex) => getServiceCost(itemValue)} selectedValue={serviceId}
         >
           <Picker.Item label="Select Service" value={0} />
-          { doctorServices.map((item, key)=>(
+          {doctorServices.map((item, key) => (
             <Picker.Item label={item.name} value={item.id} key={key} />)
-            )}
+          )}
 
         </Picker>
       </View>
@@ -139,15 +157,15 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
             autoFocus={false}
             value={date}
           />
-                <View style={styles.pickerstyle2}>
-      <Picker>
-  <Picker.Item label="Select Time" value="Select Time" />
-  { Times.map((item, key)=>(
-            <Picker.Item label={item} value={item} key={key} />)
-            )}
+          <View style={styles.pickerstyle2}>
+            <Picker onValueChange={checkAvailability}>
+              <Picker.Item label="Select Time" value="Select Time" />
+              {Times.map((item, key) => (
+                <Picker.Item label={item} value={item} key={key} />)
+              )}
 
-</Picker>
-      </View>
+            </Picker>
+          </View>
         </View>
 
       </View>
@@ -160,30 +178,30 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         />
       </View>
       <Button
-        title={getString("Check Availability")}
+        title={available ? getString("Your doctor is available") : getString("Check Availability")}
         type="outline"
         style={styles.buttonStyle}
+
       />
 
-<Text style={styles.titleText}>Make Payment</Text>
+      {
+        (available && amount > 0) &&
+        <View>
+          <Text style={styles.titleText}>Service Charge : {amount.toString()+" "+Environment.DEFAULT_CURRENCY} </Text>
+          <Text style={styles.titleText}>Please fill in your card details to pay</Text>
+          <LiteCreditCardInput onChange={paymentFormHandler} />
+          {validDebitCard &&
+            <Button
+              title={getString("Pay Now")}
+              type="outline"
+              style={{ height: 50, width: "100%", marginTop: 10, marginBottom: 20 }}
+              onPress = {pay}
+            />
+          }
 
-<View style={{flex:1, flexDirection:"row"}}>
-<TextInput
-        style={{height:50, width:"40%", borderWidth: 1,
-        borderRadius: 5,
-        borderColor: Theme.colors.primaryColor,
-        padding: 10, marginRight:"5%"}}
-        placeholder="Amount"
-        value = {amount.toString()}
-        editable={false}
-      />
-      <Button
-        title={getString("Make Payment")}
-        type="outline"
-        style={{height:50, width:"50%"}}
-      />
-</View>
+        </View>
 
+      }
 
     </ScrollView>
   );
@@ -209,13 +227,13 @@ const styles = StyleSheet.create({
   },
   pickerstyle2: {
     height: 50,
-    width:"50%",
+    width: "50%",
     alignSelf: 'stretch',
     borderWidth: 1,
     borderColor: Theme.colors.primaryColor,
-    borderRadius: 5,  
+    borderRadius: 5,
     marginTop: 10,
-    marginLeft : 20,
+    marginLeft: 20,
   },
 
   buttonStyle: {
@@ -226,7 +244,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    width:"auto",
+    width: "auto",
     alignSelf: 'stretch',
     borderWidth: 1,
     borderRadius: 5,
@@ -239,15 +257,15 @@ const styles = StyleSheet.create({
     //justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    width:"100%",
+    width: "100%",
     marginRight: 10
   },
   calendarIcon: {
     padding: 10,
   },
   timeSection: {
-   flex:1,
-   flexDirection:"row" 
-  
+    flex: 1,
+    flexDirection: "row"
+
   },
 });

@@ -112,6 +112,7 @@ const HomeTabStack = () => {
       <Stack.Screen
         name={NavigationNames.ConfirmAppointmentScreen}
         component={ConfirmAppointmentScreen}
+        options={{ title: getString("Book Appointment") }}
       />
       <Stack.Screen
         name={NavigationNames.AppointmentScreen}
