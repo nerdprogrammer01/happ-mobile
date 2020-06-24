@@ -38,5 +38,6 @@ export default {
   AvailableClinicianScreen : "AvailableClinicianScreen",
   ConfirmAppointmentScreen : "ConfirmAppointmentScreen",
   RegisterContScreen: "RegisterContScreen",
+  VideoConferenceScreen : "VideoConferenceScreen", 
 
 };

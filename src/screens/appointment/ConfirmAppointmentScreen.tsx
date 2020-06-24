@@ -15,6 +15,9 @@ import { DoctorsService } from "../../services";
 import { Times } from "../../datas/Times";
 import RNPaystack from 'react-native-paystack';
 import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-input";
+import NavigationNames from "../../navigations/NavigationNames";
+import VideoConferenceScreen from "../video";
+
 
 type TProps = {};
 
@@ -112,7 +115,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       }
     };
 
-    fetch(Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id, request)
+    fetch(Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id + "&appointment_activity_sub_id="+appointmentModel.appointmentActivity, request)
       .then((response) => {
         JSON.stringify(response, null, 4)
         return response.json();
@@ -187,14 +190,18 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   const pay = () =>
   {
     if(validDebitCard && cardInfo !=null){
-      {postAppointment}
+      let expiry_info = cardInfo.values.expiry as string;
+    
+    //  {postAppointment}
+
+    setTransRef("ssdhxhdydis")
 
       if(transRef.length > 0){
         RNPaystack.init({ publicKey: Environment.PAYSTACK_PUBLIC_KEY })
         RNPaystack.chargeCardWithAccessCode({
           cardNumber: cardInfo.values.number, 
-          expiryMonth: cardInfo.values.expiry, 
-          expiryYear: cardInfo.values.number, 
+          expiryMonth: expiry_info.substr(0,2), 
+          expiryYear: expiry_info.substr(3,2), 
           cvc: cardInfo.values.cvc,
           accessCode: transRef,
           
@@ -210,6 +217,10 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       })   
       }
     }
+  }
+
+  const testVideo = () => {
+    navigation.navigate(NavigationNames.VideoConferenceScreen, {session_token : Environment.TWILIO_TEST_SESSION_TOKEN })
   }
 
   useEffect(() => {
@@ -247,7 +258,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       <View>
         <Text style={styles.titleText}>Your Preferred Appointment Time ?</Text>
         <View style={styles.calendarSection}>
-          <Ionicons style={styles.calendarIcon} name="ios-calendar" size={40} color="#000" onTouchStart={showDatePicker} />
+          <Ionicons style={styles.calendarIcon} name="ios-calendar" size={40} color="#000" />
           <TextInput
             style={styles.input}
             placeholder="Select Date"
@@ -301,6 +312,13 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         </View>
 
       }
+
+      <Button
+              title={getString("Test Video")}
+              type="outline"
+              style={{ height: 50, width: "100%", marginTop: 10, marginBottom: 20 }}
+              onPress = {testVideo}
+      />
 
     </ScrollView>
   );
