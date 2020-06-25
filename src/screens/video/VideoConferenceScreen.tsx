@@ -16,11 +16,14 @@ import {
   TwilioVideoParticipantView,
   TwilioVideo
 } from 'react-native-twilio-video-webrtc'
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { FabButton } from '../../components/buttons';
+import { Theme } from '../../theme';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+   // backgroundColor: 'white'
   },
   callContainer: {
     flex: 1,
@@ -49,11 +52,11 @@ const styles = StyleSheet.create({
   },
   localVideo: {
     flex: 1,
-    width: 150,
+    width: "100%",
     height: 250,
     position: "absolute",
-    right: 10,
-    bottom: 10
+    //right: 10,
+    bottom: 75
   },
   remoteGrid: {
     flex: 1,
@@ -64,28 +67,32 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 10,
     marginRight: 10,
-    width: 100,
+    width: "100%",
     height: 120,
+    borderWidth:1,
+    borderColor:Theme.colors.primaryColor
   },
   optionsContainer: {
+    flex:1,    
     position: "absolute",
-    left: 0,
+    //left: 0,
     bottom: 0,
     right: 0,
-    height: 100,
-    backgroundColor: 'blue',
+    height: 80,
+   // backgroundColor: 'blue',
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   optionButton: {
-    width: 60,
-    height: 60,
     marginLeft: 10,
     marginRight: 10,
-    borderRadius: 100 / 2,
-    backgroundColor: 'grey',
-    justifyContent: 'center',
-    alignItems: "center"
+    //borderRadius: 100 / 2,
+  //  backgroundColor: 'grey',
+   // justifyContent: 'center',
+    //alignItems: "stretch",
+    borderColor:Theme.colors.primaryColor, 
+    borderWidth:1
   }
 });
 
@@ -136,6 +143,7 @@ const requestCameraPermission = async () => {
     console.warn(err);
   }
 };
+ 
 
 //const route = useRoute();
 
@@ -145,12 +153,6 @@ export default class VideoConferenceScreen extends Component {
     super(props);
   }
 
-  async componentDidMount() {
-    await requestRecordAudioPermission()
-    await requestCameraPermission()
-  }
-
- 
   state = {
     isAudioEnabled: true,
     isVideoEnabled: true,
@@ -160,8 +162,15 @@ export default class VideoConferenceScreen extends Component {
     token: this.props.route.params["session_token"]
   }
 
-  _onConnectButtonPress = () => {
-    this.refs.twilioVideo.connect({ accessToken: this.state.token })
+ async  componentDidMount() {
+     await requestRecordAudioPermission()
+     await requestCameraPermission()
+     await this._onConnectButtonPress
+  }
+
+  _onConnectButtonPress = async () => {
+    await this.refs.twilioVideo.connect({ accessToken: this.state.token })
+    console.log(this.state.token)
     this.setState({status: 'connecting'})
   }
 
@@ -221,16 +230,10 @@ export default class VideoConferenceScreen extends Component {
           this.state.status === 'disconnected' &&
           <View>
             <Text style={styles.welcome}>
-              React Native Twilio Video
+              MySpace Mytime
             </Text>
-            <TextInput
-              style={styles.input}
-              autoCapitalize='none'
-              value={this.state.token}
-              onChangeText={(text) => this.setState({token: text})}>
-            </TextInput>
             <Button
-              title="Connect"
+              title="Start Video Session"
               style={styles.button}
               onPress={this._onConnectButtonPress}>
             </Button>
@@ -258,26 +261,18 @@ export default class VideoConferenceScreen extends Component {
             }
             <View
               style={styles.optionsContainer}>
-              <TouchableOpacity
-                style={styles.optionButton}
-                onPress={this._onEndButtonPress}>
-                <Text style={{fontSize: 12}}>End</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.optionButton}
-                onPress={this._onMuteButtonPress}>
-                <Text style={{fontSize: 12}}>{ this.state.isAudioEnabled ? "Mute" : "Unmute" }</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.optionButton}
-                onPress={this._onFlipButtonPress}>
-                <Text style={{fontSize: 12}}>Flip</Text>
-              </TouchableOpacity>
-              <TwilioVideoLocalView
+           
+              <FabButton onPress={this._onEndButtonPress} icon="ios-close" style={styles.optionButton} />
+              <FabButton onPress={this._onMuteButtonPress} icon={this.state.isAudioEnabled ? "ios-mic-off" : "ios-mic"} style={styles.optionButton} />
+              <FabButton onPress={this._onFlipButtonPress} icon="ios-reverse-camera" style={styles.optionButton} />
+
+           
+              
+            </View>
+            <TwilioVideoLocalView
                 enabled={true}
                 style={styles.localVideo}
               />
-            </View>
           </View>
         }
 

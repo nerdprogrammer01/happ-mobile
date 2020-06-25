@@ -251,6 +251,9 @@ const styles = StyleSheet.create({
   },
   fabtuttonstyle:{
       borderColor:Theme.colors.primaryColor,
-      borderWidth:1
+      borderWidth:1,
+      position: "absolute",
+      bottom: 22,
+      end: 20,
   }
 });
