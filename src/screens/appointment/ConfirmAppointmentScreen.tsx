@@ -133,8 +133,8 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     setAvailable(!available)
 
     if(date != null && servicePeriod > 0){
-      var start_date = Moment(date.trim()+" "+appointmentTime.trim()+":00", 'DD-MM-YYYY hh:mm:ss').format('DD-MM-YYYY hh:mm:ss')
-      var end_date = Moment(start_date,'DD-MM-YYYY hh:mm').add(servicePeriod, 'minutes').format('DD-MM-YYYY hh:mm:ss');
+      var start_date = Moment(date.trim()+" "+appointmentTime.trim()+":00", 'DD-MM-YYYY hh:mm:ss').format()
+      var end_date = Moment(start_date,'DD-MM-YYYY hh:mm:ss').add(servicePeriod, 'minutes').format();
       
       setStart_date(start_date)
       setEnd_date(end_date)
@@ -166,12 +166,15 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       body:requestBody
     };
 
+    console.log(requestBody)
+
     fetch(Environment.SERVER_API + "/api/appointment/PostAppointment", request)
       .then((response) => {
         JSON.stringify(response, null, 4)
         return response.json();
       })
       .then(responseJson => {
+        console.log(responseJson)
         setTransRef(responseJson)
       })
       .catch(error => {
@@ -192,18 +195,18 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     if(validDebitCard && cardInfo !=null){
       let expiry_info = cardInfo.values.expiry as string;
     
-    //  {postAppointment}
-
-    setTransRef("ssdhxhdydis")
+      postAppointment()
 
       if(transRef.length > 0){
         RNPaystack.init({ publicKey: Environment.PAYSTACK_PUBLIC_KEY })
-        RNPaystack.chargeCardWithAccessCode({
+        RNPaystack.chargeCard({
           cardNumber: cardInfo.values.number, 
           expiryMonth: expiry_info.substr(0,2), 
           expiryYear: expiry_info.substr(3,2), 
           cvc: cardInfo.values.cvc,
-          accessCode: transRef,
+          email: 'austintappy@gmail.com',
+          amountInKobo: 150000,
+         // accessCode: transRef,
           
         })
       .then(response => {

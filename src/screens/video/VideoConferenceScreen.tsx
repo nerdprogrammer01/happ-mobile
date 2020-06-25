@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
   },
   localVideo: {
     flex: 1,
-    width: "100%",
-    height: 250,
+    width: 150,
+    height: 150,
     position: "absolute",
     //right: 10,
     bottom: 75
@@ -65,12 +65,10 @@ const styles = StyleSheet.create({
   },
   remoteVideo: {
     marginTop: 20,
-    marginLeft: 10,
-    marginRight: 10,
+    //marginLeft: 10,
+    //marginRight: 10,
     width: "100%",
-    height: 120,
-    borderWidth:1,
-    borderColor:Theme.colors.primaryColor
+    height: 250,
   },
   optionsContainer: {
     flex:1,    
