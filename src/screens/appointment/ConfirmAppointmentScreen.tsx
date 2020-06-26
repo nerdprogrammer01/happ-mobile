@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Picker, StyleSheet, TextInput, AsyncStorage } from 'react-native';
+import { View, Text, Picker, StyleSheet, TextInput, AsyncStorage, Modal, Alert } from 'react-native';
 import { Theme } from "../../theme";
 import { Button } from "../../components/buttons";
 import { useLocalization } from "../../localization";
@@ -8,7 +8,7 @@ import { NewAppointmentModel } from "../../models/NewAppointmentModel";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Moment from 'moment';
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableHighlight } from "react-native-gesture-handler";
 import { Environment } from "../../datas/Config";
 import { DoctorServicesModel } from "../../models/DoctorServicesModel";
 import { DoctorsService } from "../../services";
@@ -17,6 +17,7 @@ import RNPaystack from 'react-native-paystack';
 import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-input";
 import NavigationNames from "../../navigations/NavigationNames";
 import VideoConferenceScreen from "../video";
+import { ConfirmAppointmentModal } from "../../modals";
 
 
 type TProps = {};
@@ -38,6 +39,10 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   const [profile, setProfile] = useState(null);
   const [transRef, setTransRef] = useState("");
   const [cardInfo, setCardInfo] = useState(null);
+  const [modalVisible, setModalVisible] = useState(true);
+  const [paymentSuccessful, setPaymentSuccessful] = useState(false);
+  const [paymentMessage, setPaymentMessage] = useState("");
+
 
     //datepicker related 
   const [date, setDate] = useState("");
@@ -54,7 +59,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     const handleConfirm = (date: Date) => {
       let datestring = Moment(date).format('DD-MM-YYYY')
       setDate(datestring);
-//      setAppointmentDate(date)
       hideDatePicker();
     };
 
@@ -111,9 +115,11 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Token': profile.token
       }
     };
+
+    console.log("service_id : "+service_id+"\n clinician_id : "+appointmentModel.doctor.id+"\n appointment_activity_sub_id : "+appointmentModel.appointmentActivity)
 
     fetch(Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id + "&appointment_activity_sub_id="+appointmentModel.appointmentActivity, request)
       .then((response) => {
@@ -150,7 +156,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       start_date : start_date,
       end_date : end_date,
       created_at : new Date(),
-      appointment_serivice:serviceId,
+      appointment_service:serviceId,
       appointment_activity_id:appointmentModel.appointmentCategory,
       appointment_activity_sub_id:appointmentModel.appointmentActivity,
       cancel_reason:""
@@ -161,12 +167,10 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       method: "POST",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Token': profile.token
       },
       body:requestBody
     };
-
-    console.log(requestBody)
 
     fetch(Environment.SERVER_API + "/api/appointment/PostAppointment", request)
       .then((response) => {
@@ -174,7 +178,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         return response.json();
       })
       .then(responseJson => {
-        console.log(responseJson)
         setTransRef(responseJson)
       })
       .catch(error => {
@@ -210,8 +213,10 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
           
         })
       .then(response => {
-        console.log(response); // do stuff with the token
+        console.log(response);
+         // do stuff with the token
         //confirm payment here
+        alert("successfully made payment")
       })
       .catch(error => {
         console.log(error); // error is a javascript Error object
@@ -229,8 +234,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   useEffect(() => {
     getClinicianServices();
   }, []);
-
-
 
   return (
     <ScrollView style={styles.container}>
@@ -323,6 +326,20 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
               onPress = {testVideo}
       />
 
+      {/* payment modal */}
+
+      <ConfirmAppointmentModal
+      isVisible={modalVisible}
+      item = {appointmentModel}
+      message = {paymentMessage}
+      isSuccess = {paymentSuccessful}
+      onDismissModal = {() => alert("Click an option instead")}
+      onCloseModal = {() => {setModalVisible(false)}}
+      onReturnHome = {() => {
+        setModalVisible(false)
+        navigation.navigate(NavigationNames.HomeScreen)}}
+      />
+
     </ScrollView>
   );
 };
@@ -386,6 +403,5 @@ const styles = StyleSheet.create({
   timeSection: {
     flex: 1,
     flexDirection: "row"
-
-  },
+  }
 });
