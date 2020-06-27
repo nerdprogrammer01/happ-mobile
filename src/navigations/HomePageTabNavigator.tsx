@@ -137,8 +137,8 @@ const CalendarTabStack = () => {
         options={{ title: getString("Calendar") }}
       />
       <Stack.Screen
-        name={NavigationNames.NewAppointmentScreen}
-        component={NewAppointmentScreen}
+        name={NavigationNames.CreateAppointmentScreen}
+        component={CreateAppointmentScreen}
         options={{ title: getString("New Appointment") }}
       />
       <Stack.Screen

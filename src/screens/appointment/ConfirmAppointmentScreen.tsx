@@ -30,16 +30,17 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   const [doctorServices, setDoctorServices] = useState([] as DoctorServicesModel[]);
   const [amount, setAmount] = useState(0.00);
   const [available, setAvailable] = useState(false)
-  const [appointmentDate, setAppointmentDate] = useState(new Date());
+  const [appointmentDate, setAppointmentDate] = useState(null);
   const [appointmentTime, setAppointmentTime] = useState("");
   const [validDebitCard, setValidDebitCard] = useState(false)
   const [servicePeriod, setServicePeriod] = useState(0)
   const [start_date, setStart_date] = useState(null)
   const [end_date, setEnd_date] = useState(null)
   const [profile, setProfile] = useState(null);
-  const [transRef, setTransRef] = useState("");
+  //const [transRef, setTransRef] = useState("");
+  const [appointmentRef, setAppointmentRef] = useState("");
   const [cardInfo, setCardInfo] = useState(null);
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
   const [paymentMessage, setPaymentMessage] = useState("");
 
@@ -119,8 +120,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       }
     };
 
-    console.log("service_id : "+service_id+"\n clinician_id : "+appointmentModel.doctor.id+"\n appointment_activity_sub_id : "+appointmentModel.appointmentActivity)
-
     fetch(Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id + "&appointment_activity_sub_id="+appointmentModel.appointmentActivity, request)
       .then((response) => {
         JSON.stringify(response, null, 4)
@@ -148,6 +147,49 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   }
 
   const postAppointment = () => {
+    if(!Moment(start_date).isValid()){
+      alert("date is required")
+      return null
+    }
+
+    let requestBody = JSON.stringify({
+      client_id: profile.id,
+      clinician_id: appointmentModel.doctor.id,
+      status:0,
+      appointment_type:appointmentModel.appointmentType,
+      start_date : start_date,
+      end_date : end_date,
+      created_at : new Date(),
+      appointment_service:serviceId,
+      appointment_activity_id:appointmentModel.appointmentCategory,
+      appointment_activity_sub_id:appointmentModel.appointmentActivity,
+      cancel_reason:""
+
+    });
+
+    let request = {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json",
+        'Token': profile.token
+      },
+      body:requestBody
+    };
+
+    fetch(Environment.SERVER_API + "/api/appointment/PostAppointment", request)
+      .then((response) => {
+        JSON.stringify(response, null, 4)
+        return response.json();
+      })
+      .then(responseJson => {
+        setAppointmentRef(responseJson)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  const postCredit = () => {
     let requestBody = JSON.stringify({
       client_id: profile.id,
       clinician_id: appointmentModel.doctor.id,
@@ -200,23 +242,26 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     
       postAppointment()
 
-      if(transRef.length > 0){
+      if(appointmentRef.length > 0){
+        //todo:: add loader to payment
         RNPaystack.init({ publicKey: Environment.PAYSTACK_PUBLIC_KEY })
         RNPaystack.chargeCard({
           cardNumber: cardInfo.values.number, 
           expiryMonth: expiry_info.substr(0,2), 
           expiryYear: expiry_info.substr(3,2), 
           cvc: cardInfo.values.cvc,
-          email: 'austintappy@gmail.com',
-          amountInKobo: 150000,
+          email: profile.email,
+          amountInKobo: amount * 100,
          // accessCode: transRef,
           
         })
       .then(response => {
-        console.log(response);
+        console.log(response.reference);
+        setPaymentSuccessful(true)
+        setPaymentMessage("Payment Successful")
+        setModalVisible(true)
          // do stuff with the token
         //confirm payment here
-        alert("successfully made payment")
       })
       .catch(error => {
         console.log(error); // error is a javascript Error object
@@ -297,9 +342,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         title={available ? getString("Your doctor is available") : getString("Check Availability")}
         type="outline"
         style={styles.buttonStyle}
-
       />
-
       {
         (available && amount > 0) &&
         <View>
@@ -339,7 +382,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         setModalVisible(false)
         navigation.navigate(NavigationNames.HomeScreen)}}
       />
-
     </ScrollView>
   );
 };
