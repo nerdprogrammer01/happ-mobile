@@ -151,6 +151,12 @@ const CalendarTabStack = () => {
         component={AppointmentScreen}
         options={{ title: getString("Appointment Details") }}
       />
+
+      <Stack.Screen
+        name={NavigationNames.VideoConferenceScreen}
+        component={VideoConferenceScreen}
+        options={{ title: getString("Video Session") }}
+      />
     </Stack.Navigator>
   );
 };

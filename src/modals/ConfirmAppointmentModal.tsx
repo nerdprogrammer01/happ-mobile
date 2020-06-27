@@ -66,7 +66,6 @@ export const ConfirmAppointmentModal: React.FC<TProps> = props => {
             <Text style={styles.doctorTitle}>{props.item.doctor.title}</Text>
           </View>
           <View style={styles.timeContainer}>
-            {/* <Text style={styles.timeText}>{props.item.appointmentDate}</Text> */}
             <Text style={styles.dateText}>
               {moment(props.item.appointmentDate).format('LLL')}
             </Text>

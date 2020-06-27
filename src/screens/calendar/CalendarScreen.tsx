@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
-import { TouchableHighlight ,UpcomingAppoinmentRow} from "../../components";
+import { TouchableHighlight ,UpcomingAppoinmentRow, CalendarItemRow} from "../../components";
 import NavigationNames from "../../navigations/NavigationNames";
 import { FabButton, Button } from "../../components/buttons";
 import {
@@ -15,21 +15,16 @@ import {
 import { useLocalization } from "../../localization";
 import { Theme } from "../../theme";
 import {Environment} from "../../datas";
+import { AppointmentModel } from "../../models";
 
 type IState = {
   selectedDate: string;
   items: any;
 };
 
-const weeklyAppointment = moment(globalAppointmentDate).format("YYYY-MM-DD");
+let markedDates = {}
 
-/* const datas = {
-  //[weeklyAppointment]: [{ date: weeklyAppointment, title: "" }]
-  '2020-06-14': [{title: 'item 1 - any js object',date:'2020-06-14'},{title: 'item 2 - any js object',date:'2020-06-14'}],
-  '2020-06-15': [{title: 'item 2 - any js object', date: '2020-06-14'}],
-  '2012-05-24': [],
-  '2012-05-25': [{name: 'item 3 - any js object'}, {name: 'any js object'}]
-}; */
+const appointmentsObj = {}
 
 export const CalendarScreen: React.FC<{}> = props => {
   const refAgenda = useRef<Agenda>();
@@ -40,6 +35,7 @@ export const CalendarScreen: React.FC<{}> = props => {
   const [appointments, setAppointments] = useState([]);
   const [datas,setDatas]=useState({});
   const [role,setRole]=useState("");
+  const [mdates,setMdates]=useState({});
 
   const [selectedDate, setSelectedDate] = useState(
     moment().format("YYYY-MM-DD")
@@ -47,7 +43,7 @@ export const CalendarScreen: React.FC<{}> = props => {
   const [items, setItems] = useState({});
 
   const onPressNewAppointment = () => {
-    navigation.navigate(NavigationNames.NewAppointmentScreen);
+    navigation.navigate(NavigationNames.CreateAppointmentScreen);
   };
 
   useEffect(() => {
@@ -91,12 +87,15 @@ export const CalendarScreen: React.FC<{}> = props => {
       .then((response) => response.json())
       .then(responseJson => {
 
-        setDatas({selectedDate:responseJson});
+        var appointments = responseJson as AppointmentModel[]
 
-        setAppointments(responseJson);
+        appointments.forEach( appointment => {  
+         var formatted_date = moment(appointment.appointmentDate.toString()).format("YYYY-MM-DD");
+          markedDates[formatted_date] = { marked: true, dotColor: Theme.colors.primaryColor}
+          appointmentsObj[formatted_date]=[appointment]
+        });
+
         setLoading(false);
-
-        //datas['2020-06-14']=appointments;
 
       })
       .catch(error => {
@@ -104,8 +103,6 @@ export const CalendarScreen: React.FC<{}> = props => {
         alert(error);
       });
   }
-
-
 
   navigation.setOptions({
     headerRight: () => (
@@ -119,7 +116,7 @@ export const CalendarScreen: React.FC<{}> = props => {
     <View style={styles.container}>
       <Agenda 
         ref={refAgenda}
-        items={items}
+        items={appointmentsObj}
         loadItemsForMonth={month => {}}
         onCalendarToggled={calendarOpened => {}}
         onDayPress={day => {
@@ -135,12 +132,7 @@ export const CalendarScreen: React.FC<{}> = props => {
           return true;
         }}
         hideKnob={false}
-        markedDates={{
-          [weeklyAppointment]: {
-            marked: true,
-            dotColor: Theme.colors.primaryColor
-          }
-        }}
+        markedDates={markedDates}
         onRefresh={() => {}}
         refreshing={false}
         refreshControl={null}
@@ -162,7 +154,7 @@ export const CalendarScreen: React.FC<{}> = props => {
             <View style={{ marginVertical: 8 }}>
               {/* <CalendarItemRow
                 style={styles.calendarItem}
-                item={globalAppointment}
+                item={item}
               /> */}
                                <UpcomingAppoinmentRow
         style={styles.upcomingAppoinmentRow}
@@ -186,9 +178,7 @@ export const CalendarScreen: React.FC<{}> = props => {
  type="outline"
  onPress={onPressNewAppointment}
 />
-          }
-
-               
+          }               
               </View>
             </View>
           );

@@ -11,6 +11,7 @@ export const globalAppointmentDate = moment(new Date())
 export const globalAppointment: AppointmentModel = {
   id:"1",
   title: "Upcoming appoinment",
+  token:"",
   doctor: {
     id:"1",
     fullName: "Dr. Busra Tekin",
