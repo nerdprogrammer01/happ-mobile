@@ -33,7 +33,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
       body: JSON.stringify(appointment)
     }
 
-    fetch('https://myspace-mytime.com/api/clinician/getavailabledoctors', requestOptions)
+    fetch(Environment.SERVER_API + "/api/clinician/GetClinicians", requestOptions)
       .then(async response => {
         const data = await response.json();
         // check for error response

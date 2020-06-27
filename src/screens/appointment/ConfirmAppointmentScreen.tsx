@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Picker, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Picker, StyleSheet, TextInput, AsyncStorage, Modal, Alert } from 'react-native';
 import { Theme } from "../../theme";
 import { Button } from "../../components/buttons";
 import { useLocalization } from "../../localization";
@@ -8,29 +8,77 @@ import { NewAppointmentModel } from "../../models/NewAppointmentModel";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Moment from 'moment';
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableHighlight } from "react-native-gesture-handler";
 import { Environment } from "../../datas/Config";
 import { DoctorServicesModel } from "../../models/DoctorServicesModel";
 import { DoctorsService } from "../../services";
 import { Times } from "../../datas/Times";
 import RNPaystack from 'react-native-paystack';
 import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-input";
+import NavigationNames from "../../navigations/NavigationNames";
+import VideoConferenceScreen from "../video";
+import { ConfirmAppointmentModal } from "../../modals";
+
 
 type TProps = {};
 
 export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
-  const [serviceId, setServiceId] = useState(0);
+  const [serviceId, setServiceId] = useState("");
   const navigation = useNavigation();
   const route = useRoute()
   const { getString } = useLocalization();
   const [doctorServices, setDoctorServices] = useState([] as DoctorServicesModel[]);
   const [amount, setAmount] = useState(0.00);
   const [available, setAvailable] = useState(false)
-  const [appointmentDate, setAppointmentDate] = useState(new Date());
+  const [appointmentDate, setAppointmentDate] = useState(null);
   const [appointmentTime, setAppointmentTime] = useState("");
   const [validDebitCard, setValidDebitCard] = useState(false)
+  const [servicePeriod, setServicePeriod] = useState(0)
+  const [start_date, setStart_date] = useState(null)
+  const [end_date, setEnd_date] = useState(null)
+  const [profile, setProfile] = useState(null);
+  //const [transRef, setTransRef] = useState("");
+  const [appointmentRef, setAppointmentRef] = useState("");
+  const [cardInfo, setCardInfo] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [paymentSuccessful, setPaymentSuccessful] = useState(false);
+  const [paymentMessage, setPaymentMessage] = useState("");
+
+
+    //datepicker related 
+  const [date, setDate] = useState("");
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  
+    const showDatePicker = () => {
+      setDatePickerVisibility(true);
+    };
+  
+    const hideDatePicker = () => {
+      setDatePickerVisibility(false);
+    };
+  
+    const handleConfirm = (date: Date) => {
+      let datestring = Moment(date).format('DD-MM-YYYY')
+      setDate(datestring);
+      hideDatePicker();
+    };
+
 
   let appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
+
+  useEffect(() => {
+    async function load_profile() {
+      await AsyncStorage.getItem('profile')
+      .then((data) => {
+        setProfile(JSON.parse(data));
+    })
+    .catch((err) => {
+       console.log(err);
+    });   
+    }
+   load_profile();
+  }, []);
+  
 
   const getClinicianServices = () => {
     let request = {
@@ -54,25 +102,30 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       });
   }
 
-  const getServiceCost = (service_id: number) => {
+  const getServiceCost = (service_id: string) => {
 
     setServiceId(service_id)
+
+    doctorServices.filter(function(service) {
+      if(service.id == service_id){      
+        return setServicePeriod(service.time_minutes)
+      } 
+    })
 
     let request = {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Token': profile.token
       }
     };
 
-    fetch(Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id, request)
+    fetch(Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id + "&appointment_activity_sub_id="+appointmentModel.appointmentActivity, request)
       .then((response) => {
         JSON.stringify(response, null, 4)
         return response.json();
       })
       .then(responseJson => {
-        console.log(responseJson.cost);
         setAmount(responseJson.cost)
       })
       .catch(error => {
@@ -80,44 +133,152 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       });
   }
 
-  const checkAvailability = () => {
+  const checkAvailability = (timeString : string) => {
+    setAppointmentTime(timeString);
     setAvailable(!available)
+
+    if(date != null && servicePeriod > 0){
+      var start_date = Moment(date.trim()+" "+appointmentTime.trim()+":00", 'DD-MM-YYYY hh:mm:ss').format()
+      var end_date = Moment(start_date,'DD-MM-YYYY hh:mm:ss').add(servicePeriod, 'minutes').format();
+      
+      setStart_date(start_date)
+      setEnd_date(end_date)
+    }
+  }
+
+  const postAppointment = () => {
+    if(!Moment(start_date).isValid()){
+      alert("date is required")
+      return null
+    }
+
+    let requestBody = JSON.stringify({
+      client_id: profile.id,
+      clinician_id: appointmentModel.doctor.id,
+      status:0,
+      appointment_type:appointmentModel.appointmentType,
+      start_date : start_date,
+      end_date : end_date,
+      created_at : new Date(),
+      appointment_service:serviceId,
+      appointment_activity_id:appointmentModel.appointmentCategory,
+      appointment_activity_sub_id:appointmentModel.appointmentActivity,
+      cancel_reason:""
+
+    });
+
+    let request = {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json",
+        'Token': profile.token
+      },
+      body:requestBody
+    };
+
+    fetch(Environment.SERVER_API + "/api/appointment/PostAppointment", request)
+      .then((response) => {
+        JSON.stringify(response, null, 4)
+        return response.json();
+      })
+      .then(responseJson => {
+        setAppointmentRef(responseJson)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  const postCredit = () => {
+    let requestBody = JSON.stringify({
+      client_id: profile.id,
+      clinician_id: appointmentModel.doctor.id,
+      status:0,
+      appointment_type:appointmentModel.appointmentType,
+      start_date : start_date,
+      end_date : end_date,
+      created_at : new Date(),
+      appointment_service:serviceId,
+      appointment_activity_id:appointmentModel.appointmentCategory,
+      appointment_activity_sub_id:appointmentModel.appointmentActivity,
+      cancel_reason:""
+
+    });
+
+    let request = {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json",
+        'Token': profile.token
+      },
+      body:requestBody
+    };
+
+    fetch(Environment.SERVER_API + "/api/appointment/PostAppointment", request)
+      .then((response) => {
+        JSON.stringify(response, null, 4)
+        return response.json();
+      })
+      .then(responseJson => {
+        setTransRef(responseJson)
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   const paymentFormHandler = (form) => {
-    if (form.valid)
+    if (form.valid){
       setValidDebitCard(form.valid)
+      setCardInfo(form)
+    }
+
   }
 
   const pay = () =>
   {
-    RNPaystack.init({ publicKey: 'hellllo' })   
-    alert('i done pay')
+    if(validDebitCard && cardInfo !=null){
+      let expiry_info = cardInfo.values.expiry as string;
+    
+      postAppointment()
 
+      if(appointmentRef.length > 0){
+        //todo:: add loader to payment
+        RNPaystack.init({ publicKey: Environment.PAYSTACK_PUBLIC_KEY })
+        RNPaystack.chargeCard({
+          cardNumber: cardInfo.values.number, 
+          expiryMonth: expiry_info.substr(0,2), 
+          expiryYear: expiry_info.substr(3,2), 
+          cvc: cardInfo.values.cvc,
+          email: profile.email,
+          amountInKobo: amount * 100,
+         // accessCode: transRef,
+          
+        })
+      .then(response => {
+        console.log(response.reference);
+        setPaymentSuccessful(true)
+        setPaymentMessage("Payment Successful")
+        setModalVisible(true)
+         // do stuff with the token
+        //confirm payment here
+      })
+      .catch(error => {
+        console.log(error); // error is a javascript Error object
+        console.log(error.message);
+        console.log(error.code);
+      })   
+      }
+    }
+  }
+
+  const testVideo = () => {
+    navigation.navigate(NavigationNames.VideoConferenceScreen, {session_token : Environment.TWILIO_TEST_SESSION_TOKEN })
   }
 
   useEffect(() => {
     getClinicianServices();
   }, []);
-
-  //datepicker related 
-  const [date, setDate] = useState("");
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date: Date) => {
-    let datestring = Moment(date).format('DD-MM-YYYY')
-    setDate(datestring);
-    setAppointmentDate(date)
-    hideDatePicker();
-  };
 
   return (
     <ScrollView style={styles.container}>
@@ -148,7 +309,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       <View>
         <Text style={styles.titleText}>Your Preferred Appointment Time ?</Text>
         <View style={styles.calendarSection}>
-          <Ionicons style={styles.calendarIcon} name="ios-calendar" size={40} color="#000" onTouchStart={showDatePicker} />
+          <Ionicons style={styles.calendarIcon} name="ios-calendar" size={40} color="#000" />
           <TextInput
             style={styles.input}
             placeholder="Select Date"
@@ -158,7 +319,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
             value={date}
           />
           <View style={styles.pickerstyle2}>
-            <Picker onValueChange={checkAvailability}>
+            <Picker onValueChange={(itemValue) => checkAvailability(itemValue)}>
               <Picker.Item label="Select Time" value="Select Time" />
               {Times.map((item, key) => (
                 <Picker.Item label={item} value={item} key={key} />)
@@ -181,9 +342,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         title={available ? getString("Your doctor is available") : getString("Check Availability")}
         type="outline"
         style={styles.buttonStyle}
-
       />
-
       {
         (available && amount > 0) &&
         <View>
@@ -203,6 +362,26 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
       }
 
+      <Button
+              title={getString("Test Video")}
+              type="outline"
+              style={{ height: 50, width: "100%", marginTop: 10, marginBottom: 20 }}
+              onPress = {testVideo}
+      />
+
+      {/* payment modal */}
+
+      <ConfirmAppointmentModal
+      isVisible={modalVisible}
+      item = {appointmentModel}
+      message = {paymentMessage}
+      isSuccess = {paymentSuccessful}
+      onDismissModal = {() => alert("Click an option instead")}
+      onCloseModal = {() => {setModalVisible(false)}}
+      onReturnHome = {() => {
+        setModalVisible(false)
+        navigation.navigate(NavigationNames.HomeScreen)}}
+      />
     </ScrollView>
   );
 };
@@ -266,6 +445,5 @@ const styles = StyleSheet.create({
   timeSection: {
     flex: 1,
     flexDirection: "row"
-
-  },
+  }
 });

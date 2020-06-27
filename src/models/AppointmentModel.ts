@@ -10,4 +10,5 @@ export type AppointmentModel = {
   member:MemberModel;
   service:string;
   duration:number;
+  token : string;
 };

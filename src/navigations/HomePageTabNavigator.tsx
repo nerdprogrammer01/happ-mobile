@@ -33,8 +33,7 @@ import {
 
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
-import { AvailableClinicianScreen } from "../screens/appointment/AvailableClinicianScreen";
-import {  } from "../screens/appointment/ConfirmAppointmentScreen";
+import VideoConferenceScreen from "../screens/video";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -119,6 +118,11 @@ const HomeTabStack = () => {
         component={AppointmentScreen}
         options={{ title: getString("Appointment Details") }}
       />
+             <Stack.Screen
+        name={NavigationNames.VideoConferenceScreen}
+        component={VideoConferenceScreen}
+        options={{ title: getString("Video Session") }}
+      />
     </Stack.Navigator>
   );
 };
@@ -133,8 +137,8 @@ const CalendarTabStack = () => {
         options={{ title: getString("Calendar") }}
       />
       <Stack.Screen
-        name={NavigationNames.NewAppointmentScreen}
-        component={NewAppointmentScreen}
+        name={NavigationNames.CreateAppointmentScreen}
+        component={CreateAppointmentScreen}
         options={{ title: getString("New Appointment") }}
       />
       <Stack.Screen
@@ -146,6 +150,12 @@ const CalendarTabStack = () => {
         name={NavigationNames.AppointmentScreen}
         component={AppointmentScreen}
         options={{ title: getString("Appointment Details") }}
+      />
+
+      <Stack.Screen
+        name={NavigationNames.VideoConferenceScreen}
+        component={VideoConferenceScreen}
+        options={{ title: getString("Video Session") }}
       />
     </Stack.Navigator>
   );
@@ -226,11 +236,6 @@ const MessageTabStack = () => {
         options={{ title: getString("My Inbox") }}
       />
 
-      <Stack.Screen
-        name={NavigationNames.AvailableClinicianScreen}
-        component={AvailableClinicianScreen}
-        options={{ title: getString("Available Doctors") }}
-      />
       <Stack.Screen
         name={NavigationNames.ConfirmAppointmentScreen}
         component={ConfirmAppointmentScreen}

@@ -7,19 +7,38 @@ import { Button } from "../components/buttons/Button";
 import { Divider } from "../components/divider";
 import { AppointmentTimeModal } from "../models";
 import moment from "moment";
+import { NewAppointmentModel } from "../models/NewAppointmentModel";
+import { useNavigation } from "@react-navigation/native";
+import { NavigationNames } from "../navigations";
 
 type TProps = {
-  item?: AppointmentTimeModal;
+  item?: NewAppointmentModel;
   isVisible: boolean;
-  selectedDate: Date;
+  selectedDate?: Date;
   onDismissModal: () => void;
+  onCloseModal : () => void;
+  onReturnHome : () => void;
+  message?: string;
+  isSuccess?: boolean;
 };
 
 export const ConfirmAppointmentModal: React.FC<TProps> = props => {
   const { getString } = useLocalization();
+  const navigation = useNavigation();
+
 
   if (props.item === null) {
     return null;
+  }
+
+  const headStyle = (is_success : boolean)  => {
+    return  {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign : "center",
+        color:  is_success ? Theme.colors.primaryColor : Theme.colors.danger,
+        marginBottom:20
+      }
   }
 
   return (
@@ -32,6 +51,10 @@ export const ConfirmAppointmentModal: React.FC<TProps> = props => {
     >
       <SafeAreaView style={styles.safeAreaContainer}>
         <View style={styles.container}>
+        <Text style={headStyle(props.isSuccess)}>
+            {props.message}
+          </Text>
+          <Divider style={{marginBottom:10}} />
           <Text style={styles.titleText}>
             {getString("Appoinment Details")}
           </Text>
@@ -42,18 +65,22 @@ export const ConfirmAppointmentModal: React.FC<TProps> = props => {
             <Text style={styles.doctorName}>{props.item.doctor.fullName}</Text>
             <Text style={styles.doctorTitle}>{props.item.doctor.title}</Text>
           </View>
-          <Divider />
           <View style={styles.timeContainer}>
-            <Text style={styles.timeText}>{props.item.time}</Text>
             <Text style={styles.dateText}>
-              {moment(props.selectedDate).format("LL")}
+              {moment(props.item.appointmentDate).format('LLL')}
             </Text>
           </View>
-          <Button title={getString("CONFIRM")} />
+          {
+          !props.isSuccess && (
+            <Button title={getString("TRY AGAIN")} onPress={props.onCloseModal} />            
+            )
+          }
           <Button
-            title={getString("CANCEL")}
+            title={getString("RETURN TO HOME")}
             type="outline"
             style={{ marginTop: 8 }}
+            onPress={
+              props.onReturnHome}
           />
         </View>
       </SafeAreaView>

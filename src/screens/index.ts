@@ -11,3 +11,4 @@ export * from "./events";
 export * from "./memberprofile";
 export * from "./login";
 export * from "./messaging";
+export * from "./video"

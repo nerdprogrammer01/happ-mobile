@@ -5,6 +5,7 @@ import { Theme } from "../../theme";
 
 type IProps = {
   style?: ViewStyle;
+  icon? : string;
   onPress: () => void;
 };
 
@@ -15,7 +16,7 @@ export const FabButton: React.FC<IProps> = props => {
       onPress={props.onPress}
     >
       <Ionicons
-        name="ios-add"
+        name={props.icon ?? "ios-add"}
         size={34}
         color={Theme.colors.primaryColor}
         style={{ marginStart: 1, marginTop: 2 }}
@@ -29,9 +30,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     width: 56,
     height: 56,
-    position: "absolute",
-    bottom: 22,
-    end: 20,
+    //position: "absolute",
+    //bottom: 22,
+    //end: 20,
     borderRadius: 30,
     shadowColor: Theme.colors.gray,
     shadowOpacity: 0.3,

@@ -50,7 +50,7 @@ export const AppointmentScreen: React.FC<TProps> = props => {
   }, [profile]);
 
   const onPressNewSession = () => {
-    navigation.navigate(NavigationNames.CreateAppointmentScreen);
+    navigation.navigate(NavigationNames.VideoConferenceScreen, {session_token : appointment.token});
   };
 
 

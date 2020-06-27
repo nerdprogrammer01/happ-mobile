@@ -7,6 +7,7 @@ export const Theme = {
     primaryColorDark: PRIMARY_COLOR_DARK,
     tintColor: "#73CEC1",
     black: "#404041",
+    danger : "#d32f2f",
     grayForBoxBackground: "#F3F4F8",
     gray: "#81848D",
     grayForItemsMore: "#b0b0b0",
