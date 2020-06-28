@@ -18,6 +18,7 @@ import NavigationNames from "../../navigations/NavigationNames";
 import { Theme } from "../../theme";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import {Environment} from "../../datas";
+import { CancelAppointmentModal } from "../../modals/CancelAppointmentModal";
 
 
 type TProps = {};
@@ -29,7 +30,7 @@ export const AppointmentScreen: React.FC<TProps> = props => {
   const appointment =JSON.parse(route.params["appointment"]) as AppointmentModel;
   const [profile, setProfile] = useState(null);
   const [role,setRole]=useState("");
-  
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     async function load_profile() {
@@ -60,7 +61,7 @@ export const AppointmentScreen: React.FC<TProps> = props => {
       <HeaderButtons>
        {/*  <Item title={getString("Cancel")}  /> */}
        <Button
-        onPress={() => alert('This is a button!')}
+        onPress={() => setModalVisible(true)}
         title={getString("Cancel")}
 
       />
@@ -132,6 +133,14 @@ export const AppointmentScreen: React.FC<TProps> = props => {
         </View>
         
         }
+
+{/* Cancel Appointment Modal */}
+<CancelAppointmentModal
+      isVisible={modalVisible}
+      onDismissModal = {() => setModalVisible(false)}
+      onCloseModal = {() => {setModalVisible(false)}}
+      appointment_id = {appointment.id}
+      />
 
         
     </ScrollView>

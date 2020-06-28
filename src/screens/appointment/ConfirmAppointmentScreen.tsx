@@ -100,6 +100,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       .catch(error => {
         console.error(error);
       });
+  
   }
 
   const getServiceCost = (service_id: string) => {
