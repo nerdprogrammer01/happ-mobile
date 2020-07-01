@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import { ReactNativeModal } from "react-native-modal";
 import { useLocalization } from "../localization";
@@ -10,37 +10,63 @@ import moment from "moment";
 import { NewAppointmentModel } from "../models/NewAppointmentModel";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationNames } from "../navigations";
+import { TextInput } from "react-native-gesture-handler";
+import { Environment } from "../datas";
 
 type TProps = {
-  item?: NewAppointmentModel;
+  appointment_id: string;
   isVisible: boolean;
-  selectedDate?: Date;
-  transRef? : string;
   onDismissModal: () => void;
   onCloseModal : () => void;
-  onReturnHome : () => void;
-  message?: string;
-  isSuccess?: boolean;
 };
 
-export const ConfirmAppointmentModal: React.FC<TProps> = props => {
+export const CancelAppointmentModal: React.FC<TProps> = props => {
   const { getString } = useLocalization();
   const navigation = useNavigation();
+  const [cancelReason, setcancelReason] = useState("");
 
-
-  if (props.item === null) {
+  if (props.appointment_id === null) {
     return null;
   }
 
-  const headStyle = (is_success : boolean)  => {
-    return  {
-        fontSize: 18,
-        fontWeight: "bold",
-        textAlign : "center",
-        color:  is_success ? Theme.colors.primaryColor : Theme.colors.danger,
-        marginBottom:20
-      }
+  const postCancelAppointment = () => {
+    if(cancelReason === ""){
+      alert("Please let us know why");
+      return null
+    }
+
+    let requestBody = JSON.stringify({
+      appointment_id: props.appointment_id,
+      cancel_reason: cancelReason,
+
+    });
+
+    let request = {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json",
+        //'Token': profile.token
+      },
+      body:requestBody
+    };
+
+    fetch(Environment.SERVER_API + "/api/appointment/CancelAppointment", request)
+      .then((response) => {
+        JSON.stringify(response, null, 4)
+        return response.json();
+      })
+      .then(responseJson => {
+        if(responseJson == 200){
+          navigation.navigate(NavigationNames.CalendarScreen)
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
+
+
+
 
   return (
     <ReactNativeModal
@@ -52,41 +78,31 @@ export const ConfirmAppointmentModal: React.FC<TProps> = props => {
     >
       <SafeAreaView style={styles.safeAreaContainer}>
         <View style={styles.container}>
-        <Text style={headStyle(props.isSuccess)}>
-            {props.message}
+        <Text style={styles.headerText}>
+            Cancel Appointment
           </Text>
           <Divider style={{marginBottom:10}} />
-          <Text style={styles.titleText}>
-            {getString("Appoinment Details")}
-          </Text>
-          <View style={styles.doctorContainer}>
-            <Text style={{ color: Theme.colors.gray }}>
-              {getString("Doctor")}
-            </Text>
-            <Text style={styles.doctorName}>{props.item.doctor.fullName}</Text>
-            <Text style={styles.doctorTitle}>{props.item.doctor.title}</Text>
-          </View>
-          <View style={styles.timeContainer}>
-            <Text style={styles.dateText}>
-              {moment(props.selectedDate).format('LLL')}
-            </Text>
-          </View>
-          <View>
-            <Text>
-              {props.transRef}
-            </Text>
-          </View>
-          {
-          !props.isSuccess && (
-            <Button title={getString("TRY AGAIN")} onPress={props.onCloseModal} />            
-            )
-          }
+
+          <TextInput
+          placeholder= "Tell us Why are you cancelling ?" 
+          onChangeText={reason => setcancelReason(reason)}
+          
+          />
+         
           <Button
-            title={getString("RETURN TO HOME")}
+            title={getString("SUBMIT")}
+            type="outline"
+            style={{ marginTop: 8 }}
+            onPress = {postCancelAppointment}
+          
+          />
+
+          <Button
+            title={getString("DISMISS")}
             type="outline"
             style={{ marginTop: 8 }}
             onPress={
-              props.onReturnHome}
+              props.onCloseModal}
           />
         </View>
       </SafeAreaView>
@@ -114,6 +130,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: Theme.colors.black
   },
+  headerText:{
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign : "center",
+    color:  Theme.colors.black,
+    marginBottom:20
+
+  },
   doctorContainer: { paddingVertical: 16 },
   doctorName: {
     fontSize: 15,
@@ -126,17 +150,6 @@ const styles = StyleSheet.create({
     color: Theme.colors.gray,
     fontWeight: "600",
     marginTop: 2
-  },
-  timeContainer: {
-    paddingVertical: 36,
-    marginBottom: 12,
-    alignItems: "center"
-  },
-  timeText: {
-    fontSize: 62,
-    fontWeight: "200",
-    color: Theme.colors.black,
-    marginTop: 4
   },
   dateText: {
     fontSize: 15,

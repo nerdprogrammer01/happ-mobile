@@ -38,7 +38,8 @@ import {
   ReferralsScreen,
   NewReferralScreen,
   ProviderAvailabilityScreen,
-  ServiceCostScreen
+  ServiceCostScreen,
+  EditProfileScreen
 
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
@@ -79,6 +80,11 @@ const HomeTabStack = () => {
         name={NavigationNames.MemberProfileScreen}
         component={MemberProfileScreen}
         options={{ title: getString("My Profile") }}
+      />
+      <Stack.Screen
+        name={NavigationNames.EditProfileScreen}
+        component={EditProfileScreen}
+        options={{ title: getString("Edit Profile") }}
       />
       <Stack.Screen
         name={NavigationNames.HomeScreen}

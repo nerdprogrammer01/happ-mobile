@@ -28,8 +28,8 @@ export const MemberProfileScreen: React.FC<TProps> = props => {
     navigation.navigate(NavigationNames.CreateAppointmentScreen);
   };
 
-  const onPressAppointment = () => {
-    navigation.navigate(NavigationNames.AppointmentScreen);
+  const onPressEditProfile = () => {
+    navigation.navigate(NavigationNames.EditProfileScreen);
   };
 
   const getAppointmentTypes = () => {
@@ -126,10 +126,21 @@ export const MemberProfileScreen: React.FC<TProps> = props => {
                     Environment.SERVER_API+profile.imageUrl
                 }}
               />
+
+<View style={{flex:1, flexDirection:"row", alignSelf:"center", marginTop:20}} onTouchStart={onPressEditProfile}>
+              <Ionicons name={"ios-create"}
+                              size={16}
+                              color={Theme.colors.primaryColor}
+                              style={{ alignSelf: "center" }}
+                            />
+                            <Text style={{marginLeft:5}}>
+                             Edit Profile
+                            </Text>
+              </View>
+
               <Text style={styles.nameText}>{profile.fullName}</Text>
               <Text  style={styles.daysText}>{profile.title}</Text>
-      
-             
+
           {profile.role=="client" &&
           <View>
        <Text style={styles.titleText}>WHAT DO YOU WANT TO DO TODAY?</Text>

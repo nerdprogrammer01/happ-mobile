@@ -29,6 +29,7 @@ export default {
   DoctorListScreen: "DoctorListScreen",
   DoctorDetailScreen: "DoctorDetailScreen",
   MemberProfileScreen: "MemberProfileScreen",
+  EditProfileScreen: "EditProfileScreen",
   CreateAppointmentScreen: "CreateAppointmentScreen",
   AppointmentsScreen: "AppointmentsScreen",
   LoginScreen: "LoginScreen",
