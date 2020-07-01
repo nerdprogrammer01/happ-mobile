@@ -15,6 +15,7 @@ type TProps = {
   item?: NewAppointmentModel;
   isVisible: boolean;
   selectedDate?: Date;
+  transRef? : string;
   onDismissModal: () => void;
   onCloseModal : () => void;
   onReturnHome : () => void;
@@ -67,7 +68,12 @@ export const ConfirmAppointmentModal: React.FC<TProps> = props => {
           </View>
           <View style={styles.timeContainer}>
             <Text style={styles.dateText}>
-              {moment(props.item.appointmentDate).format('LLL')}
+              {moment(props.selectedDate).format('LLL')}
+            </Text>
+          </View>
+          <View>
+            <Text>
+              {props.transRef}
             </Text>
           </View>
           {

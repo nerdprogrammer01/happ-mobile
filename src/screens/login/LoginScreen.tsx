@@ -63,7 +63,7 @@ export const LoginScreen: React.FC<TProps> = props => {
             })
             .then((responseData) => {
                 //navigation.navigate("Home");
-                // alert(JSON.stringify(responseData));
+                alert(JSON.stringify(responseData));
                 console.log("response: " + JSON.stringify(responseData)); 
                 //check the response, if the user is authenticated, save the data and navigate the user to another screen
                 if (responseData.response == 200) {
