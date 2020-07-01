@@ -43,6 +43,8 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
   const [paymentMessage, setPaymentMessage] = useState("");
+  const [availabilityMessage, setAvailabilityMessage] = useState("Select a time and we will let you know if your doctor is available");
+
 
 
     //datepicker related 
@@ -67,6 +69,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   let appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
 
   useEffect(() => {
+
     async function load_profile() {
       await AsyncStorage.getItem('profile')
       .then((data) => {
@@ -136,14 +139,55 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
   const checkAvailability = (timeString : string) => {
     setAppointmentTime(timeString);
-    setAvailable(!available)
 
     if(date != null && servicePeriod > 0){
       var start_date = Moment(date.trim()+" "+appointmentTime.trim()+":00", 'DD-MM-YYYY hh:mm:ss').format()
-      var end_date = Moment(start_date,'DD-MM-YYYY hh:mm:ss').add(servicePeriod, 'minutes').format();
+      var end_date = Moment(start_date).add(servicePeriod, 'minutes').format();
       
       setStart_date(start_date)
       setEnd_date(end_date)
+
+      console.log("start_date :"+start_date+" AND end_date :"+end_date);
+
+      let requestBody = JSON.stringify({
+        client_id: profile.id,
+        clinician_id: appointmentModel.doctor.id,
+        status:0,
+        appointment_type:appointmentModel.appointmentType,
+        start_date : start_date,
+        end_date : end_date,
+        created_at : new Date(),
+        appointment_service:serviceId,
+        appointment_activity_id:appointmentModel.appointmentCategory,
+        appointment_activity_sub_id:appointmentModel.appointmentActivity,
+        cancel_reason:""
+  
+      });
+  
+      let request = {
+        method: "POST",
+        headers: {
+          'Content-Type': "application/json",
+          'Token': profile.token
+        },
+        body:requestBody
+      };
+  
+      fetch(Environment.SERVER_API + "/api/clinician/GetClinicianAvailability", request)
+        .then((response) => {
+          JSON.stringify(response, null, 4)
+          return response.json();
+        })
+        .then(responseJson => {
+          setAvailable(responseJson);
+          if(responseJson == false){
+            setAvailabilityMessage("Your doctor is not available for this time, Kindly try a different time")
+          }
+
+        })
+        .catch(error => {
+          console.error(error);
+        });
     }
   }
 
@@ -320,7 +364,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
             value={date}
           />
           <View style={styles.pickerstyle2}>
-            <Picker onValueChange={(itemValue) => checkAvailability(itemValue)}>
+            <Picker onValueChange={(itemValue) => {checkAvailability(itemValue)}} selectedValue={appointmentTime}>
               <Picker.Item label="Select Time" value="Select Time" />
               {Times.map((item, key) => (
                 <Picker.Item label={item} value={item} key={key} />)
@@ -340,7 +384,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         />
       </View>
       <Button
-        title={available ? getString("Your doctor is available") : getString("Check Availability")}
+        title={available ? getString("Your doctor is available") : getString(availabilityMessage)}
         type="outline"
         style={styles.buttonStyle}
       />

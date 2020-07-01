@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   text: { fontWeight: "600", fontSize: 15, color: "white" },
   outlineText: {
     color: Theme.colors.gray,
-    fontWeight: "400"
+    fontWeight: "400",
+    textAlign:"center"
   }
 });
