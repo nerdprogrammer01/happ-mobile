@@ -12,3 +12,6 @@ export * from "./memberprofile";
 export * from "./login";
 export * from "./messaging";
 export * from "./video"
+export * from "./prescription"
+export * from "./referral"
+export * from "./settings"

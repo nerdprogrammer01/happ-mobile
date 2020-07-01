@@ -41,11 +41,14 @@ export const LoginScreen: React.FC<TProps> = props => {
             return;
         }
 
+      
+
         let bd = JSON.stringify({
             Email: email,
             Password: password
         });
 
+    
 
         fetch(Environment.SERVER_API + '/auth/GenerateToken', {
             method: 'POST',
@@ -65,6 +68,7 @@ export const LoginScreen: React.FC<TProps> = props => {
                 //navigation.navigate("Home");
                 // alert(JSON.stringify(responseData));
                 console.log("response: " + JSON.stringify(responseData)); 
+                setLoading(false);
                 //check the response, if the user is authenticated, save the data and navigate the user to another screen
                 if (responseData.response == 200) {
                     AsyncStorage.setItem('profile', JSON.stringify(responseData));
@@ -72,13 +76,18 @@ export const LoginScreen: React.FC<TProps> = props => {
 
 
                 } else {
-                    alert("Error logging you in. Please chech your credentials.");
-                    setLoading(false);
+                    alert("Error logging you in. Please check your credentials.");
+                   
                 }
+
+             
             }).catch(function(error) {
+                alert("Error logging you in. Please check your connection and try again.");
                 console.log('There has been a problem with your fetch operation: ' + error.message);
                  // ADD THIS THROW error
+                 setLoading(false);
                   throw error;
+                 
                 });
     }
 
@@ -99,9 +108,15 @@ export const LoginScreen: React.FC<TProps> = props => {
                     placeholder="Enter Password"
                     onChangeText={Password => setPassword(Password)}
                     secureTextEntry={true} />
+
+                {loading &&
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />
+                }
+                {!loading &&
                 <TouchableOpacity style={styles.btn} onPress={loginHandler} >
                     <Text style={{ color: "white" }}>Login</Text>
                 </TouchableOpacity>
+}
                 <Text style={{ textAlign: 'center', color: 'blue', padding: 20 }} onPress={registerHandler}>Not Registered?</Text>
                 {/* <TouchableOpacity onPress={this._onPressButton}>
                         <View style={styles.button}>
@@ -109,9 +124,7 @@ export const LoginScreen: React.FC<TProps> = props => {
                         </View>
                     </TouchableOpacity> */}
 
-                {loading &&
-                    <ActivityIndicator size='large' color='#6646ee' />
-                }
+               
             </View>
         </View>
     );
@@ -141,7 +154,7 @@ const styles = StyleSheet.create({
         width: '90%',
         borderRadius: 10,
         borderColor: Theme.colors.primaryColor,
-        borderWidth: 2,
+        borderWidth: 1,
         padding: 10,
         margin: 10
     },

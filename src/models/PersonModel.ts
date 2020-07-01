@@ -10,4 +10,5 @@ export type PersonModel = {
   response:number;
   token:string;
   role:string;
+  user_id:string;
 };

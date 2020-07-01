@@ -12,50 +12,63 @@ const getMenuItems = (getString: (key: string) => string) => [
   {
     title: getString("My Profile"),
     iconName: "md-person",
-    navigateToScreen: NavigationNames.ProfileScreen
+    navigateToScreen: NavigationNames.ProfileScreen,
+    forward:true
   },
   {
     title: getString("Events"),
     iconName: "ios-musical-notes",
-    navigateToScreen: NavigationNames.EventListScreen
+    navigateToScreen: NavigationNames.EventListScreen,
+    forward:true
   },
   {
     title: getString("Blog"),
     iconName: "ios-paper",
-    navigateToScreen: NavigationNames.MemberProfileScreen
+    navigateToScreen: NavigationNames.MemberProfileScreen,
+    forward:true
   },
   {
     title: getString("Youtube"),
     iconName: "logo-youtube",
-    navigateToScreen: NavigationNames.AppointmentsScreen
+    navigateToScreen: NavigationNames.AppointmentsScreen,
+    forward:true
   },
   {
-    title: getString("Instagram"),
+    title: getString("Prescriptions"),
     iconName: "logo-instagram",
-    // navigateToScreen: NavigationNames.AppointmentScreen
+     navigateToScreen: NavigationNames.PrescriptionsScreen,
+    forward:true
   },
   {
-    title: getString("About Us"),
-    iconName: "ios-business"
+    title: getString("Referrals"),
+    iconName: "ios-business",
+    navigateToScreen: NavigationNames.ReferralsScreen,
+    forward:true
   },
   {
-    title: getString("Contact Us"),
-    iconName: "ios-call"
+    title: getString("My Availability"),
+    iconName: "ios-call",
+    navigateToScreen: NavigationNames.ProviderAvailabilityScreen,
+    forward:true
   },
   {
-    title: getString("Write to Us"),
-    iconName: "ios-chatbubbles"
+    title: getString("My Service Costs"),
+    iconName: "ios-chatbubbles",
+    navigateToScreen: NavigationNames.ServiceCostScreen,
+    forward:true
   },
   {
     title: getString("Settings"),
     iconName: "md-settings",
-    openSettings: true
+    openSettings: true,
+    forward:true
   }
   ,
   {
     title: getString("Log out"),
     iconName: "ios-power",
-    navigateToScreen: NavigationNames.LoginTab
+    navigateToScreen: NavigationNames.LoginTab,
+    forward:false
   }
 ];
 //
@@ -93,11 +106,13 @@ export const MenuScreen: React.FC<TProps> = props => {
                 />
               </View>
               <Text style={styles.titleText}>{item.title}</Text>
-              <Ionicons
-                name="ios-arrow-forward"
-                size={24}
-                color={Theme.colors.gray}
-              />
+              {item.forward && 
+                <Ionicons
+                  name="ios-arrow-forward"
+                  size={24}
+                  color={Theme.colors.gray}
+                />
+             }
             </View>
           </TouchableHighlight>
         )}

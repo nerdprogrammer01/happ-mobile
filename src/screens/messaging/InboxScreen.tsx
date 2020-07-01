@@ -102,7 +102,13 @@ export const InboxScreen: React.FC<TProps> = props => {
 
 {messages.map((item, index) => {
                   return (
-                    <Text key={index} style={styles.minuteText}>{item.title}</Text>
+                    <View key={index}>
+                        <Text style={styles.titleText}>{item.title}</Text>
+                        <Text style={styles.minuteText}>From {item.created_by_name} on {item.created_at}</Text>
+
+                        <Divider style={styles.divider} />
+                      </View>
+                  
                   );
                 })}
    
@@ -112,26 +118,9 @@ export const InboxScreen: React.FC<TProps> = props => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  image: {
-    height: 210,
-    borderRadius: 16,
-    borderWidth: 0.4,
-    borderColor: Theme.colors.formBackground
+  item_container:{
+    margin:5
   },
-  liveContainer: {
-    position: "absolute",
-    start: 16,
-    top: 16,
-    backgroundColor: "#F93C1A",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4
-  },
-  textRowContainer: {
-    marginTop: 12,
-    marginHorizontal: 4
-  },
-  liveText: { color: "white", fontSize: 13 },
   titleText: {
     fontSize: 15,
     color: Theme.colors.black,
@@ -143,59 +132,5 @@ const styles = StyleSheet.create({
     color: Theme.colors.gray,
     marginTop: 4
   },
-  doctorContainer: {
-    flexDirection: "row",
-    marginTop: 12,
-    alignItems: "center",
-    position: "absolute",
-    bottom: 0,
-    backgroundColor: "#FFFFFFEE",
-    margin: 4,
-    start: 0,
-    paddingHorizontal: 4,
-    paddingVertical: 4,
-    borderRadius: 12
-  },
-  doctorImage: {
-    width: 28,
-    height: 28,
-    backgroundColor: Theme.colors.grayForBoxBackground,
-    borderRadius: 8
-  },
-  doctorTextContainer: { paddingHorizontal: 4 },
-  doctorNameText: {
-    fontWeight: "600",
-    fontSize: 12,
-    color: Theme.colors.black
-  },
-  doctorTitleText: {
-    fontSize: 11,
-    color: Theme.colors.black
-  },
-  tagContainer: {
-    backgroundColor: Theme.colors.grayForBoxBackground,
-    paddingVertical: 4,
-    paddingHorizontal: 6,
-    borderRadius: 4,
-    marginEnd: 8
-  },
-  tagText: {
-    fontWeight: "600",
-    fontSize: 12,
-    color: Theme.colors.black
-  },
-  horizontalDivider: { width: 12 },
-  storyContentContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 16
-  },
-  storyItemContainer: {
-    width: 68,
-    height: 68,
-    backgroundColor: Theme.colors.grayForBoxBackground,
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: Theme.colors.primaryColor
-  },
-  storyItemImage: { flex: 1, borderRadius: 100, margin: 2 }
+  divider: { marginStart: 16,marginEnd:16,backgroundColor:"#ADDFFF" },
 });
