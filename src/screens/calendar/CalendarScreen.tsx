@@ -50,7 +50,7 @@ export const CalendarScreen: React.FC<{}> = props => {
 
     if (profile != null){
       setRole(profile.role);
-      getAppointments();
+      getAppointments(profile.id);
     }
   
   }, [profile]);
@@ -68,12 +68,12 @@ export const CalendarScreen: React.FC<{}> = props => {
   const onPressToday = () => {
     const today = new Date();
     if (profile != null){
-      getAppointments();
+      getAppointments(profile.id);
     }
     refAgenda.current.chooseDay(today);
   };
 
-  const getAppointments = () => {
+  const getAppointments = (profile_id : string) => {
     let request = {
       method: "GET",
       headers: {
@@ -82,8 +82,10 @@ export const CalendarScreen: React.FC<{}> = props => {
       }
     };
 
+    console.log(profile_id)
+
     
-    fetch(Environment.SERVER_API+"/api/appointment/GetAppointments", request)
+    fetch(Environment.SERVER_API+"/api/appointment/GetProfileAppointments?profile_id="+profile_id, request)
       .then((response) => response.json())
       .then(responseJson => {
 

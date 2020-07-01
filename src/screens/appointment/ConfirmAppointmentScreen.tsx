@@ -272,17 +272,16 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
   }
 
-  const pay = async () =>
+  const pay = () =>
   {
     if(validDebitCard && cardInfo !=null){
       let expiry_info = cardInfo.values.expiry as string;
     setLoading(true)
-    await  postAppointment()
+    postAppointment()
 
       if(appointmentRef.length > 0){
-        console.log("trx :"+appointmentRef)
         //todo:: add loader to payment
-      await  RNPaystack.init({ publicKey: Environment.PAYSTACK_PUBLIC_KEY })
+      RNPaystack.init({ publicKey: Environment.PAYSTACK_PUBLIC_KEY })
         RNPaystack.chargeCard({
           cardNumber: cardInfo.values.number, 
           expiryMonth: expiry_info.substr(0,2), 
@@ -372,10 +371,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
             </Picker>
           </View>
-          
-          {loading &&
-                    <ActivityIndicator size='large' color='#6646ee' />
-                }
         </View>
 
       </View>
@@ -392,6 +387,10 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         type="outline"
         style={styles.buttonStyle}
       />
+       {loading &&
+                    <ActivityIndicator size='large' color='#6646ee' />
+                }
+
       {
         (available && amount > 0) &&
         <View>

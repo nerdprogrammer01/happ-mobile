@@ -56,7 +56,9 @@ export const CancelAppointmentModal: React.FC<TProps> = props => {
         return response.json();
       })
       .then(responseJson => {
-        alert(responseJson)
+        if(responseJson == 200){
+          navigation.navigate(NavigationNames.CalendarScreen)
+        }
       })
       .catch(error => {
         console.error(error);
