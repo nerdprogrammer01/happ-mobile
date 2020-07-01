@@ -40,5 +40,14 @@ export default {
   ConfirmAppointmentScreen : "ConfirmAppointmentScreen",
   RegisterContScreen: "RegisterContScreen",
   VideoConferenceScreen : "VideoConferenceScreen", 
+  PrescriptionsScreen : "PrescriptionsScreen",
+  NewPrescriptionScreen : "NewPrescriptionScreen", 
+  MemberSearchScreen : "MemberSearchScreen", 
+  PrescriptionScreen : "PrescriptionScreen",
 
+  NewReferralScreen : "NewReferralScreen",
+  ReferralScreen : "ReferralScreen",
+  ReferralsScreen : "ReferralsScreen",
+  ProviderAvailabilityScreen:"ProviderAvailabilityScreen",
+  ServiceCostScreen:"ServiceCostScreen"
 };

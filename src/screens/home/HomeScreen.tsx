@@ -86,7 +86,7 @@ export const HomeScreen: React.FC<TProps> = props => {
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     >
-      <UpcomingAppoinmentRow
+      <UpcomingAppoinmentRow role=""
         style={styles.upcomingAppoinmentRow}
         item={dashboardItem.appointment}
       />

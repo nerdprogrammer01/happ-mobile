@@ -123,7 +123,7 @@ export const MemberProfileScreen: React.FC<TProps> = props => {
                 source={{
                   uri:
                     // "https://raw.githubusercontent.com/publsoft/publsoft.github.io/master/projects/dentist-demo/assets/images/profile_photo.png"
-                    "https://myspace-mytime.com"+profile.imageUrl
+                    Environment.SERVER_API+profile.imageUrl
                 }}
               />
 

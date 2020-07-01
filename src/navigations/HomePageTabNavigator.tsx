@@ -30,6 +30,15 @@ import {
   AppointmentScreen,
   InboxScreen,
   ConfirmAppointmentScreen,
+  PrescriptionsScreen,
+  NewPrescriptionScreen,
+  MemberSearchScreen,
+  PrescriptionScreen,
+  ReferralScreen,
+  ReferralsScreen,
+  NewReferralScreen,
+  ProviderAvailabilityScreen,
+  ServiceCostScreen,
   EditProfileScreen
 
 } from "../screens";
@@ -280,6 +289,61 @@ const MenuTabStack = () => {
         component={AppointmentsScreen}
         options={{ title: getString("My Appointments") }}
       />
+      <Stack.Screen
+        name={NavigationNames.PrescriptionsScreen}
+        component={PrescriptionsScreen}
+        options={{ title: getString("Prescriptions") }}
+      />
+         <Stack.Screen
+        name={NavigationNames.PrescriptionScreen}
+        component={PrescriptionScreen}
+        options={{ title: getString("Prescriptions") }}
+      />
+      <Stack.Screen
+        name={NavigationNames.NewPrescriptionScreen}
+        component={NewPrescriptionScreen}
+        options={{ title: getString("New Prescriptions") }}
+      />
+
+
+
+    <Stack.Screen
+        name={NavigationNames.MemberSearchScreen}
+        component={MemberSearchScreen}
+        options={{ title: getString("Select Members") }}
+      />
+
+    <Stack.Screen
+        name={NavigationNames.ReferralsScreen}
+        component={ReferralsScreen}
+        options={{ title: getString("Referrals") }}
+      />
+
+    <Stack.Screen
+        name={NavigationNames.ReferralScreen}
+        component={ReferralScreen}
+        options={{ title: getString("Referral") }}
+      />
+
+    <Stack.Screen
+        name={NavigationNames.NewReferralScreen}
+        component={NewReferralScreen}
+        options={{ title: getString("New Referral") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.ProviderAvailabilityScreen}
+        component={ProviderAvailabilityScreen}
+        options={{ title: getString("My Availability") }}
+      />
+
+      
+<Stack.Screen
+        name={NavigationNames.ServiceCostScreen}
+        component={ServiceCostScreen}
+        options={{ title: getString("My Service Costs") }}
+      />
+
       {/* <Stack.Screen
         name={NavigationNames.AppointmentScreen}
         component={AppointmentScreen}
