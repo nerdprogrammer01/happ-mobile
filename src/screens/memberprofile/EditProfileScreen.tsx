@@ -1,135 +1,110 @@
-import React, { Component,useState,useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, SafeAreaView ,AsyncStorage,ActivityIndicator} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Avatar, Divider, TouchableHighlight } from "../../components";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView, StyleSheet, SafeAreaView, AsyncStorage } from "react-native";
 import { Theme } from "../../theme";
 import { useLocalization } from "../../localization";
-import {
-  UpcomingAppoinmentRow,SectionHeader
-} from "../../components";
-import { DashboardItemsModel, PersonModel } from "../../models";
-import { DashboardService } from "../../services";
 import { useNavigation } from "@react-navigation/native";
 import NavigationNames from "../../navigations/NavigationNames";
-import { FabButton, Button } from "../../components/buttons";
-import {Environment} from "../../datas";
+import { Button } from "../../components/buttons";
+import { Environment } from "../../datas";
 import { TextInput } from "react-native-gesture-handler";
+import { Picker } from "native-base";
 
 type TProps = {};
 
 export const EditProfileScreen: React.FC<TProps> = props => {
   const { getString } = useLocalization();
   const navigation = useNavigation();
-  const [isLoading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
-  const [appointment_types, setAppointmentTypes] = useState([]);
-  const [appointments, setAppointments] = useState([]);
-
-  const onPressNewAppointment = () => {
-    navigation.navigate(NavigationNames.CreateAppointmentScreen);
-  };
-
-  const onPressAppointment = () => {
-    navigation.navigate(NavigationNames.AppointmentScreen);
-  };
-
-  const getAppointmentTypes = () => {
-    let request = {
-      method: "GET",
-      headers: {
-        'Content-Type': "application/json",
-        'Token': profile.token
-      }
-    };
-
-    fetch(Environment.SERVER_API+"/api/options/GetAppointmentTypes", request)
-      .then((response) => response.json())
-      .then(responseJson => {
-        setAppointmentTypes(responseJson);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-
-  const getAppointments = () => {
-    let request = {
-      method: "GET",
-      headers: {
-        'Content-Type': "application/json",
-        'Token': profile.token
-      }
-    };
-
-    
-    fetch(Environment.SERVER_API+"/api/appointment/GetAppointments", request)
-      .then(async response => 
-        {
-          console.log(JSON.stringify(response, null, 4));
-          return await response.json();
-        })
-      .then(responseJson => {
-
-        setAppointments(responseJson);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error(error);
-        alert(error);
-      });
-  }
-  
 
   useEffect(() => {
     async function load_profile() {
       let profile = await AsyncStorage.getItem('profile')
-      .then((data) => {
-        setProfile(JSON.parse(data));
-    })
-    .catch((err) => {
-       console.log(err);
-    });   
+        .then((data) => {
+          setProfile(JSON.parse(data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-   load_profile();
+    load_profile();
   }, []);
 
-
-
-  useEffect(() => {
-    if (profile != null){
-      if (profile.role=="client"){
-        getAppointmentTypes();
-      }else if (profile.role=="clinician"){
-        getAppointments();
-      }
-    }
-  
-  
-  }, [profile]);
-
-  if (profile === null) {
-    return <Text>Loading</Text>;
-  }
-
   return (
-
-            <SafeAreaView style={styles.flex1}>
-            <ScrollView
-              style={styles.flex1}
-              contentContainerStyle={styles.scrollContainer}
-            >
-              <Text style={{fontSize:20}}>Phone Number</Text>
-                    <TextInput
-                    style={styles.input}
-                    placeholder="Enter Phone Number"
-                />
-
-            </ScrollView>
-           
-          </SafeAreaView>
-
-
+    <SafeAreaView style={styles.flex1}>
+      <ScrollView
+        style={styles.flex1}
+        contentContainerStyle={styles.scrollContainer}
+      >
+        <Text style={styles.label}>First Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+        />
+        <Text style={styles.label}>Last Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name"
+        />
+        <Text style={styles.label}>Phone Number</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Phone Number"
+        />
+        <Text style={styles.label}>Preferred Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Preferred Name"
+        />
+        <Text style={styles.label}>Date of Birth</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Date of Birth"
+        />
+        <Text style={styles.label}>Address</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Address"
+        />
+        <Text style={styles.label}>City</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="City"
+        />
+        <Text style={styles.label}>State</Text>
+        <View style={styles.pickerstyle}>
+          <Picker>
+            <Picker.Item label="Select State" value={0} />
+            <Picker.Item label="FCT" value={1} />
+          </Picker>
+        </View>
+        <Text style={styles.label}>Country</Text>
+        <View style={styles.pickerstyle}>
+          <Picker>
+            <Picker.Item label="Select Country" value={0} />
+            <Picker.Item label="Nigeria" value={1} />
+          </Picker>
+        </View>
+        <Text style={styles.label}>Marital Status</Text>
+        <View style={styles.pickerstyle}>
+          <Picker>
+            <Picker.Item label="Select Marital Status" value={0} />
+            <Picker.Item label="Single" value={1} />
+          </Picker>
+        </View>
+        <Text style={styles.label}>Education Level</Text>
+        <View style={styles.pickerstyle}>
+          <Picker>
+            <Picker.Item label="Select Education Level" value={0} />
+            <Picker.Item label="Master's" value={1} />
+          </Picker>
+        </View>
+        <Button
+          title={getString("Update Profile")}
+          type="outline"
+          style={styles.buttonStyle}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
@@ -143,7 +118,22 @@ const styles = StyleSheet.create({
     borderColor: Theme.colors.primaryColor,
     borderWidth: 1,
     padding: 10,
-    alignSelf:"center"
-//    margin: 10
-}
+    alignSelf: "center"
+  },
+  label: {
+    fontSize: 16, padding: 10, marginLeft: 10
+  },
+  pickerstyle: {
+    height: 50,
+    alignSelf: 'center',
+    width: '90%',
+    borderWidth: 1,
+    borderColor: Theme.colors.primaryColor,
+    borderRadius: 5
+  }, buttonStyle: {
+    marginTop: 20,
+    width: '90%',
+    alignSelf: 'center',
+    fontSize: 20,
+  },
 });
