@@ -39,36 +39,43 @@ export const EditProfileScreen: React.FC<TProps> = props => {
         <TextInput
           style={styles.input}
           placeholder="First Name"
+          value={profile.first_name}
         />
         <Text style={styles.label}>Last Name</Text>
         <TextInput
           style={styles.input}
           placeholder="Last Name"
+          value={profile.last_name}
         />
         <Text style={styles.label}>Phone Number</Text>
         <TextInput
           style={styles.input}
           placeholder="Phone Number"
+          value={profile.phone}
         />
         <Text style={styles.label}>Preferred Name</Text>
         <TextInput
           style={styles.input}
           placeholder="Preferred Name"
+          value={profile.preferred_name}
         />
         <Text style={styles.label}>Date of Birth</Text>
         <TextInput
           style={styles.input}
           placeholder="Date of Birth"
+          value={profile.dob}
         />
         <Text style={styles.label}>Address</Text>
         <TextInput
           style={styles.input}
           placeholder="Address"
+          value={profile.address}
         />
         <Text style={styles.label}>City</Text>
         <TextInput
           style={styles.input}
           placeholder="City"
+          value={profile.city}
         />
         <Text style={styles.label}>State</Text>
         <View style={styles.pickerstyle}>
