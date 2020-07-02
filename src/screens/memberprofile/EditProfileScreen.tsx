@@ -8,6 +8,8 @@ import { Button } from "../../components/buttons";
 import { Environment } from "../../datas";
 import { TextInput } from "react-native-gesture-handler";
 import { Picker } from "native-base";
+import moment from "moment";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 type TProps = {};
 
@@ -19,6 +21,18 @@ export const EditProfileScreen: React.FC<TProps> = props => {
   const [countries, setCountries] = useState([]);
   const [maritalStatuses, setMaritalStatuses] = useState([]);
   const [educactionLevels, setEducationLevels] = useState([]);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [preferredName, setPreferredName] = useState("");
+  const [dob, setDob] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState(0);  
+  const [country, setCountry] = useState(0);
+  const [maritalStatus, setMaritalStatus] = useState(0);  
+  const [educationLevel, setEducationLevel] = useState(0);
+  
 
   const getSelectData = () => {
     let request = {
@@ -44,9 +58,20 @@ export const EditProfileScreen: React.FC<TProps> = props => {
 
   useEffect(() => {
     async function load_profile() {
-      await AsyncStorage.getItem('profile')
+     let profile = await AsyncStorage.getItem('profile')
         .then((data) => {
           setProfile(JSON.parse(data));
+          setFirstName(JSON.parse(data).first_name)
+          setLastName(JSON.parse(data).last_name)
+          setPhone(JSON.parse(data).phone)
+          setPreferredName(JSON.parse(data).preferred_name)
+          setDob(moment(JSON.parse(data).dob).format('DD-MM-YYYY'))
+          setAddress(JSON.parse(data).address)
+          setCity(JSON.parse(data).city)
+          setState(JSON.parse(data).state)
+          setCountry(JSON.parse(data).country)
+          setMaritalStatus(JSON.parse(data).marital_status)
+          setEducationLevel(JSON.parse(data).education_level)
         })
         .catch((err) => {
           console.log(err);
@@ -56,8 +81,71 @@ export const EditProfileScreen: React.FC<TProps> = props => {
   }, []);
 
   useEffect(() => {
-    getSelectData()
-  })
+   getSelectData()
+  }, [])
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date: Date) => {
+    let datestring = moment(date).format('DD-MM-YYYY')
+    setDob(datestring);
+    hideDatePicker();
+  };
+
+  const updateProfile = () => {
+    console.log(dob)
+    
+    let requestBody = JSON.stringify({
+      id: profile.id,
+      role:profile.role,
+      first_name:firstName,
+      last_name:lastName,
+      phone:phone,
+      preferred_name:preferredName,
+      dob:moment(dob.trim()+' 01:01:01','DD-MM-YYYY hh:mm:ss').format(),
+      address:address,
+      country:country,
+      state:state,
+      city:city,
+      marital_status:maritalStatus,
+      education_level:educationLevel,
+      created_at : new Date(),
+    });
+
+    console.log(requestBody)
+
+    let request = {
+      method: "POST",
+      headers: {
+        'Content-Type': "application/json",
+        //'Token': profile.token
+      },
+      body:requestBody
+    };
+
+    fetch(Environment.SERVER_API + "/api/profile/UpdateProfile", request)
+      .then((response) => {
+        JSON.stringify(response, null, 4)
+        return response.json();
+      })
+      .then(responseJson => {
+        console.log(responseJson)
+        if(responseJson === 200){
+          alert('Successfully Updated Profile')
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
 
   return (
     <SafeAreaView style={styles.flex1}>
@@ -66,52 +154,68 @@ export const EditProfileScreen: React.FC<TProps> = props => {
                   style={styles.flex1}
                   contentContainerStyle={styles.scrollContainer}
                 >
-          
                   <Text style={styles.label}>First Name</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="First Name"
-                    value={profile.first_name}
+                    value={firstName}
+                    onChangeText={(inputValue) => setFirstName(inputValue)}
+
                   />
                   <Text style={styles.label}>Last Name</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Last Name"
-                    value={profile.last_name}
+                    value={lastName}
+                    onChangeText={(inputValue) => setLastName(inputValue)}
                   />
                   <Text style={styles.label}>Phone Number</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Phone Number"
-                    value={profile.phone}
+                    value={phone}
+                    onChangeText={(inputValue) => setPhone(inputValue)}
                   />
                   <Text style={styles.label}>Preferred Name</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Preferred Name"
-                    value={profile.preferred_name}
+                    value={preferredName}
+                    onChangeText={(inputValue) => setPreferredName(inputValue)}
                   />
                   <Text style={styles.label}>Date of Birth</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Date of Birth"
-                    value={profile.dob}
+                    value={dob}
+                    pointerEvents="none"
+                    onTouchStart={showDatePicker}
+        
                   />
+                    <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="date"
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
+        />
                   <Text style={styles.label}>Address</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Address"
-                    value={profile.address}
+                    value={address}
+                    onChangeText={(inputValue) => setAddress(inputValue)}
                   />
                   <Text style={styles.label}>City</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="City"
-                    value={profile.city}
+                    value={city}
+                    onChangeText={(inputValue) => setCity(inputValue)}
                   />
+
                   <Text style={styles.label}>State</Text>
                   <View style={styles.pickerstyle}>
-                    <Picker selectedValue={profile.state}>
+                    <Picker onValueChange={(value) => {setState(value)}} selectedValue={state}>
                       <Picker.Item label="Select State" value={0} />
                       {states != null && states.map((item, key)=>(
             <Picker.Item label={item.name} value={item.id} key={key} />)
@@ -120,7 +224,7 @@ export const EditProfileScreen: React.FC<TProps> = props => {
                   </View>
                   <Text style={styles.label}>Country</Text>
                   <View style={styles.pickerstyle}>
-                    <Picker selectedValue={profile.country}>
+                    <Picker onValueChange={(value) => {setCountry(value)}} selectedValue={country}>
                     <Picker.Item label="Select Country" value={0} />
                       {
                         countries.map((item, key)=>(
@@ -130,7 +234,7 @@ export const EditProfileScreen: React.FC<TProps> = props => {
                   </View>
                   <Text style={styles.label}>Marital Status</Text>
                   <View style={styles.pickerstyle}>
-                    <Picker selectedValue={profile.marital_status}>
+                    <Picker onValueChange={(value) => {setMaritalStatus(value)}} selectedValue={maritalStatus}>
                       <Picker.Item label="Select Marital Status" value={0} />
                       {
                         maritalStatuses.map((item, key)=>(
@@ -140,7 +244,7 @@ export const EditProfileScreen: React.FC<TProps> = props => {
                   </View>
                   <Text style={styles.label}>Education Level</Text>
                   <View style={styles.pickerstyle}>
-                    <Picker selectedValue={profile.education_level}>
+                    <Picker onValueChange={(value) => {setEducationLevel(value)}} selectedValue={educationLevel}>
                       <Picker.Item label="Select Education Level" value={0} />
                       {
                         educactionLevels.map((item, key)=>(
@@ -152,6 +256,7 @@ export const EditProfileScreen: React.FC<TProps> = props => {
                     title={getString("Update Profile")}
                     type="outline"
                     style={styles.buttonStyle}
+                    onPress={updateProfile}
                   />
                 </ScrollView>
               )}
