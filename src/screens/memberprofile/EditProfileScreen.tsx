@@ -15,10 +15,36 @@ export const EditProfileScreen: React.FC<TProps> = props => {
   const { getString } = useLocalization();
   const navigation = useNavigation();
   const [profile, setProfile] = useState(null);
+  const [states, setStates] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [maritalStatuses, setMaritalStatuses] = useState([]);
+  const [educactionLevels, setEducationLevels] = useState([]);
+
+  const getSelectData = () => {
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+        //'Token': profile.token
+      }
+    };
+    
+    fetch(Environment.SERVER_API+"/api/appdata/GetProfileSelectData", request)
+      .then((response) => response.json())
+      .then(responseJson => {
+        setStates(responseJson.states)
+        setCountries(responseJson.countries)
+        setMaritalStatuses(responseJson.marital_statuses)
+        setEducationLevels(responseJson.education_levels)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
 
   useEffect(() => {
     async function load_profile() {
-      let profile = await AsyncStorage.getItem('profile')
+      await AsyncStorage.getItem('profile')
         .then((data) => {
           setProfile(JSON.parse(data));
         })
@@ -29,88 +55,107 @@ export const EditProfileScreen: React.FC<TProps> = props => {
     load_profile();
   }, []);
 
+  useEffect(() => {
+    getSelectData()
+  })
+
   return (
     <SafeAreaView style={styles.flex1}>
-      <ScrollView
-        style={styles.flex1}
-        contentContainerStyle={styles.scrollContainer}
-      >
-        <Text style={styles.label}>First Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="First Name"
-          value={profile.first_name}
-        />
-        <Text style={styles.label}>Last Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Last Name"
-          value={profile.last_name}
-        />
-        <Text style={styles.label}>Phone Number</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          value={profile.phone}
-        />
-        <Text style={styles.label}>Preferred Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Preferred Name"
-          value={profile.preferred_name}
-        />
-        <Text style={styles.label}>Date of Birth</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Date of Birth"
-          value={profile.dob}
-        />
-        <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Address"
-          value={profile.address}
-        />
-        <Text style={styles.label}>City</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="City"
-          value={profile.city}
-        />
-        <Text style={styles.label}>State</Text>
-        <View style={styles.pickerstyle}>
-          <Picker>
-            <Picker.Item label="Select State" value={0} />
-            <Picker.Item label="FCT" value={1} />
-          </Picker>
-        </View>
-        <Text style={styles.label}>Country</Text>
-        <View style={styles.pickerstyle}>
-          <Picker>
-            <Picker.Item label="Select Country" value={0} />
-            <Picker.Item label="Nigeria" value={1} />
-          </Picker>
-        </View>
-        <Text style={styles.label}>Marital Status</Text>
-        <View style={styles.pickerstyle}>
-          <Picker>
-            <Picker.Item label="Select Marital Status" value={0} />
-            <Picker.Item label="Single" value={1} />
-          </Picker>
-        </View>
-        <Text style={styles.label}>Education Level</Text>
-        <View style={styles.pickerstyle}>
-          <Picker>
-            <Picker.Item label="Select Education Level" value={0} />
-            <Picker.Item label="Master's" value={1} />
-          </Picker>
-        </View>
-        <Button
-          title={getString("Update Profile")}
-          type="outline"
-          style={styles.buttonStyle}
-        />
-      </ScrollView>
+              {profile != null && (
+                  <ScrollView
+                  style={styles.flex1}
+                  contentContainerStyle={styles.scrollContainer}
+                >
+          
+                  <Text style={styles.label}>First Name</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="First Name"
+                    value={profile.first_name}
+                  />
+                  <Text style={styles.label}>Last Name</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Last Name"
+                    value={profile.last_name}
+                  />
+                  <Text style={styles.label}>Phone Number</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Phone Number"
+                    value={profile.phone}
+                  />
+                  <Text style={styles.label}>Preferred Name</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Preferred Name"
+                    value={profile.preferred_name}
+                  />
+                  <Text style={styles.label}>Date of Birth</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Date of Birth"
+                    value={profile.dob}
+                  />
+                  <Text style={styles.label}>Address</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Address"
+                    value={profile.address}
+                  />
+                  <Text style={styles.label}>City</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="City"
+                    value={profile.city}
+                  />
+                  <Text style={styles.label}>State</Text>
+                  <View style={styles.pickerstyle}>
+                    <Picker selectedValue={profile.state}>
+                      <Picker.Item label="Select State" value={0} />
+                      {states != null && states.map((item, key)=>(
+            <Picker.Item label={item.name} value={item.id} key={key} />)
+            )}
+                                </Picker>
+                  </View>
+                  <Text style={styles.label}>Country</Text>
+                  <View style={styles.pickerstyle}>
+                    <Picker selectedValue={profile.country}>
+                    <Picker.Item label="Select Country" value={0} />
+                      {
+                        countries.map((item, key)=>(
+                          <Picker.Item label={item.name} value={item.id} key={key} />)
+                          )}
+                    </Picker>
+                  </View>
+                  <Text style={styles.label}>Marital Status</Text>
+                  <View style={styles.pickerstyle}>
+                    <Picker selectedValue={profile.marital_status}>
+                      <Picker.Item label="Select Marital Status" value={0} />
+                      {
+                        maritalStatuses.map((item, key)=>(
+                          <Picker.Item label={item.value} value={item.id} key={key} />)
+                          )}
+                    </Picker>
+                  </View>
+                  <Text style={styles.label}>Education Level</Text>
+                  <View style={styles.pickerstyle}>
+                    <Picker selectedValue={profile.education_level}>
+                      <Picker.Item label="Select Education Level" value={0} />
+                      {
+                        educactionLevels.map((item, key)=>(
+                          <Picker.Item label={item.value} value={item.id} key={key} />)
+                          )}
+                    </Picker>
+                  </View>
+                  <Button
+                    title={getString("Update Profile")}
+                    type="outline"
+                    style={styles.buttonStyle}
+                  />
+                </ScrollView>
+              )}
+    
     </SafeAreaView>
   );
 };
