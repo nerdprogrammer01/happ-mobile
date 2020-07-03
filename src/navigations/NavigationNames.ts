@@ -49,5 +49,7 @@ export default {
   ReferralScreen : "ReferralScreen",
   ReferralsScreen : "ReferralsScreen",
   ProviderAvailabilityScreen:"ProviderAvailabilityScreen",
-  ServiceCostScreen:"ServiceCostScreen"
+  ServiceCostScreen:"ServiceCostScreen",
+  ProvidersListScreen:"ProvidersListScreen",
+  ProviderDetailScreen:"ProviderDetailScreen"
 };

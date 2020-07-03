@@ -39,11 +39,13 @@ import {
   NewReferralScreen,
   ProviderAvailabilityScreen,
   ServiceCostScreen,
-  EditProfileScreen
+  EditProfileScreen,
+  ProviderDetailScreen
 
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
 import VideoConferenceScreen from "../screens/video";
+import { ProvidersListScreen } from "../screens/providers/ProvidersListScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -210,9 +212,15 @@ const DoctorTabStack = () => {
   return (
     <Stack.Navigator headerMode="screen" screenOptions={stackScreenOptions}>
       <Stack.Screen
-        name={NavigationNames.DoctorListScreen}
-        component={DoctorDetailScreen}
-        options={{ headerShown: false }}
+        name={NavigationNames.ProvidersListScreen}
+        component={ProvidersListScreen}
+        options={{ title: "HealthCare Providers" }}
+      />
+
+    <Stack.Screen
+        name={NavigationNames.ProviderDetailScreen}
+        component={ProviderDetailScreen}
+        options={{ headerShown: true }}
       />
     </Stack.Navigator>
   );
