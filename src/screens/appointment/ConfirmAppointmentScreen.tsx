@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Picker, StyleSheet, TextInput, AsyncStorage, Modal, Alert, ActivityIndicator } from 'react-native';
 import { Theme } from "../../theme";
-import { Button } from "../../components/buttons";
+import { Button, ButtonPrimary } from "../../components/buttons";
 import { useLocalization } from "../../localization";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NewAppointmentModel } from "../../models/NewAppointmentModel";
@@ -11,13 +11,13 @@ import Moment from 'moment';
 import { ScrollView, TouchableHighlight } from "react-native-gesture-handler";
 import { Environment } from "../../datas/Config";
 import { DoctorServicesModel } from "../../models/DoctorServicesModel";
-import { DoctorsService } from "../../services";
 import { Times } from "../../datas/Times";
 import RNPaystack from 'react-native-paystack';
 import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-input";
 import NavigationNames from "../../navigations/NavigationNames";
 import VideoConferenceScreen from "../video";
 import { ConfirmAppointmentModal } from "../../modals";
+import { DoctorItemRow } from "../../components";
 
 
 type TProps = {};
@@ -326,15 +326,17 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.titleText}>Selected Doctor</Text>
+      <Text style={styles.titleText}>Provider</Text>
 
-      <TextInput
+{/*       <TextInput
         style={styles.input}
         placeholder="Selected Doctor"
         editable={false}
         value={appointmentModel.doctor.fullName}
 
-      />
+      /> */}
+
+<DoctorItemRow item={appointmentModel.doctor} />
 
       <Text style={styles.titleText}>Select Service</Text>
       <View style={styles.pickerstyle}>
@@ -395,10 +397,10 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         (available && amount > 0) &&
         <View>
           <Text style={styles.titleText}>Service Charge : {amount.toString()+" "+Environment.DEFAULT_CURRENCY} </Text>
-          <Text style={styles.titleText}>Please fill in your card details to pay</Text>
+          <Text style={styles.paymentTitle}>Please fill in your card details to pay</Text>
           <LiteCreditCardInput onChange={paymentFormHandler} />
           {validDebitCard &&
-            <Button
+            <ButtonPrimary
               title={getString("Pay Now")}
               type="outline"
               style={{ height: 50, width: "100%", marginTop: 10, marginBottom: 20 }}
@@ -410,12 +412,12 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
       }
 
-      <Button
+   {/*    <Button
               title={getString("Test Video")}
               type="outline"
               style={{ height: 50, width: "100%", marginTop: 10, marginBottom: 20 }}
               onPress = {testVideo}
-      />
+      /> */}
 
       {/* payment modal */}
 
@@ -495,5 +497,11 @@ const styles = StyleSheet.create({
   timeSection: {
     flex: 1,
     flexDirection: "row"
-  }
+  },
+  paymentTitle: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "red",
+    margin: 10
+  },
 });

@@ -1,7 +1,7 @@
 import React, { useState ,useEffect} from "react";
 import { View, Text, Picker, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { Theme } from "../../theme";
-import { Button } from "../../components/buttons";
+import { ButtonPrimary } from "../../components/buttons";
 import { useLocalization } from "../../localization";
 import { useNavigation } from "@react-navigation/native";
 import NavigationNames from "../../navigations/NavigationNames";
@@ -166,7 +166,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
         
         </Picker>
       </View>
-      <Button
+      <ButtonPrimary
         title={getString("Continue")}
         onPress={nextForm}
         type="outline"
