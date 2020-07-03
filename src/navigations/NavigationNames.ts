@@ -49,5 +49,9 @@ export default {
   ReferralScreen : "ReferralScreen",
   ReferralsScreen : "ReferralsScreen",
   ProviderAvailabilityScreen:"ProviderAvailabilityScreen",
-  ServiceCostScreen:"ServiceCostScreen"
+  ServiceCostScreen:"ServiceCostScreen",
+  BankInfoScreen:"BankInfoScreen",
+  HMOScreen:"HMOScreen",
+  SettingsScreen:"SettingsScreen",
+  FamilyIntakeScreen:"FamilyIntakeScreen"
 };

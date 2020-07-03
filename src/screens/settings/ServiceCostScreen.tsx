@@ -78,7 +78,7 @@ export const ServiceCostScreen: React.FC<TProps> = props => {
             CostingModels:serviceCosts
         });
     
-        alert(bd);
+
     
         fetch(Environment.SERVER_API + '/api/servicecost/Post', {
             method: 'POST',
@@ -163,7 +163,7 @@ export const ServiceCostScreen: React.FC<TProps> = props => {
                 <View key={index}>
                 <Text style={styles.cost_categoryText}>{item.sub_name}</Text>
                 <Text style={styles.cost_serviceText}>{item.service_name}</Text>
-                <TextInput placeholder="cost" style={styles.input_left} value={  item.cost.toString()} keyboardType={'numeric'}  onChangeText={value => update_cost(item.service_id,item.sub_id,value)} />
+                <TextInput placeholder="cost" style={styles.input_left} value={item.cost.toString()} keyboardType={'numeric'}  onChangeText={value => update_cost(item.service_id,item.sub_id,value)} />
                 <Divider style={styles.divider} />
               </View>
             );

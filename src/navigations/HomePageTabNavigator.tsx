@@ -39,7 +39,11 @@ import {
   NewReferralScreen,
   ProviderAvailabilityScreen,
   ServiceCostScreen,
-  EditProfileScreen
+  EditProfileScreen,
+  BankInfoScreen,
+  HMOScreen,
+  SettingsScreen,
+  FamilyIntakeScreen
 
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
@@ -172,6 +176,14 @@ const CalendarTabStack = () => {
         component={VideoConferenceScreen}
         options={{ title: getString("Video Session") }}
       />
+
+
+    <Stack.Screen
+        name={NavigationNames.FamilyIntakeScreen}
+        component={FamilyIntakeScreen}
+        options={{ title: getString("Family Intake") }}
+      />
+
     </Stack.Navigator>
   );
 };
@@ -207,12 +219,23 @@ const ProfileTabStack = () => {
 };
 
 const DoctorTabStack = () => {
+  const { getString } = useLocalization();
   return (
     <Stack.Navigator headerMode="screen" screenOptions={stackScreenOptions}>
+
+
+
       <Stack.Screen
         name={NavigationNames.DoctorListScreen}
         component={DoctorDetailScreen}
         options={{ headerShown: false }}
+      />
+
+
+<Stack.Screen
+        name={NavigationNames.FamilyIntakeScreen}
+        component={FamilyIntakeScreen}
+        options={{ title: getString("Family Inake form") }}
       />
     </Stack.Navigator>
   );
@@ -306,7 +329,6 @@ const MenuTabStack = () => {
       />
 
 
-
     <Stack.Screen
         name={NavigationNames.MemberSearchScreen}
         component={MemberSearchScreen}
@@ -342,6 +364,25 @@ const MenuTabStack = () => {
         name={NavigationNames.ServiceCostScreen}
         component={ServiceCostScreen}
         options={{ title: getString("My Service Costs") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.BankInfoScreen}
+        component={BankInfoScreen}
+        options={{ title: getString("My Bank Information") }}
+      />
+
+      
+<Stack.Screen
+        name={NavigationNames.HMOScreen}
+        component={HMOScreen}
+        options={{ title: getString("My HMO") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.SettingsScreen}
+        component={SettingsScreen}
+        options={{ title: getString("Account Settings") }}
       />
 
       {/* <Stack.Screen

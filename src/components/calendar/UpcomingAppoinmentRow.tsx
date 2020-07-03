@@ -43,7 +43,7 @@ export const UpcomingAppoinmentRow: React.FC<TProps> = props => {
         <Text style={styles.titleText}>{props.item.title}</Text>
         <Text style={styles.doctorNameText}>{fullName}</Text>
         <Text style={styles.locationText}>
-          {`${moment(props.item.appointmentDate,'YYYYMMDD').fromNow()} - ${
+          {`${moment(props.item.appointmentDate).format("LLL")} - ${
             props.item.service
           }`}
         </Text>
