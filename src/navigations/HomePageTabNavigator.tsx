@@ -5,7 +5,6 @@ import { Theme } from "../theme";
 import NavigationNames from "./NavigationNames";
 import { useLocalization } from "../localization";
 import { stackScreenOptions, tabScreenOptions } from "./NavigationHelper";
-import { Button } from "./../components/buttons";
 import {
   HomeScreen,
   ProfileScreen,
@@ -17,7 +16,6 @@ import {
   DepartmentListScreen,
   DepartmentDetailScreen,
   MediaDetailScreen,
-  NewAppointmentScreen,
   DoctorListScreen,
   DoctorDetailScreen,
   EventListScreen,
@@ -43,11 +41,13 @@ import {
   BankInfoScreen,
   HMOScreen,
   SettingsScreen,
-  FamilyIntakeScreen
+  FamilyIntakeScreen,
+  ProviderDetailScreen
 
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
 import VideoConferenceScreen from "../screens/video";
+import { ProvidersListScreen } from "../screens/providers/ProvidersListScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -226,9 +226,15 @@ const DoctorTabStack = () => {
 
 
       <Stack.Screen
-        name={NavigationNames.DoctorListScreen}
-        component={DoctorDetailScreen}
-        options={{ headerShown: false }}
+        name={NavigationNames.ProvidersListScreen}
+        component={ProvidersListScreen}
+        options={{ title: "HealthCare Providers" }}
+      />
+
+    <Stack.Screen
+        name={NavigationNames.ProviderDetailScreen}
+        component={ProviderDetailScreen}
+        options={{ headerShown: true }}
       />
 
 

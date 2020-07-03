@@ -16,3 +16,4 @@ export * from "./prescription";
 export * from "./referral";
 export * from "./settings";
 export * from "./form";
+export * from "./providers";

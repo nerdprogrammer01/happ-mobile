@@ -50,6 +50,8 @@ export default {
   ReferralsScreen : "ReferralsScreen",
   ProviderAvailabilityScreen:"ProviderAvailabilityScreen",
   ServiceCostScreen:"ServiceCostScreen",
+  ProvidersListScreen:"ProvidersListScreen",
+  ProviderDetailScreen:"ProviderDetailScreen",
   BankInfoScreen:"BankInfoScreen",
   HMOScreen:"HMOScreen",
   SettingsScreen:"SettingsScreen",
