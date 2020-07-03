@@ -11,15 +11,13 @@ import {
     Button,Divider,
     ButtonPrimary,
 } from "../../components";
-import { DashboardItemsModel, AppointmentModel, PersonModel } from "../../models";
-import { DashboardService } from "../../services";
+import { AppointmentModel} from "../../models";
 import { useLocalization } from "../../localization";
 import NavigationNames from "../../navigations/NavigationNames";
 import { Theme } from "../../theme";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { HeaderButtons } from "react-navigation-header-buttons";
 import {Environment} from "../../datas";
 import { CancelAppointmentModal } from "../../modals/CancelAppointmentModal";
-
 
 type TProps = {};
 
@@ -31,7 +29,8 @@ export const AppointmentScreen: React.FC<TProps> = props => {
   const [profile, setProfile] = useState(null);
   const [role,setRole]=useState("");
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [sessionToken, setSessionToken] = useState("");
+  
   useEffect(() => {
     async function load_profile() {
         let profile = await AsyncStorage.getItem('profile'); 
@@ -39,22 +38,45 @@ export const AppointmentScreen: React.FC<TProps> = props => {
       }
      load_profile();
 
-
   }, []);
 
   useEffect(() => {
    if (profile != null){
      setRole(profile.role);
+     getSessionToken()
    }
-
 
   }, [profile]);
 
+
+
+  const getSessionToken = () => {
+
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+        //'Token': profile.token
+      }
+    };
+
+    fetch(Environment.SERVER_API + "/api/appsession/gettoken?username=" + profile.email + "&appointment_id=" + appointment.id, request)
+      .then((response) => {
+        JSON.stringify(response, null, 4)
+        return response.json();
+      })
+      .then(responseJson => {
+        console.log(responseJson.token)
+        setSessionToken(responseJson.token)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
   const onPressNewSession = () => {
-    navigation.navigate(NavigationNames.VideoConferenceScreen, {session_token : appointment.token});
+    navigation.navigate(NavigationNames.VideoConferenceScreen, {session_token : sessionToken});
   };
-
-
   
   navigation.setOptions({
     headerRight: () => (
@@ -63,7 +85,6 @@ export const AppointmentScreen: React.FC<TProps> = props => {
        <Button
         onPress={() => setModalVisible(true)}
         title={getString("Cancel")}
-
       />
       </HeaderButtons>
     )
@@ -77,11 +98,16 @@ export const AppointmentScreen: React.FC<TProps> = props => {
            <Text style={styles.appointmentSubText}>Duration : {appointment.duration} mins</Text>
       
           </View>
-           <ButtonPrimary style={styles.buttontStyle}
-                  title={getString("START SESSION")}
-                  type="outline"
-                  onPress={onPressNewSession}
-                />
+          {
+            sessionToken != null && (
+              <ButtonPrimary style={styles.buttontStyle}
+              title={getString("START SESSION")}
+              type="outline"
+              onPress={onPressNewSession}
+            />
+            )
+          }
+
            <ScrollView
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
@@ -141,10 +167,7 @@ export const AppointmentScreen: React.FC<TProps> = props => {
       onCloseModal = {() => {setModalVisible(false)}}
       appointment_id = {appointment.id}
       />
-
-        
     </ScrollView>
-   
   </View>
   );
 };
