@@ -59,7 +59,7 @@ export const CalendarScreen: React.FC<{}> = props => {
     async function load_profile() {
       let profile_state = await AsyncStorage.getItem('profile'); 
       setProfile(JSON.parse(profile_state));
-      setRole(profile.role);
+      //setRole(profile.role);
     }
    load_profile();
   
@@ -92,7 +92,7 @@ export const CalendarScreen: React.FC<{}> = props => {
         var appointments = responseJson as AppointmentModel[]
 
         appointments.forEach( appointment => {  
-         var formatted_date = moment(appointment.appointmentDate.toString()).format("YYYY-MM-DD");
+         var formatted_date = moment(appointment.appointmentDate).format("YYYY-MM-DD");
           markedDates[formatted_date] = { marked: true, dotColor: Theme.colors.primaryColor}
           appointmentsObj[formatted_date]=[appointment]
         });

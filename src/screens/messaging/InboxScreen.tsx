@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Image,
   ScrollView,
-  TouchableOpacity,AsyncStorage
+  TouchableOpacity,AsyncStorage,ActivityIndicator
 } from "react-native";
 import { Theme } from "../../theme";
 import { Divider } from "../../components";
@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import NavigationNames from "../../navigations/NavigationNames";
 import moment from "moment";
 import {Environment} from "../../datas";
+import { styles } from "../../styles";
 
 type TProps = {};
 
@@ -54,6 +55,7 @@ export const InboxScreen: React.FC<TProps> = props => {
       try{
         if (profile  != null){
           getMessages();
+          //alert(profile.token);
         }
       }catch(error){
         console.log(error);
@@ -63,18 +65,20 @@ export const InboxScreen: React.FC<TProps> = props => {
 
 
   const getMessages = () => {
+    setLoading(true);
     if (profile != null ){
 
       let request = {
         method: "GET",
         headers: {
           'Content-Type': "application/json",
-          //'Token': profile.token
-          'Authorization': 'Bearer ' + profile.token
+          'Authorization': 'Bearer '+profile.token
         }
       };
   
-      console.log(profile.token);
+      //alert(JSON.stringify(request));
+
+      
       fetch(Environment.SERVER_API+"/api/Messaging/Get", request)
         .then(async response => {
           console.log(JSON.stringify(response, null, 4));
@@ -89,7 +93,7 @@ export const InboxScreen: React.FC<TProps> = props => {
         })
         .catch(error => {
           console.error(error);
-          alert(error);
+          //alert(error);
         });
     }else{
       //console.log(profile);
@@ -98,39 +102,48 @@ export const InboxScreen: React.FC<TProps> = props => {
     }
 
   return (
-    <View style={styles.container}>
-
+    <View style={[styles.container,{marginTop:15}]}>
+       {loading &&
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />}
+<ScrollView style={styles.scrollContainer}>
 {messages.map((item, index) => {
                   return (
                     <View key={index}>
-                        <Text style={styles.titleText}>{item.title}</Text>
-                        <Text style={styles.minuteText}>From {item.created_by_name} on {item.created_at}</Text>
+                        <Text style={styles.inboxTitleText}>{item.title}</Text>
 
+                        <Text style={styles.label_titleText}>{item.notification}</Text>
+                        
+                       
+
+
+                        <View style={{flexDirection:"row"}}>
+                      
+                    <View style={{flex:1}}>
+                   
+                    </View>
+                    <View style={{flex:1}}>
+                    <Text style={styles.rightText}>{moment(item.created_at).format('LLL')}</Text>
+                    </View>
+                </View>
+
+                <View style={{flexDirection:"row"}}>
+               
+                    <View style={{flex:1}}>
+                    
+                        
+                    </View>
+                    <View style={{flex:1}}>
+                    <Text style={styles.rightText}>From - {item.created_by_name}</Text>
+                    </View>
+                </View>
                         <Divider style={styles.divider} />
                       </View>
                   
                   );
                 })}
+</ScrollView>
+
    
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  item_container:{
-    margin:5
-  },
-  titleText: {
-    fontSize: 15,
-    color: Theme.colors.black,
-    marginTop: 8
-  },
-  minuteText: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: Theme.colors.gray,
-    marginTop: 4
-  },
-  divider: { marginStart: 16,marginEnd:16,backgroundColor:"#ADDFFF" },
-});

@@ -51,5 +51,9 @@ export default {
   ProviderAvailabilityScreen:"ProviderAvailabilityScreen",
   ServiceCostScreen:"ServiceCostScreen",
   ProvidersListScreen:"ProvidersListScreen",
-  ProviderDetailScreen:"ProviderDetailScreen"
+  ProviderDetailScreen:"ProviderDetailScreen",
+  BankInfoScreen:"BankInfoScreen",
+  HMOScreen:"HMOScreen",
+  SettingsScreen:"SettingsScreen",
+  FamilyIntakeScreen:"FamilyIntakeScreen"
 };

@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
       color: Theme.colors.black,
     },
     input: {
-      height: 50,
+    
       borderRadius: 5,
       borderColor: Theme.colors.primaryColor,
       borderWidth: 1,
@@ -134,13 +134,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "400",
     marginBottom:5,
-    color: "red"
+    color: "white",
+    backgroundColor:"red",
+    padding:5,
+    borderRadius:3
   },
   successText: {
     fontSize: 15,
     fontWeight: "400",
     marginBottom:5,
-    color: "green"
+    color: "white",
+    backgroundColor:"#00A86B",
+    padding:5,
+    borderRadius:3
   },
   input_left: {
     height: 50,
@@ -160,6 +166,14 @@ input_right: {
   padding: 10,
   justifyContent: 'flex-end'
 },
+inboxTitleText: {   
+  fontSize: 20,
+  fontWeight: "400",
+  color: Theme.colors.primaryColor
+},
+rightText:{
+  justifyContent: 'flex-end'
+}
 
   });
   

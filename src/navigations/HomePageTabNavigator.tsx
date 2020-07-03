@@ -5,7 +5,6 @@ import { Theme } from "../theme";
 import NavigationNames from "./NavigationNames";
 import { useLocalization } from "../localization";
 import { stackScreenOptions, tabScreenOptions } from "./NavigationHelper";
-import { Button } from "./../components/buttons";
 import {
   HomeScreen,
   ProfileScreen,
@@ -17,7 +16,6 @@ import {
   DepartmentListScreen,
   DepartmentDetailScreen,
   MediaDetailScreen,
-  NewAppointmentScreen,
   DoctorListScreen,
   DoctorDetailScreen,
   EventListScreen,
@@ -40,6 +38,10 @@ import {
   ProviderAvailabilityScreen,
   ServiceCostScreen,
   EditProfileScreen,
+  BankInfoScreen,
+  HMOScreen,
+  SettingsScreen,
+  FamilyIntakeScreen,
   ProviderDetailScreen
 
 } from "../screens";
@@ -174,6 +176,14 @@ const CalendarTabStack = () => {
         component={VideoConferenceScreen}
         options={{ title: getString("Video Session") }}
       />
+
+
+    <Stack.Screen
+        name={NavigationNames.FamilyIntakeScreen}
+        component={FamilyIntakeScreen}
+        options={{ title: getString("Family Intake") }}
+      />
+
     </Stack.Navigator>
   );
 };
@@ -209,8 +219,12 @@ const ProfileTabStack = () => {
 };
 
 const DoctorTabStack = () => {
+  const { getString } = useLocalization();
   return (
     <Stack.Navigator headerMode="screen" screenOptions={stackScreenOptions}>
+
+
+
       <Stack.Screen
         name={NavigationNames.ProvidersListScreen}
         component={ProvidersListScreen}
@@ -221,6 +235,13 @@ const DoctorTabStack = () => {
         name={NavigationNames.ProviderDetailScreen}
         component={ProviderDetailScreen}
         options={{ headerShown: true }}
+      />
+
+
+<Stack.Screen
+        name={NavigationNames.FamilyIntakeScreen}
+        component={FamilyIntakeScreen}
+        options={{ title: getString("Family Inake form") }}
       />
     </Stack.Navigator>
   );
@@ -314,7 +335,6 @@ const MenuTabStack = () => {
       />
 
 
-
     <Stack.Screen
         name={NavigationNames.MemberSearchScreen}
         component={MemberSearchScreen}
@@ -350,6 +370,25 @@ const MenuTabStack = () => {
         name={NavigationNames.ServiceCostScreen}
         component={ServiceCostScreen}
         options={{ title: getString("My Service Costs") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.BankInfoScreen}
+        component={BankInfoScreen}
+        options={{ title: getString("My Bank Information") }}
+      />
+
+      
+<Stack.Screen
+        name={NavigationNames.HMOScreen}
+        component={HMOScreen}
+        options={{ title: getString("My HMO") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.SettingsScreen}
+        component={SettingsScreen}
+        options={{ title: getString("Account Settings") }}
       />
 
       {/* <Stack.Screen

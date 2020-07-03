@@ -11,8 +11,9 @@ export * from "./events";
 export * from "./memberprofile";
 export * from "./login";
 export * from "./messaging";
-export * from "./video"
-export * from "./prescription"
-export * from "./referral"
-export * from "./settings"
-export * from "./providers"
+export * from "./video";
+export * from "./prescription";
+export * from "./referral";
+export * from "./settings";
+export * from "./form";
+export * from "./providers";

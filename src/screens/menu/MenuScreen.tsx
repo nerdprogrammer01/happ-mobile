@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { FlatList, View, Text, StyleSheet } from "react-native";
+import React, { useRef, useState,useEffect } from "react";
+import { FlatList, View, Text, StyleSheet,AsyncStorage } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Divider, TouchableHighlight } from "../../components";
 import { Theme } from "../../theme";
@@ -15,7 +15,7 @@ const getMenuItems = (getString: (key: string) => string) => [
     navigateToScreen: NavigationNames.ProfileScreen,
     forward:true
   },
-  {
+  /* {
     title: getString("Events"),
     iconName: "ios-musical-notes",
     navigateToScreen: NavigationNames.EventListScreen,
@@ -26,41 +26,84 @@ const getMenuItems = (getString: (key: string) => string) => [
     iconName: "ios-paper",
     navigateToScreen: NavigationNames.MemberProfileScreen,
     forward:true
+  }, */
+  {
+    title: getString("My Bank"),
+    iconName: "ios-archive",
+    navigateToScreen: NavigationNames.BankInfoScreen,
+    forward:true
   },
   {
-    title: getString("Youtube"),
-    iconName: "logo-youtube",
-    navigateToScreen: NavigationNames.AppointmentsScreen,
+    title: getString("My HMO"),
+    iconName: "ios-information",
+    navigateToScreen: NavigationNames.HMOScreen,
     forward:true
   },
   {
     title: getString("Prescriptions"),
-    iconName: "logo-instagram",
+    iconName: "ios-list",
      navigateToScreen: NavigationNames.PrescriptionsScreen,
     forward:true
   },
   {
     title: getString("Referrals"),
-    iconName: "ios-business",
+    iconName: "ios-return-right",
+    navigateToScreen: NavigationNames.ReferralsScreen,
+    forward:true
+  },
+  {
+    title: getString("Account Settings"),
+    iconName: "md-settings",
+    navigateToScreen: NavigationNames.SettingsScreen,
+    //openSettings: true,
+    forward:true
+  }
+  ,
+  {
+    title: getString("Log out"),
+    iconName: "ios-power",
+    navigateToScreen: NavigationNames.LoginTab,
+    forward:false
+  }
+];
+
+
+const getProviderMenuItems = (getString: (key: string) => string) => [
+  {
+    title: getString("My Profile"),
+    iconName: "md-person",
+    navigateToScreen: NavigationNames.ProfileScreen,
+    forward:true
+  },
+  {
+    title: getString("Prescriptions"),
+    iconName: "ios-list",
+     navigateToScreen: NavigationNames.PrescriptionsScreen,
+    forward:true
+  },
+  {
+    title: getString("Referrals"),
+    iconName: "ios-return-right",
     navigateToScreen: NavigationNames.ReferralsScreen,
     forward:true
   },
   {
     title: getString("My Availability"),
-    iconName: "ios-call",
+    iconName: "ios-time",
     navigateToScreen: NavigationNames.ProviderAvailabilityScreen,
     forward:true
   },
   {
     title: getString("My Service Costs"),
-    iconName: "ios-chatbubbles",
+    iconName: "ios-cash",
     navigateToScreen: NavigationNames.ServiceCostScreen,
     forward:true
   },
   {
-    title: getString("Settings"),
+    title: getString("Account Settings"),
     iconName: "md-settings",
-    openSettings: true,
+    navigateToScreen: NavigationNames.SettingsScreen,
+    //openSettings: true,
     forward:true
   }
   ,
@@ -77,9 +120,40 @@ type TProps = {};
 export const MenuScreen: React.FC<TProps> = props => {
   const navigation = useNavigation();
   const { getString } = useLocalization();
-
+  const [profile, setProfile] = useState(null);
   const [isVisibleSettingModal, setIsVisibleSettingModal] = useState(false);
-  const menuItems = getMenuItems(getString);
+  const [menuItems,setMenuItems]=useState([]);
+
+  //const menuItems = getProviderMenuItems(getString);
+
+
+
+  useEffect(() => {
+    async function load_profile() {
+      let profile = await AsyncStorage.getItem('profile')
+      .then((data) => {
+        setProfile(JSON.parse(data));
+    })
+    .catch((err) => {
+       console.log(err);
+    });   
+    }
+   load_profile();
+  }, []);
+
+
+  useEffect(() => {
+    if (profile != null){
+      if (profile.role=="clinician"){
+        setMenuItems(getProviderMenuItems(getString));
+      }else if (profile.role=="client"){
+        setMenuItems(getMenuItems(getString));
+      }
+    }
+  
+  
+  }, [profile]);
+
 
   const onPressMenuItemClick = (item: any) => {
     if (item.openSettings) {
