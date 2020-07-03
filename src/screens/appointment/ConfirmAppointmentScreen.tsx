@@ -45,6 +45,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   const [paymentMessage, setPaymentMessage] = useState("");
   const [availabilityMessage, setAvailabilityMessage] = useState("Select a time and we will let you know if your doctor is available");
   const [loading, setLoading] = useState(false);
+  const [availabilityList,setAvailabilityList]=useState([]);
 
 
     //datepicker related 
@@ -63,6 +64,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       let datestring = Moment(date).format('DD-MM-YYYY')
       setDate(datestring);
       hideDatePicker();
+      get_clinician_times();
     };
 
 
@@ -320,6 +322,28 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     navigation.navigate(NavigationNames.VideoConferenceScreen, {session_token : Environment.TWILIO_TEST_SESSION_TOKEN })
   }
 
+  const get_clinician_times = () => {
+    setLoading(true);
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+        'Token': profile.token
+      }
+    };
+
+    fetch(Environment.SERVER_API+"/api/Clinician/getclinicianavailability?clinician_id="+appointmentModel.doctor.id +"&date="+date, request)
+      .then((response) => response.json())
+      .then(responseJson => {
+        setAvailabilityList(responseJson);
+        setLoading(false);
+      })
+      .catch(error => {
+        alert(error);
+        console.error(error);
+      });
+  }
+
   useEffect(() => {
     getClinicianServices();
   }, []);
@@ -367,7 +391,11 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
           <View style={styles.pickerstyle2}>
             <Picker onValueChange={(itemValue) => {checkAvailability(itemValue)}} selectedValue={appointmentTime}>
               <Picker.Item label="Select Time" value="Select Time" />
-              {Times.map((item, key) => (
+           {/*    {Times.map((item, key) => (
+                <Picker.Item label={item} value={item} key={key} />)
+              )} */}
+
+{availabilityList.map((item, key) => (
                 <Picker.Item label={item} value={item} key={key} />)
               )}
 
@@ -390,7 +418,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         style={styles.buttonStyle}
       />
        {loading &&
-                    <ActivityIndicator size='large' color='#6646ee' />
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />
                 }
 
       {
