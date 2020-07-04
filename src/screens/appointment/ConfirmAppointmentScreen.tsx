@@ -181,7 +181,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         })
         .then(responseJson => {
           setAvailable(responseJson);
-          //setAvailable(true);
+          setAvailable(true);
           if(available == false){
             setAvailabilityMessage("Your doctor is not available for this time, Kindly try a different time")
           }
@@ -229,6 +229,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         return response.json();
       })
       .then(responseJson => {
+        appointmentModel.appointmentDate = start_date
         navigation.navigate(NavigationNames.AppointmentPaymentScreen, { appointmentRef: responseJson, amount: amount, appointmentModel : JSON.stringify(appointmentModel) })
       })
       .catch(error => {

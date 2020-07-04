@@ -14,7 +14,7 @@ import { NavigationNames } from "../navigations";
 type TProps = {
   item?: NewAppointmentModel;
   isVisible: boolean;
-  selectedDate?: Date;
+  //selectedDate?: Date;
   transRef? : string;
   onDismissModal: () => void;
   onCloseModal : () => void;
@@ -68,7 +68,7 @@ export const ConfirmAppointmentModal: React.FC<TProps> = props => {
           </View>
           <View style={styles.timeContainer}>
             <Text style={styles.dateText}>
-              {moment(props.selectedDate).format('LLL')}
+              {moment(props.item.appointmentDate).format('LLL')}
             </Text>
           </View>
           <View>

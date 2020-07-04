@@ -20,9 +20,7 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
   const navigation = useNavigation();
   const route = useRoute()
   const { getString } = useLocalization();
-  const [available, setAvailable] = useState(false)
   const [validDebitCard, setValidDebitCard] = useState(false)
-  const [start_date, setStart_date] = useState(null)
   const [profile, setProfile] = useState(null);
   const [transRef, setTransRef] = useState("");
   const [cardInfo, setCardInfo] = useState(null);
@@ -75,7 +73,6 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
         return response.json();
       })
       .then(responseJson => {
-        //setTransRef(responseJson)
       })
       .catch(error => {
         console.error(error);
@@ -105,14 +102,13 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
           cvc: cardInfo.values.cvc,
           email: profile.email,
           amountInKobo: amount * 100,
-         // accessCode: transRef,
           
         })
       .then(response => {
-        //setTransRef(response.reference as string)
         if(response.reference != null){
           postCredit(response.reference)
           setPaymentSuccessful(true)
+          setTransRef(response.reference)
           setPaymentMessage("Payment Successful")
           setModalVisible(true)
           setLoading(false)
@@ -160,7 +156,6 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
       isVisible={modalVisible}
       item = {appointmentModel}
       message = {paymentMessage}
-      selectedDate = {start_date}
       isSuccess = {paymentSuccessful}
       transRef = {transRef}
       onDismissModal = {() => alert("Click an option instead")}
