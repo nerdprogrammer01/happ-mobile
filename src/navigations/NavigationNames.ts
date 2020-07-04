@@ -1,4 +1,5 @@
 import { AvailableClinicianScreen } from "../screens/appointment/AvailableClinicianScreen";
+import { AppointmentPaymentScreen } from "../screens/payment";
 
 export default {
 
@@ -59,5 +60,6 @@ export default {
   PrimaryCareScreen:"PrimaryCareScreen",
   ProgressNoteScreen:"ProgressNoteScreen",
   PsychiatricProgressScreen:"PsychiatricProgressScreen",
-  PediatricEvaluationScreen:"PediatricEvaluationScreen"
+  PediatricEvaluationScreen:"PediatricEvaluationScreen",
+  AppointmentPaymentScreen:"AppointmentPaymentScreen"
 };
