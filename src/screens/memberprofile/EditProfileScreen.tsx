@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, SafeAreaView, AsyncStorage } from "react-native";
+import { View, Text, ScrollView, StyleSheet, SafeAreaView, AsyncStorage,ActivityIndicator } from "react-native";
 import { Theme } from "../../theme";
 import { useLocalization } from "../../localization";
 import { useNavigation } from "@react-navigation/native";
@@ -32,14 +32,16 @@ export const EditProfileScreen: React.FC<TProps> = props => {
   const [country, setCountry] = useState(0);
   const [maritalStatus, setMaritalStatus] = useState(0);  
   const [educationLevel, setEducationLevel] = useState(0);
+  const [isLoading,setLoading]=useState(true);
   
 
   const getSelectData = () => {
+    setLoading(true);
     let request = {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       }
     };
     
@@ -50,6 +52,7 @@ export const EditProfileScreen: React.FC<TProps> = props => {
         setCountries(responseJson.countries)
         setMaritalStatuses(responseJson.marital_statuses)
         setEducationLevels(responseJson.education_levels)
+        setLoading(false);
       })
       .catch(error => {
         console.error(error);
@@ -58,8 +61,10 @@ export const EditProfileScreen: React.FC<TProps> = props => {
 
   useEffect(() => {
     async function load_profile() {
+      setLoading(true);
      let profile = await AsyncStorage.getItem('profile')
         .then((data) => {
+          
           setProfile(JSON.parse(data));
           setFirstName(JSON.parse(data).first_name)
           setLastName(JSON.parse(data).last_name)
@@ -71,7 +76,8 @@ export const EditProfileScreen: React.FC<TProps> = props => {
           setState(JSON.parse(data).state)
           setCountry(JSON.parse(data).country)
           setMaritalStatus(JSON.parse(data).marital_status)
-          setEducationLevel(JSON.parse(data).education_level)
+          setEducationLevel(JSON.parse(data).education_level);
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err);
@@ -126,7 +132,7 @@ export const EditProfileScreen: React.FC<TProps> = props => {
       method: "POST",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       },
       body:requestBody
     };
@@ -149,6 +155,9 @@ export const EditProfileScreen: React.FC<TProps> = props => {
 
   return (
     <SafeAreaView style={styles.flex1}>
+  {isLoading &&
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />}
+
               {profile != null && (
                   <ScrollView
                   style={styles.flex1}

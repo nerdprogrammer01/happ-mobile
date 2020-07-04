@@ -126,7 +126,7 @@ const update_value=(key,value)=>{
       try{
         if (profile  != null){
           get_lookups();
-          get_form_data();
+          //get_form_data();
 
           if (profile.role=="clinician"){
               setCanSubmit(true);
@@ -227,6 +227,8 @@ const update_value=(key,value)=>{
         .then(responseJson => {
           setOptions(responseJson);
           setLoading(false);
+
+          get_form_data();
         })
         .catch(error => {
           console.error(error);
