@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, AsyncStorage} from 'react-native';
+import { View, Text, StyleSheet, AsyncStorage, ActivityIndicator} from 'react-native';
 import { Theme } from "../../theme";
 import { ButtonPrimary } from "../../components/buttons";
 import { useLocalization } from "../../localization";
@@ -20,20 +20,19 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
   const navigation = useNavigation();
   const route = useRoute()
   const { getString } = useLocalization();
-  const [amount, setAmount] = useState(0.00);
-  const [available, setAvailable] = useState(false)
   const [validDebitCard, setValidDebitCard] = useState(false)
-  const [start_date, setStart_date] = useState(null)
   const [profile, setProfile] = useState(null);
   const [transRef, setTransRef] = useState("");
-  const [appointmentRef, setAppointmentRef] = useState("");
   const [cardInfo, setCardInfo] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
   const [paymentMessage, setPaymentMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
 
-  let appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
+  const appointmentRef = route.params["appointmentRef"] as string;
+  const amount = route.params["amount"] as number;
+  const appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
 
   useEffect(() => {
     async function load_profile() {
@@ -61,12 +60,10 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
       method: "POST",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Token': profile.token
       },
       body:requestBody
     };
-
-    console.log(requestBody)
 
     fetch(Environment.SERVER_API + "/api/credit/PostCredit", request)
       .then((response) => {
@@ -74,7 +71,6 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
         return response.json();
       })
       .then(responseJson => {
-        //setTransRef(responseJson)
       })
       .catch(error => {
         console.error(error);
@@ -91,9 +87,9 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
 
   const pay = () =>
   {
-    if(validDebitCard && cardInfo !=null){
-      let expiry_info = cardInfo.values.expiry as string;
-    
+    setLoading(true)
+
+      let expiry_info = cardInfo.values.expiry as string;   
       if(appointmentRef.length > 0){
         //todo:: add loader to payment
       RNPaystack.init({ publicKey: Environment.PAYSTACK_PUBLIC_KEY })
@@ -104,21 +100,17 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
           cvc: cardInfo.values.cvc,
           email: profile.email,
           amountInKobo: amount * 100,
-         // accessCode: transRef,
           
         })
       .then(response => {
-        console.log(response.reference);
-        setTransRef(response.reference as string)
-        if(transRef.length > 0){
-          postCredit(transRef)
+        if(response.reference != null){
+          postCredit(response.reference)
           setPaymentSuccessful(true)
+          setTransRef(response.reference)
           setPaymentMessage("Payment Successful")
           setModalVisible(true)
+          setLoading(false)
         }
-
-         // do stuff with the token
-        //confirm payment here
       })
       .catch(error => {
         console.log(error); // error is a javascript Error object
@@ -126,7 +118,7 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
         console.log(error.code);
       })   
       }
-    }
+    
 
   }
 
@@ -134,11 +126,15 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
     <ScrollView style={styles.container}>
 
       {
-        (available && amount > 0) &&
+        (appointmentModel != null && amount > 0) &&
         <View>
+            {loading &&
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />
+                }
+                
           <Text style={styles.titleText}>Service Charge : {amount.toString()+" "+Environment.DEFAULT_CURRENCY} </Text>
           <Text style={styles.paymentTitle}>Please fill in your card details to pay</Text>
-          <LiteCreditCardInput onChange={paymentFormHandler} />
+          <CreditCardInput onChange={paymentFormHandler} />
           {validDebitCard &&
             <ButtonPrimary
               title={getString("Pay Now")}
@@ -158,14 +154,13 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
       isVisible={modalVisible}
       item = {appointmentModel}
       message = {paymentMessage}
-      selectedDate = {start_date}
       isSuccess = {paymentSuccessful}
       transRef = {transRef}
       onDismissModal = {() => alert("Click an option instead")}
       onCloseModal = {() => {setModalVisible(false)}}
       onReturnHome = {() => {
         setModalVisible(false)
-        navigation.navigate(NavigationNames.HomeScreen)}}
+        navigation.navigate(NavigationNames.MemberProfileScreen)}}
       />
     </ScrollView>
   );
