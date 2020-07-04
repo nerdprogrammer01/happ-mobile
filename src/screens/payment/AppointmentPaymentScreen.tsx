@@ -65,8 +65,6 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
       body:requestBody
     };
 
-    console.log(requestBody)
-
     fetch(Environment.SERVER_API + "/api/credit/PostCredit", request)
       .then((response) => {
         JSON.stringify(response, null, 4)
@@ -90,7 +88,7 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
   const pay = () =>
   {
     setLoading(true)
-    if(validDebitCard && cardInfo !=null){
+
       let expiry_info = cardInfo.values.expiry as string;   
       if(appointmentRef.length > 0){
         //todo:: add loader to payment
@@ -120,7 +118,7 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
         console.log(error.code);
       })   
       }
-    }
+    
 
   }
 
@@ -162,7 +160,7 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
       onCloseModal = {() => {setModalVisible(false)}}
       onReturnHome = {() => {
         setModalVisible(false)
-        navigation.navigate(NavigationNames.HomeScreen)}}
+        navigation.navigate(NavigationNames.MemberProfileScreen)}}
       />
     </ScrollView>
   );
