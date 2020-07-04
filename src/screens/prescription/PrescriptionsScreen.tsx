@@ -107,7 +107,7 @@ export const PrescriptionsScreen: React.FC<TProps> = props => {
             >
           
           {isLoading &&
-                    <ActivityIndicator size='large' color='#2D9CDB' />}
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />}
 
           {prescriptions.map((item, index) => {
                   return (

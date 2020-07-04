@@ -131,7 +131,7 @@ export const AppointmentScreen: React.FC<TProps> = props => {
         return response.json();
       })
       .then(responseJson => {
-        console.log(responseJson.token)
+        //console.log(responseJson.token)
         setSessionToken(responseJson.token)
       })
       .catch(error => {
