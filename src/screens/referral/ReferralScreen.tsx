@@ -125,12 +125,14 @@ export const ReferralScreen: React.FC<TProps> = props => {
                 }
                 
                 <Text style={styles.daysText}>{moment(referral.created_at).fromNow()}</Text>
-                <Text style={styles.px_nameText}>{referral.pharmacy}</Text>
-                <Text style={styles.drug_titleText}>Drugs Prescribed</Text>
+                
+                <Divider style={{marginTop:15}}/>
 
-                <Text style={styles.daysText}>{referral.profile_match.appointment_type}</Text>
-                <Text style={styles.daysText}>{referral.profile_match.appointment_activity}</Text>
-                <Text style={styles.daysText}>{referral.profile_match.appointment_activity_sub}</Text>
+                <Text style={[styles.nameText,{color:Theme.colors.primaryColor}]}>Service referred to </Text>
+
+                <Text style={[styles.daysText,{fontSize:20,color:Theme.colors.black}]}>{referral.profile_match.appointment_type}</Text>
+                <Text style={[styles.daysText,{fontSize:20,color:Theme.colors.black}]}>{referral.profile_match.appointment_activity}</Text>
+                <Text style={[styles.daysText,{fontSize:20,color:Theme.colors.black}]}>{referral.profile_match.appointment_activity_sub}</Text>
 
    
             </ScrollView>

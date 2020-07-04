@@ -3,13 +3,13 @@ import {
   StyleSheet,
   ScrollView,
   Text,
-  View,AsyncStorage
+  View,AsyncStorage,FlatList
 } from "react-native";
 import { useNavigation ,useRoute} from "@react-navigation/native";
 import {
     Avatar,
     Button,Divider,
-    ButtonPrimary,
+    ButtonPrimary,TouchableHighlight
 } from "../../components";
 import { AppointmentModel} from "../../models";
 import { useLocalization } from "../../localization";
@@ -18,6 +18,61 @@ import { Theme } from "../../theme";
 import { HeaderButtons } from "react-navigation-header-buttons";
 import {Environment} from "../../datas";
 import { CancelAppointmentModal } from "../../modals/CancelAppointmentModal";
+import { Ionicons } from "@expo/vector-icons";
+
+
+
+const getForms = (getString: (key: string) => string) => [
+  {
+    title: getString("Family Intake form"),
+    navigateToScreen: NavigationNames.FamilyIntakeScreen,
+    forward:true
+  },
+  {
+    title: getString("Progress Note"),
+    navigateToScreen: NavigationNames.ProgressNoteScreen,
+    forward:true
+  },
+  {
+    title: getString("Mental Health Plan"),
+    //navigateToScreen: NavigationNames.HMOScreen,
+    forward:true
+  },
+  {
+    title: getString("Prescriptions"),
+     //navigateToScreen: NavigationNames.PrescriptionsScreen,
+    forward:true
+  },
+  {
+    title: getString(" Psychosocial form"),
+    //navigateToScreen: NavigationNames.ReferralsScreen,
+    forward:true
+  },
+  {
+    title: getString("Psychiatrist Evaluation"),
+    //navigateToScreen: NavigationNames.SettingsScreen,
+    forward:true
+  }
+  ,
+  {
+    title: getString("Psychiatrist Progress Note"),
+    navigateToScreen: NavigationNames.PsychiatricProgressScreen,
+    forward:true
+  }
+  ,
+  {
+    title: getString("Pediatric Evaluation"),
+    navigateToScreen: NavigationNames.PediatricEvaluationScreen,
+    forward:true
+  }
+  ,
+  {
+    title: getString("Primary Care"),
+    navigateToScreen: NavigationNames.PrimaryCareScreen,
+    forward:true
+  }
+];
+
 
 type TProps = {};
 
@@ -30,7 +85,11 @@ export const AppointmentScreen: React.FC<TProps> = props => {
   const [role,setRole]=useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [sessionToken, setSessionToken] = useState("");
+  const [formItems,setFormItems]=useState([]);
   
+
+
+
   useEffect(() => {
     async function load_profile() {
         let profile = await AsyncStorage.getItem('profile'); 
@@ -43,12 +102,18 @@ export const AppointmentScreen: React.FC<TProps> = props => {
   useEffect(() => {
    if (profile != null){
      setRole(profile.role);
-     getSessionToken()
+     getSessionToken();
+     setFormItems(getForms(getString));
    }
 
   }, [profile]);
 
 
+  const onPressMenuItemClick = (item: any) => {
+    if (item.navigateToScreen) {
+      navigation.navigate(item.navigateToScreen,{appointment_id:appointment.id,profile_id:appointment.member.id});
+    }
+  };
 
   const getSessionToken = () => {
 
@@ -56,7 +121,7 @@ export const AppointmentScreen: React.FC<TProps> = props => {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       }
     };
 
@@ -99,7 +164,7 @@ export const AppointmentScreen: React.FC<TProps> = props => {
       
           </View>
           {
-            sessionToken != null && (
+            (sessionToken != null && sessionToken != "") && (
               <ButtonPrimary style={styles.buttontStyle}
               title={getString("START SESSION")}
               type="outline"
@@ -113,7 +178,7 @@ export const AppointmentScreen: React.FC<TProps> = props => {
       showsVerticalScrollIndicator={false}
     >
 
-        {role=="clieint" && 
+        {role=="client" && 
         
         <View>
              <Avatar
@@ -121,7 +186,6 @@ export const AppointmentScreen: React.FC<TProps> = props => {
                 source={{
                   uri:
                      Environment.SERVER_API+ appointment.doctor.imageUrl
-                   // "https://raw.githubusercontent.com/publsoft/publsoft.github.io/master/projects/dentist-demo/assets/images/profile_photo.png"
                 }}
               />
               <Text style={styles.nameText}>{appointment.doctor.fullName}</Text>
@@ -145,7 +209,6 @@ export const AppointmentScreen: React.FC<TProps> = props => {
                 source={{
                   uri:
                   Environment.SERVER_API+ appointment.member.imageUrl
-                    //"https://raw.githubusercontent.com/publsoft/publsoft.github.io/master/projects/dentist-demo/assets/images/profile_photo.png"
                 }}
               />
               <Text style={styles.nameText}>{appointment.member.fullName}</Text>
@@ -159,6 +222,31 @@ export const AppointmentScreen: React.FC<TProps> = props => {
         </View>
         
         }
+
+        <Text style={styles.formTitleText}>Appointment Forms</Text>
+
+<FlatList
+        data={formItems}
+        keyExtractor={(item, index) => `key${index}ForMenu`}
+        renderItem={({ item }) => (
+          <TouchableHighlight onPress={() => onPressMenuItemClick(item)}>
+            <View style={styles.itemContainer}>
+              <View style={styles.iconContainer}>
+                
+              </View>
+              <Text style={styles.titleText}>{item.title}</Text>
+              {item.forward && 
+                <Ionicons
+                  name="ios-arrow-forward"
+                  size={24}
+                  color={Theme.colors.gray}
+                />
+             }
+            </View>
+          </TouchableHighlight>
+        )}
+        ItemSeparatorComponent={() => <Divider />}
+      />
 
 {/* Cancel Appointment Modal */}
 <CancelAppointmentModal
@@ -257,5 +345,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     color: Theme.colors.black
+  },
+  itemContainer: {
+    flexDirection: "row",
+    paddingVertical: 8,
+    paddingEnd: 18,
+    paddingStart: 0
+  },
+  iconContainer: {
+    width: 20,
+    alignSelf: "center"
+  },
+  icon: { alignSelf: "center" },
+  titleText: {
+    flex: 1,
+    alignSelf: "center",
+    color: Theme.colors.black,
+    fontSize: 17
+  },
+  formTitleText:{
+    fontSize: 22,
+    fontWeight: "600",
+    marginTop: 16,
+    marginLeft:20,
+    color: Theme.colors.primaryColor
   }
 });

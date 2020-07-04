@@ -57,5 +57,9 @@ export default {
   HMOScreen:"HMOScreen",
   SettingsScreen:"SettingsScreen",
   FamilyIntakeScreen:"FamilyIntakeScreen",
+  PrimaryCareScreen:"PrimaryCareScreen",
+  ProgressNoteScreen:"ProgressNoteScreen",
+  PsychiatricProgressScreen:"PsychiatricProgressScreen",
+  PediatricEvaluationScreen:"PediatricEvaluationScreen",
   AppointmentPaymentScreen:"AppointmentPaymentScreen"
 };

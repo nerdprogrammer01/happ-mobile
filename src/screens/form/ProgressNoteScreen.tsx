@@ -13,7 +13,7 @@ import { ButtonPrimary } from "../../components";
 import { useLocalization } from "../../localization";
 import { StoryViewerModal } from "../../modals";
 import { storyList, mediaList } from "../../datas";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation ,useRoute} from "@react-navigation/native";
 import NavigationNames from "../../navigations/NavigationNames";
 import moment from "moment";
 import {Environment} from "../../datas";
@@ -25,6 +25,7 @@ type TProps = {};
 export const ProgressNoteScreen: React.FC<TProps> = props => {
   const { getString } = useLocalization();
   const navigation = useNavigation();
+  const route = useRoute();
   const [profile, setProfile] = useState(null);
   const[options,setOptions]=useState([]);
   const[loading,setLoading]=useState(false);
@@ -56,10 +57,12 @@ export const ProgressNoteScreen: React.FC<TProps> = props => {
   const [assessment,setAssessment]=useState(0);
   const [assessmentDescription,setAssessmentDescription]=useState('');
   const [plan,setPlan]=useState('');
+  const [cansubmit,setCanSubmit]=useState(false);
   
 
 
-  
+  const appointment_id =route.params["appointment_id"];
+  const profile_id =route.params["profile_id"];
 
 
 
@@ -123,7 +126,11 @@ const update_value=(key,value)=>{
       try{
         if (profile  != null){
           get_lookups();
-          get_family_intake();
+          get_form_data();
+
+          if (profile.role=="clinician"){
+              setCanSubmit(true);
+          }
         }
       }catch(error){
         console.log(error);
@@ -133,7 +140,7 @@ const update_value=(key,value)=>{
 
 
 
-  const get_family_intake = () => {
+  const get_form_data = () => {
     setLoading(true);
     if (profile != null ){
 
@@ -146,7 +153,7 @@ const update_value=(key,value)=>{
       };
 
       
-      fetch(Environment.SERVER_API+"/api/form/GetProgressNote?appointment_id=fea9dd85-1a35-4dda-ac7a-4548d13b53de", request)
+      fetch(Environment.SERVER_API+"/api/form/GetProgressNote?appointment_id="+appointment_id, request)
         .then(async response => {
           console.log(JSON.stringify(response, null, 4));
           //alert(response);
@@ -230,6 +237,51 @@ const update_value=(key,value)=>{
     }
    
     }
+
+
+    const post_form = () => {
+        setLoading(true);
+        setSuccess(false);
+        setError(false);
+  
+      
+        formData["profile_id"]=profile_id;
+      
+        let bd = JSON.stringify(formData);
+    
+    
+        fetch(Environment.SERVER_API + '/api/form/PostProgressNote', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+profile.token
+            },
+            body: bd
+        })
+            .then((response) => {
+               // alert(JSON.stringify(response, null, 4));
+    
+                let result = response.json();
+    
+                return result;
+            })
+            .then((responseData) => {
+         
+                 setSuccess(true);
+                 setLoading(false);
+                console.log("response: " + JSON.stringify(responseData)); 
+                
+            }).catch(function(error) {
+                setError(true);
+                setLoading(false);
+              
+                console.log('There has been a problem with your fetch operation: ' + error.message);
+                 // ADD THIS THROW error
+                  //throw error;
+                });
+    }
+    
 
   return (
     <View style={[styles.container,{marginTop:15}]}>
@@ -558,13 +610,15 @@ const update_value=(key,value)=>{
     numberOfLines={4} />
             </View>
           
-
-<ButtonPrimary
+{cansubmit && 
+    <ButtonPrimary
                     title={getString("Submit")}
-                   onPress={()=>{}}
+                   onPress={()=>{post_form()}}
                     type="outline"
                     style={styles.buttonStyle}
                 />
+}
+
 
 </ScrollView>
 

@@ -126,7 +126,7 @@ export const InboxScreen: React.FC<TProps> = props => {
                     </View>
                 </View>
 
-                <View style={{flexDirection:"row"}}>
+                {/* <View style={{flexDirection:"row"}}>
                
                     <View style={{flex:1}}>
                     
@@ -135,7 +135,7 @@ export const InboxScreen: React.FC<TProps> = props => {
                     <View style={{flex:1}}>
                     <Text style={styles.rightText}>From - {item.created_by_name}</Text>
                     </View>
-                </View>
+                </View> */}
                         <Divider style={styles.divider} />
                       </View>
                   

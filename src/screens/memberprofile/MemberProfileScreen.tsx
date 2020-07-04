@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import NavigationNames from "../../navigations/NavigationNames";
 import { FabButton, Button } from "../../components/buttons";
 import {Environment} from "../../datas";
+import moment from "moment";
 
 type TProps = {};
 
@@ -23,6 +24,9 @@ export const MemberProfileScreen: React.FC<TProps> = props => {
   const [profile, setProfile] = useState(null);
   const [appointment_types, setAppointmentTypes] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [currentDate, setCurrentDate] = useState(
+    moment().format("YYYY-MM-DD")
+  );
 
   const onPressNewAppointment = () => {
     navigation.navigate(NavigationNames.CreateAppointmentScreen);
@@ -37,7 +41,7 @@ export const MemberProfileScreen: React.FC<TProps> = props => {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       }
     };
 
@@ -57,19 +61,19 @@ export const MemberProfileScreen: React.FC<TProps> = props => {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       }
     };
 
     
-    fetch(Environment.SERVER_API+"/api/appointment/GetAppointments", request)
+    fetch(Environment.SERVER_API+"/api/appointment/GetDayAppointments?day="+currentDate, request)
       .then(async response => 
         {
           console.log(JSON.stringify(response, null, 4));
           return await response.json();
         })
       .then(responseJson => {
-
+        console.log(JSON.stringify(responseJson));
         setAppointments(responseJson);
         setLoading(false);
       })
@@ -122,7 +126,6 @@ export const MemberProfileScreen: React.FC<TProps> = props => {
                 imageStyle={styles.imageStyle}
                 source={{
                   uri:
-                    // "https://raw.githubusercontent.com/publsoft/publsoft.github.io/master/projects/dentist-demo/assets/images/profile_photo.png"
                     Environment.SERVER_API+profile.imageUrl
                 }}
               />
@@ -199,7 +202,7 @@ export const MemberProfileScreen: React.FC<TProps> = props => {
 <View>
 <Text style={styles.titleText}>Today's Appointments</Text>
 {isLoading &&
-                    <ActivityIndicator size='large' color='#2D9CDB' />
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />
                 }
 {appointments.map((item, index) => {
                   return (
