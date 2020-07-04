@@ -52,7 +52,7 @@ export const PediatricEvaluationScreen: React.FC<TProps> = props => {
   const [additionalInformation,setAdditionalInformation]=useState('');
   const [nextVisit,setNextVisit]=useState('');
 
-
+  const [cansubmit,setCanSubmit]=useState(false);
 
   
 
@@ -119,6 +119,11 @@ const update_value=(key,value)=>{
         if (profile  != null){
           get_lookups();
           get_family_intake();
+
+          if (profile.role=="clinician"){
+            setCanSubmit(true);
+        }
+
         }
       }catch(error){
         console.log(error);
@@ -329,12 +334,14 @@ const update_value=(key,value)=>{
             </View>
           
 
-<ButtonPrimary
+            {cansubmit && 
+    <ButtonPrimary
                     title={getString("Submit")}
                    onPress={()=>{}}
                     type="outline"
                     style={styles.buttonStyle}
                 />
+}
 
 </ScrollView>
 

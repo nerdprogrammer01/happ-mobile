@@ -37,7 +37,7 @@ export const ReferralsScreen: React.FC<TProps> = props => {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       }
     };
 

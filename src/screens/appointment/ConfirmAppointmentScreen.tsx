@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Picker, StyleSheet, TextInput, AsyncStorage, Modal, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Picker, StyleSheet, TextInput, AsyncStorage, Modal, Alert, ActivityIndicator,Platform } from 'react-native';
 import { Theme } from "../../theme";
 import { Button, ButtonPrimary } from "../../components/buttons";
 import { useLocalization } from "../../localization";
@@ -61,10 +61,25 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     };
   
     const handleConfirm = (date: Date) => {
-      let datestring = Moment(date).format('DD-MM-YYYY')
+      let datestring = Moment(date).format('YYYY-MM-DD')
       setDate(datestring);
       hideDatePicker();
-      get_clinician_times();
+      
+    };
+
+
+
+
+    const onChange = (selectedDate) => {
+      const currentDate = selectedDate || date;
+
+      
+      let datestring = Moment(currentDate).format('YYYY-MM-DD');
+      setDatePickerVisibility(Platform.OS === 'ios');
+      setDate(datestring);
+
+      
+      setDatePickerVisibility(false);
     };
 
 
@@ -89,7 +104,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       }
     };
 
@@ -109,7 +124,8 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
   const getServiceCost = (service_id: string) => {
 
-    setServiceId(service_id)
+    setServiceId(service_id);
+    setLoading(true);
 
     doctorServices.filter(function(service) {
       if(service.id == service_id){      
@@ -121,7 +137,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       }
     };
 
@@ -132,6 +148,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       })
       .then(responseJson => {
         setAmount(responseJson.cost)
+        setLoading(false);
       })
       .catch(error => {
         console.error(error);
@@ -167,7 +184,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         method: "POST",
         headers: {
           'Content-Type': "application/json",
-          //'Token': profile.token
+          'Authorization': 'Bearer '+profile.token
         },
         body:requestBody
       };
@@ -179,7 +196,8 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         })
         .then(responseJson => {
           setAvailable(responseJson);
-          if(responseJson == false){
+          setAvailable(true);
+          if(available == false){
             setAvailabilityMessage("Your doctor is not available for this time, Kindly try a different time")
           }
 
@@ -215,7 +233,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       method: "POST",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       },
       body:requestBody
     };
@@ -246,7 +264,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       method: "POST",
       headers: {
         'Content-Type': "application/json",
-        //'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       },
       body:requestBody
     };
@@ -276,6 +294,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
   const pay = () =>
   {
+    setLoading(true);
     if(validDebitCard && cardInfo !=null){
       let expiry_info = cardInfo.values.expiry as string;
     setLoading(true)
@@ -328,14 +347,19 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       }
     };
 
-    fetch(Environment.SERVER_API+"/api/Clinician/getclinicianavailability?clinician_id="+appointmentModel.doctor.id +"&date="+date, request)
-      .then((response) => response.json())
+    fetch(Environment.SERVER_API+"/api/Clinician/getlistclinicianavailability?clinician_id="+appointmentModel.doctor.id +"&date="+date, request)
+      .then((response) =>{
+        console.log(JSON.stringify(response, null, 4));
+        return response.json();
+      })
       .then(responseJson => {
         setAvailabilityList(responseJson);
+        //alert(JSON.stringify(responseJson));
+        console.log(JSON.stringify(responseJson));
         setLoading(false);
       })
       .catch(error => {
@@ -347,6 +371,14 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   useEffect(() => {
     getClinicianServices();
   }, []);
+
+  useEffect(() => {
+    if (profile != null){
+      get_clinician_times();
+    }
+   
+  }, [date]);
+
 
   return (
     <ScrollView style={styles.container}>
@@ -361,20 +393,11 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       /> */}
 
 <DoctorItemRow item={appointmentModel.doctor} />
+{loading &&
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />
+                }
 
-      <Text style={styles.titleText}>Select Service</Text>
-      <View style={styles.pickerstyle}>
-
-        <Picker
-          onValueChange={(itemValue, itemIndex) => getServiceCost(itemValue)} selectedValue={serviceId}
-        >
-          <Picker.Item label="Select Service" value={0} />
-          {doctorServices.map((item, key) => (
-            <Picker.Item label={item.name} value={item.id} key={key} />)
-          )}
-
-        </Picker>
-      </View>
+     
 
       <View>
         <Text style={styles.titleText}>Your Preferred Appointment Time ?</Text>
@@ -394,10 +417,14 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
            {/*    {Times.map((item, key) => (
                 <Picker.Item label={item} value={item} key={key} />)
               )} */}
+{availabilityList != null && 
+  availabilityList.map((item, key) => (
+    <Picker.Item label={item} value={item} key={key} />
+    )
+  )
+}
 
-{availabilityList.map((item, key) => (
-                <Picker.Item label={item} value={item} key={key} />)
-              )}
+
 
             </Picker>
           </View>
@@ -408,7 +435,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
           mode="date"
-          onConfirm={handleConfirm}
+          onConfirm={onChange}
           onCancel={hideDatePicker}
         />
       </View>
@@ -417,16 +444,30 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         type="outline"
         style={styles.buttonStyle}
       />
-       {loading &&
-                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />
-                }
+
+<Text style={styles.titleText}>Select Service</Text>
+      <View style={styles.pickerstyle}>
+
+        <Picker
+          onValueChange={(itemValue, itemIndex) => getServiceCost(itemValue)} selectedValue={serviceId}
+        >
+          <Picker.Item label="Select Service" value={0} />
+          {doctorServices.map((item, key) => (
+            <Picker.Item label={item.name} value={item.id} key={key} />)
+          )}
+
+        </Picker>
+      </View>
 
       {
         (available && amount > 0) &&
         <View>
           <Text style={styles.titleText}>Service Charge : {amount.toString()+" "+Environment.DEFAULT_CURRENCY} </Text>
           <Text style={styles.paymentTitle}>Please fill in your card details to pay</Text>
-          <LiteCreditCardInput onChange={paymentFormHandler} />
+          <View style={styles.paymentInput}>
+          <LiteCreditCardInput  onChange={paymentFormHandler} />
+          </View>
+          
           {validDebitCard &&
             <ButtonPrimary
               title={getString("Pay Now")}
@@ -460,7 +501,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       onCloseModal = {() => {setModalVisible(false)}}
       onReturnHome = {() => {
         setModalVisible(false)
-        navigation.navigate(NavigationNames.HomeScreen)}}
+        navigation.navigate(NavigationNames.MemberProfileScreen)}}
       />
     </ScrollView>
   );
@@ -531,5 +572,15 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "red",
     margin: 10
+  },
+  paymentInput: {
+    height: 50,
+    width: "100%",
+    alignSelf: 'stretch',
+    borderWidth: 1,
+    borderColor: Theme.colors.primaryColor,
+    borderRadius: 5,
+    marginTop: 10,
+ 
   },
 });

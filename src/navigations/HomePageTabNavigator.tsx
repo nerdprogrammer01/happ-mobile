@@ -42,7 +42,11 @@ import {
   HMOScreen,
   SettingsScreen,
   FamilyIntakeScreen,
-  ProviderDetailScreen
+  ProviderDetailScreen,
+  PrimaryCareScreen,
+  ProgressNoteScreen,
+  PsychiatricProgressScreen,
+  PediatricEvaluationScreen
 
 } from "../screens";
 import { ToolbarBrandLogo } from "../components";
@@ -121,7 +125,7 @@ const HomeTabStack = () => {
       <Stack.Screen
         name={NavigationNames.DoctorListScreen}
         component={DoctorListScreen}
-        options={{ title: getString("Doctors") }}
+        options={{ title: getString("Providers") }}
       />
       <Stack.Screen
         name={NavigationNames.DoctorDetailScreen}
@@ -142,6 +146,38 @@ const HomeTabStack = () => {
         component={VideoConferenceScreen}
         options={{ title: getString("Video Session") }}
       />
+
+
+<Stack.Screen
+        name={NavigationNames.FamilyIntakeScreen}
+        component={FamilyIntakeScreen}
+        options={{ title: getString("Family Intake") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.ProgressNoteScreen}
+        component={ProgressNoteScreen}
+        options={{ title: getString("Progress Note") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.PrimaryCareScreen}
+        component={PrimaryCareScreen}
+        options={{ title: getString("Primary Care") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.PediatricEvaluationScreen}
+        component={PediatricEvaluationScreen}
+        options={{ title: getString("Pediatric Evaluation") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.PsychiatricProgressScreen}
+        component={PsychiatricProgressScreen}
+        options={{ title: getString("Psychiatrist Progress Note") }}
+      />
+
     </Stack.Navigator>
   );
 };
@@ -182,6 +218,30 @@ const CalendarTabStack = () => {
         name={NavigationNames.FamilyIntakeScreen}
         component={FamilyIntakeScreen}
         options={{ title: getString("Family Intake") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.ProgressNoteScreen}
+        component={ProgressNoteScreen}
+        options={{ title: getString("Progress Note") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.PrimaryCareScreen}
+        component={PrimaryCareScreen}
+        options={{ title: getString("Primary Care") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.PediatricEvaluationScreen}
+        component={PediatricEvaluationScreen}
+        options={{ title: getString("Pediatric Evaluation") }}
+      />
+
+<Stack.Screen
+        name={NavigationNames.PsychiatricProgressScreen}
+        component={PsychiatricProgressScreen}
+        options={{ title: getString("Psychiatrist Progress Note") }}
       />
 
     </Stack.Navigator>
@@ -228,7 +288,7 @@ const DoctorTabStack = () => {
       <Stack.Screen
         name={NavigationNames.ProvidersListScreen}
         component={ProvidersListScreen}
-        options={{ title: "HealthCare Providers" }}
+        options={{ title: "Providers" }}
       />
 
     <Stack.Screen
@@ -238,11 +298,7 @@ const DoctorTabStack = () => {
       />
 
 
-<Stack.Screen
-        name={NavigationNames.FamilyIntakeScreen}
-        component={FamilyIntakeScreen}
-        options={{ title: getString("Family Inake form") }}
-      />
+
     </Stack.Navigator>
   );
 };

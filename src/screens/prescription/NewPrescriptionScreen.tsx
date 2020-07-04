@@ -55,7 +55,8 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
         method: 'POST',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+profile.token
         },
         body: bd
     })
@@ -84,7 +85,10 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
 }
 
   const addDrug=()=>{
-    drugs.push({drug:drug_name,dosage:dosage});
+
+    let new_drugs=drugs;
+    new_drugs.push({drug:drug_name,dosage:dosage});
+    setDrugs(new_drugs);
     setDrugName("");
     setDosage("");
   };
@@ -95,7 +99,7 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
       method: "GET",
       headers: {
         'Content-Type': "application/json",
-        'Token': profile.token
+        'Authorization': 'Bearer '+profile.token
       }
     };
 
@@ -211,14 +215,14 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
               <Text  style={styles.label_titleText}>Drug name</Text>
               <TextInput
                     style={styles.input}
-                    placeholder=""
+                    placeholder="" value={drug_name}
                     onChangeText={name => setDrugName(name)}
                 />
               <Text  style={styles.label_titleText}>Dosage</Text>
             
       <TextInput
                     style={styles.input}
-                    placeholder=""
+                    placeholder="" value={dosage}
                     onChangeText={dsage => setDosage(dsage)}
                 />
       

@@ -1,5 +1,5 @@
 import React, { useState ,useEffect} from "react";
-import { View, Text, Picker, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { View, Text, Picker, StyleSheet, ActivityIndicator, TextInput, Platform } from 'react-native';
 import { Theme } from "../../theme";
 import { ButtonPrimary } from "../../components/buttons";
 import { useLocalization } from "../../localization";
@@ -19,6 +19,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
   const [appointment_types, setAppointmentTypes] = useState([]);
   const [appointment_categories, setAppointmentCategories] = useState([]);
   const [appointment_activities, setAppointmentActivities] = useState([]);
+  const [loading,setLoading]=useState(true);
 
   const nextForm = () => {
     let appointment: NewAppointmentModel = {
@@ -62,6 +63,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
 
   
   const getAppointmentTypes = () => {
+    setLoading(true);
     let request = {
       method: "GET",
       headers: {
@@ -74,7 +76,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
       .then((response) => response.json())
       .then(responseJson => {
         setAppointmentTypes(responseJson);
-       
+       setLoading(false);
       })
       .catch(error => {
         console.error(error);
@@ -82,6 +84,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
   }
 
   const getAppointmentCategories = () => {
+    setLoading(true);
     let request = {
       method: "GET",
       headers: {
@@ -97,7 +100,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
       })
       .then(responseJson => {
         setAppointmentCategories(responseJson);
-       
+       setLoading(false);
       })
       .catch(error => {
         console.error(error);
@@ -106,6 +109,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
 
 
   const getAppointmentActivities = (appointment_cateogory_id:number) => {
+    setLoading(true);
     let request = {
       method: "GET",
       headers: {
@@ -124,6 +128,7 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
       .then(responseJson => {
         setAppointmentActivities(responseJson);
         setAppointmentCategory(appointment_cateogory_id);
+        setLoading(false);
       })
       .catch(error => {
         console.error(error);
@@ -133,6 +138,10 @@ export const CreateAppointmentScreen: React.FC<TProps> = props => {
 
   return (
     <View style={styles.container}>
+      {loading &&
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />
+                }
+
       <Text style={styles.titleText}>What type of appointment are you setting up?</Text>
       <View style={styles.pickerstyle}>
         <Picker

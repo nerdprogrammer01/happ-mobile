@@ -68,14 +68,7 @@ export const BankInfoScreen: React.FC<TProps> = props => {
           setLoading(false);
         }
   
-        let request = {
-          method: "GET",
-          headers: {
-            'Content-Type': "application/json",
-            'Authorization': 'Bearer '+profile.token
-          }
-        };
-
+    
 
        // alert(JSON.stringify(serviceCosts));
        bankInfo["bank_name"]=bankName;

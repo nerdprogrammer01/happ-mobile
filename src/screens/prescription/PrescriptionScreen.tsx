@@ -34,25 +34,7 @@ export const PrescriptionScreen: React.FC<TProps> = props => {
     });
   };
 
-  const get_prescriptions = () => {
-    let request = {
-      method: "GET",
-      headers: {
-        'Content-Type': "application/json",
-        'Token': profile.token
-      }
-    };
-
-    fetch(Environment.SERVER_API+"/api/prescription/get", request)
-      .then((response) => response.json())
-      .then(responseJson => {
-        //setPrescriptions(responseJson);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
+ 
 
 
   useEffect(() => {

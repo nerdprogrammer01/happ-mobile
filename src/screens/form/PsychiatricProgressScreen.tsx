@@ -51,7 +51,7 @@ export const PsychiatricProgressScreen: React.FC<TProps> = props => {
   const [additionalComent,setAdditionalComment]=useState('');
   const [riskAndBenefitNote,setRiskAndBenefitNote]=useState('');
   //const [nextVisit,setNextVisit]=useState('');
-
+  const [cansubmit,setCanSubmit]=useState(false);
 
 
   
@@ -119,6 +119,10 @@ const update_value=(key,value)=>{
         if (profile  != null){
           get_lookups();
           get_family_intake();
+
+          if (profile.role=="clinician"){
+            setCanSubmit(true);
+        }
         }
       }catch(error){
         console.log(error);
@@ -141,7 +145,7 @@ const update_value=(key,value)=>{
       };
 
       
-      fetch(Environment.SERVER_API+"/api/form/GetPediatricEvaluation?appointment_id=fea9dd85-1a35-4dda-ac7a-4548d13b53de", request)
+      fetch(Environment.SERVER_API+"/api/form/GetPsychiatricProgress?appointment_id=fea9dd85-1a35-4dda-ac7a-4548d13b53de", request)
         .then(async response => {
           console.log(JSON.stringify(response, null, 4));
           //alert(response);
@@ -330,13 +334,14 @@ const update_value=(key,value)=>{
               <TextInput style={styles.input}  value={riskAndBenefitNote} onChangeText={value=>{update_value("risk_and_benefit_note",value);setRiskAndBenefitNote(value)}} />
             </View>
           
-
-<ButtonPrimary
+            {cansubmit && 
+    <ButtonPrimary
                     title={getString("Submit")}
                    onPress={()=>{}}
                     type="outline"
                     style={styles.buttonStyle}
                 />
+}
 
 </ScrollView>
 

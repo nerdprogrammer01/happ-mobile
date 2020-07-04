@@ -31,6 +31,7 @@ export const PrimaryCareScreen: React.FC<TProps> = props => {
   const [success,setSuccess]=useState(false);
   const [error,setError]=useState(false);
   const [formData,setFormData]=useState({});
+  const [cansubmit,setCanSubmit]=useState(false);
 
   const [headBrainInjury,setHeadBrainInury]=useState(0);
   const [weightLoss,setWeightLoss]=useState(0);
@@ -182,6 +183,10 @@ const update_value=(key,value)=>{
         if (profile  != null){
           get_lookups();
           get_family_intake();
+
+          if (profile.role=="clinician"){
+            setCanSubmit(true);
+        }
         }
       }catch(error){
         console.log(error);
@@ -204,7 +209,7 @@ const update_value=(key,value)=>{
       };
 
       
-      fetch(Environment.SERVER_API+"/api/form/GetProgressNote?appointment_id=fea9dd85-1a35-4dda-ac7a-4548d13b53de", request)
+      fetch(Environment.SERVER_API+"/api/form/GetPrimaryCare?appointment_id=fea9dd85-1a35-4dda-ac7a-4548d13b53de", request)
         .then(async response => {
           console.log(JSON.stringify(response, null, 4));
           //alert(response);
@@ -844,12 +849,14 @@ const update_value=(key,value)=>{
 
           
 
-<ButtonPrimary
+            {cansubmit && 
+    <ButtonPrimary
                     title={getString("Submit")}
                    onPress={()=>{}}
                     type="outline"
                     style={styles.buttonStyle}
                 />
+}
 
 </ScrollView>
 

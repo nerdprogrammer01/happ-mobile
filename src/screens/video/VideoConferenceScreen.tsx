@@ -17,7 +17,7 @@ import {
   TwilioVideo
 } from 'react-native-twilio-video-webrtc'
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { FabButton } from '../../components/buttons';
+import { FabButton, ButtonPrimary } from '../../components/buttons';
 import { Theme } from '../../theme';
 
 const styles = StyleSheet.create({
@@ -91,6 +91,13 @@ const styles = StyleSheet.create({
     //alignItems: "stretch",
     borderColor:Theme.colors.primaryColor, 
     borderWidth:1
+  },
+  infoText: {
+    color:Theme.colors.primaryColor, 
+    fontSize:17,
+    justifyContent: 'center',
+    alignItems:"center",
+    fontWeight: "400",
   }
 });
 
@@ -223,18 +230,19 @@ export default class VideoConferenceScreen extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container,{margin:10}]}>
         {
           this.state.status === 'disconnected' &&
           <View>
             <Text style={styles.welcome}>
-              MySpace Mytime
+              My Session Room
             </Text>
-            <Button
+            <Text style={styles.infoText}>When you are ready, please click the button below to start your session.</Text>
+            <ButtonPrimary
               title="Start Video Session"
               style={styles.button}
               onPress={this._onConnectButtonPress}>
-            </Button>
+            </ButtonPrimary>
           </View>
         }
 
