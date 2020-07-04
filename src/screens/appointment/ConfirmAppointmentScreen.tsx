@@ -279,6 +279,19 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 {loading &&
                     <ActivityIndicator size='large' color={Theme.colors.primaryColor} />
                 }
+                <Text style={styles.titleText}>Select Service</Text>
+      <View style={styles.pickerstyle}>
+
+        <Picker
+          onValueChange={(itemValue, itemIndex) => getServiceCost(itemValue)} selectedValue={serviceId}
+        >
+          <Picker.Item label="Select Service" value={0} />
+          {doctorServices.map((item, key) => (
+            <Picker.Item label={item.name} value={item.id} key={key} />)
+          )}
+
+        </Picker>
+      </View>
       <View>
         <Text style={styles.titleText}>Your Preferred Appointment Time ?</Text>
         <View style={styles.calendarSection}>
@@ -319,19 +332,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         style={styles.buttonStyle}
       />
 
-<Text style={styles.titleText}>Select Service</Text>
-      <View style={styles.pickerstyle}>
 
-        <Picker
-          onValueChange={(itemValue, itemIndex) => getServiceCost(itemValue)} selectedValue={serviceId}
-        >
-          <Picker.Item label="Select Service" value={0} />
-          {doctorServices.map((item, key) => (
-            <Picker.Item label={item.name} value={item.id} key={key} />)
-          )}
-
-        </Picker>
-      </View>
 
       {
         (available && amount > 0) &&
