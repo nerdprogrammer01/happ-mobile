@@ -1,4 +1,5 @@
 import { AvailableClinicianScreen } from "../screens/appointment/AvailableClinicianScreen";
+import { AppointmentPaymentScreen } from "../screens/payment";
 
 export default {
 
@@ -55,5 +56,6 @@ export default {
   BankInfoScreen:"BankInfoScreen",
   HMOScreen:"HMOScreen",
   SettingsScreen:"SettingsScreen",
-  FamilyIntakeScreen:"FamilyIntakeScreen"
+  FamilyIntakeScreen:"FamilyIntakeScreen",
+  AppointmentPaymentScreen:"AppointmentPaymentScreen"
 };

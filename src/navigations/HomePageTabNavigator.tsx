@@ -48,6 +48,7 @@ import {
 import { ToolbarBrandLogo } from "../components";
 import VideoConferenceScreen from "../screens/video";
 import { ProvidersListScreen } from "../screens/providers/ProvidersListScreen";
+import { AppointmentPaymentScreen } from "../screens/payment";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -131,6 +132,11 @@ const HomeTabStack = () => {
         name={NavigationNames.ConfirmAppointmentScreen}
         component={ConfirmAppointmentScreen}
         options={{ title: getString("Book Appointment") }}
+      />
+      <Stack.Screen
+        name={NavigationNames.AppointmentPaymentScreen}
+        component={AppointmentPaymentScreen}
+        options={{ title: getString("Complete Payment") }}
       />
       <Stack.Screen
         name={NavigationNames.AppointmentScreen}
