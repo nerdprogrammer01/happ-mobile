@@ -20,26 +20,29 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
   const navigation = useNavigation();
   const route = useRoute()
   const { getString } = useLocalization();
-  const [amount, setAmount] = useState(0.00);
+  //const [amount, setAmount] = useState(0.00);
   const [available, setAvailable] = useState(false)
   const [validDebitCard, setValidDebitCard] = useState(false)
   const [start_date, setStart_date] = useState(null)
   const [profile, setProfile] = useState(null);
   const [transRef, setTransRef] = useState("");
-  const [appointmentRef, setAppointmentRef] = useState("");
+  //const [appointmentRef, setAppointmentRef] = useState("");
   const [cardInfo, setCardInfo] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
   const [paymentMessage, setPaymentMessage] = useState("");
 
 
-  let appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
+  const appointmentRef = route.params["appointmentRef"] as string;
+  const amount = route.params["amount"] as number;
 
   useEffect(() => {
     async function load_profile() {
       await AsyncStorage.getItem('profile')
       .then((data) => {
         setProfile(JSON.parse(data));
+
+        console.log("appt :"+appointmentRef+", amount :"+amount)
     })
     .catch((err) => {
        console.log(err);

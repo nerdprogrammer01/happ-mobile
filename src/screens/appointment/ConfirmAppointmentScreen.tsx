@@ -226,7 +226,8 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         return response.json();
       })
       .then(responseJson => {
-        setAppointmentRef(responseJson)
+      //  setAppointmentRef(responseJson)
+        navigation.navigate(NavigationNames.AppointmentPaymentScreen, { appointmentRef: responseJson, amount: amount })
       })
       .catch(error => {
         console.error(error);
@@ -318,9 +319,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     setLoading(false)
   }
 
-  const testVideo = () => {
-    navigation.navigate(NavigationNames.VideoConferenceScreen, {session_token : Environment.TWILIO_TEST_SESSION_TOKEN })
-  }
 
   const get_clinician_times = () => {
     setLoading(true);
@@ -351,14 +349,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.titleText}>Provider</Text>
-
-{/*       <TextInput
-        style={styles.input}
-        placeholder="Selected Doctor"
-        editable={false}
-        value={appointmentModel.doctor.fullName}
-
-      /> */}
 
 <DoctorItemRow item={appointmentModel.doctor} />
 
@@ -391,9 +381,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
           <View style={styles.pickerstyle2}>
             <Picker onValueChange={(itemValue) => {checkAvailability(itemValue)}} selectedValue={appointmentTime}>
               <Picker.Item label="Select Time" value="Select Time" />
-           {/*    {Times.map((item, key) => (
-                <Picker.Item label={item} value={item} key={key} />)
-              )} */}
 
 {availabilityList.map((item, key) => (
                 <Picker.Item label={item} value={item} key={key} />)
@@ -439,13 +426,6 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         </View>
 
       }
-
-   {/*    <Button
-              title={getString("Test Video")}
-              type="outline"
-              style={{ height: 50, width: "100%", marginTop: 10, marginBottom: 20 }}
-              onPress = {testVideo}
-      /> */}
 
       {/* payment modal */}
 
