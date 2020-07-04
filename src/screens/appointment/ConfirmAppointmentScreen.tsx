@@ -145,7 +145,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     setAppointmentTime(timeString);
 
     if(date != null && servicePeriod > 0){
-      var start_date = Moment(date.trim()+" "+appointmentTime.trim()+":00", 'DD-MM-YYYY hh:mm:ss').format()
+      var start_date = Moment(date.trim()+" "+timeString.trim()+":00", 'DD-MM-YYYY hh:mm:ss').format()
       var end_date = Moment(start_date).add(servicePeriod, 'minutes').format();
       
       setStart_date(start_date)
