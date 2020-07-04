@@ -14,7 +14,7 @@ import numeral from "numeral";
 import { DoctorModel } from "../../models";
 import { Avatar, Divider, Button } from "../../components";
 import { Theme } from "../../theme";
-import { AirbnbRating } from "react-native-ratings";
+import { AirbnbRating, Rating } from "react-native-ratings";
 import { DoctorReviewItemRow } from "../../components/reviews";
 import { Ionicons } from "@expo/vector-icons";
 import { NewAppointmentModel } from "../../models/NewAppointmentModel";
@@ -25,11 +25,8 @@ type TProps = {};
 export const ProviderDetailScreen: React.FC<TProps> = props => {
   const route = useRoute();
   const navigation = useNavigation();
-  const [doctor, setDoctor] = useState(null);  //JSON.parse(route.params["doctor"]) as DoctorModel;
 
-  useEffect(()=> {
-    setDoctor(JSON.parse(route.params["doctor"]) as DoctorModel)
-  })
+  const doctor = JSON.parse(route.params["doctor"]) as DoctorModel;
 
   const [toolbarTitleHided, setToolbarTitleHided] = useState(true);
 
@@ -93,8 +90,9 @@ export const ProviderDetailScreen: React.FC<TProps> = props => {
             size={28}
             isDisabled
             selectedColor={"orange"}
-            defaultRating={doctor?.rating}
+            defaultRating={doctor?.rating}            
           />
+
         </View>
         <TouchableOpacity style={styles.rateButtonContainer}>
           <Text style={styles.rateButtonTitle}>Rate & Write Message</Text>
