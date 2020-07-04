@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Picker, StyleSheet, TextInput, AsyncStorage, Modal, Alert, ActivityIndicator } from 'react-native';
 import { Theme } from "../../theme";
-import { Button } from "../../components/buttons";
+import { Button, ButtonPrimary } from "../../components/buttons";
 import { useLocalization } from "../../localization";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NewAppointmentModel } from "../../models/NewAppointmentModel";
@@ -11,13 +11,13 @@ import Moment from 'moment';
 import { ScrollView, TouchableHighlight } from "react-native-gesture-handler";
 import { Environment } from "../../datas/Config";
 import { DoctorServicesModel } from "../../models/DoctorServicesModel";
-import { DoctorsService } from "../../services";
 import { Times } from "../../datas/Times";
 import RNPaystack from 'react-native-paystack';
 import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-input";
 import NavigationNames from "../../navigations/NavigationNames";
 import VideoConferenceScreen from "../video";
 import { ConfirmAppointmentModal } from "../../modals";
+import { DoctorItemRow } from "../../components";
 
 
 type TProps = {};
@@ -45,6 +45,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   const [paymentMessage, setPaymentMessage] = useState("");
   const [availabilityMessage, setAvailabilityMessage] = useState("Select a time and we will let you know if your doctor is available");
   const [loading, setLoading] = useState(false);
+  const [availabilityList,setAvailabilityList]=useState([]);
 
 
     //datepicker related 
@@ -63,6 +64,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       let datestring = Moment(date).format('DD-MM-YYYY')
       setDate(datestring);
       hideDatePicker();
+      get_clinician_times();
     };
 
 
@@ -320,21 +322,45 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     navigation.navigate(NavigationNames.VideoConferenceScreen, {session_token : Environment.TWILIO_TEST_SESSION_TOKEN })
   }
 
+  const get_clinician_times = () => {
+    setLoading(true);
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+        'Token': profile.token
+      }
+    };
+
+    fetch(Environment.SERVER_API+"/api/Clinician/getclinicianavailability?clinician_id="+appointmentModel.doctor.id +"&date="+date, request)
+      .then((response) => response.json())
+      .then(responseJson => {
+        setAvailabilityList(responseJson);
+        setLoading(false);
+      })
+      .catch(error => {
+        alert(error);
+        console.error(error);
+      });
+  }
+
   useEffect(() => {
     getClinicianServices();
   }, []);
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.titleText}>Selected Doctor</Text>
+      <Text style={styles.titleText}>Provider</Text>
 
-      <TextInput
+{/*       <TextInput
         style={styles.input}
         placeholder="Selected Doctor"
         editable={false}
         value={appointmentModel.doctor.fullName}
 
-      />
+      /> */}
+
+<DoctorItemRow item={appointmentModel.doctor} />
 
       <Text style={styles.titleText}>Select Service</Text>
       <View style={styles.pickerstyle}>
@@ -365,7 +391,11 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
           <View style={styles.pickerstyle2}>
             <Picker onValueChange={(itemValue) => {checkAvailability(itemValue)}} selectedValue={appointmentTime}>
               <Picker.Item label="Select Time" value="Select Time" />
-              {Times.map((item, key) => (
+           {/*    {Times.map((item, key) => (
+                <Picker.Item label={item} value={item} key={key} />)
+              )} */}
+
+{availabilityList.map((item, key) => (
                 <Picker.Item label={item} value={item} key={key} />)
               )}
 
@@ -388,17 +418,17 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         style={styles.buttonStyle}
       />
        {loading &&
-                    <ActivityIndicator size='large' color='#6646ee' />
+                    <ActivityIndicator size='large' color={Theme.colors.primaryColor} />
                 }
 
       {
         (available && amount > 0) &&
         <View>
           <Text style={styles.titleText}>Service Charge : {amount.toString()+" "+Environment.DEFAULT_CURRENCY} </Text>
-          <Text style={styles.titleText}>Please fill in your card details to pay</Text>
+          <Text style={styles.paymentTitle}>Please fill in your card details to pay</Text>
           <LiteCreditCardInput onChange={paymentFormHandler} />
           {validDebitCard &&
-            <Button
+            <ButtonPrimary
               title={getString("Pay Now")}
               type="outline"
               style={{ height: 50, width: "100%", marginTop: 10, marginBottom: 20 }}
@@ -410,12 +440,12 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
       }
 
-      <Button
+   {/*    <Button
               title={getString("Test Video")}
               type="outline"
               style={{ height: 50, width: "100%", marginTop: 10, marginBottom: 20 }}
               onPress = {testVideo}
-      />
+      /> */}
 
       {/* payment modal */}
 
@@ -495,5 +525,11 @@ const styles = StyleSheet.create({
   timeSection: {
     flex: 1,
     flexDirection: "row"
-  }
+  },
+  paymentTitle: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "red",
+    margin: 10
+  },
 });
