@@ -74,7 +74,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
     const onChange = (selectedDate) => {
       const currentDate = selectedDate || date;
-      let datestring = Moment(currentDate).format('YYYY-MM-DD');
+      let datestring = Moment(currentDate).format('DD-MM-YYYY');
       setDatePickerVisibility(Platform.OS === 'ios');
       setDate(datestring);
       setDatePickerVisibility(false);
