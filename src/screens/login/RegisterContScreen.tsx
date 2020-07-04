@@ -5,13 +5,14 @@ import { useNavigation } from "@react-navigation/native";
 import { useLocalization } from "../../localization";
 import { Theme } from "../../theme";
 import NavigationNames from "../../navigations/NavigationNames";
+import { Environment } from "../../datas";
 
 type TProps = {};
 
 export const RegisterContScreen: React.FC<TProps> = props => {
     const navigation = useNavigation();
     const { getString, changeLanguage } = useLocalization();
-    const baseUrl = 'http://192.168.43.66/mhealth/user/registerMobile';
+    const baseUrl = Environment.SERVER_WEB + '/user/registerMobile';
 
     const loginButtonHandler = () => {
         navigation.navigate(NavigationNames.LoginScreen);
@@ -32,6 +33,7 @@ export const RegisterContScreen: React.FC<TProps> = props => {
                         style={styles.flexContainer}
                     />
                 )}
+                javaScriptEnabled={true}
             />
             <View style={styles.tabBarContainer}>
                 <TouchableOpacity onPress={loginButtonHandler}>
