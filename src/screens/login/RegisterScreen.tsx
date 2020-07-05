@@ -4,13 +4,13 @@ import { WebView } from 'react-native-webview';
 import { useNavigation } from "@react-navigation/native";
 import { useLocalization } from "../../localization";
 import { Theme } from "../../theme";
-
+import {Environment} from "../../datas";
 type TProps = {};
 
 export const RegisterScreen: React.FC<TProps> = props => {
     const navigation = useNavigation();
     const { getString, changeLanguage } = useLocalization();
-    const baseUrl = 'http://192.168.43.66/mhealth/api/users/get-all-reg-dropdowns';
+    const baseUrl = Environment.SERVER_API+'/api/users/get-all-reg-dropdowns';
     const [signUpType, setSignUpType] = useState("provider");
     const [loading, setLoading] = useState(true);
 

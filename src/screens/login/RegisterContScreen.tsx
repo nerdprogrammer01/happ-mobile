@@ -12,7 +12,7 @@ type TProps = {};
 export const RegisterContScreen: React.FC<TProps> = props => {
     const navigation = useNavigation();
     const { getString, changeLanguage } = useLocalization();
-    const baseUrl = Environment.SERVER_WEB + '/user/registerMobile';
+    const baseUrl = Environment.SERVER_API + '/user/registerMobile';
 
     const loginButtonHandler = () => {
         navigation.navigate(NavigationNames.LoginScreen);
