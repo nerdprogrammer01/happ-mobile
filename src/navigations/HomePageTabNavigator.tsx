@@ -141,7 +141,7 @@ const HomeTabStack = () => {
         name={NavigationNames.AppointmentPaymentScreen}
         component={AppointmentPaymentScreen}
         options={{ title: getString("Complete Payment") }}
-      />
+      /> 
       <Stack.Screen
         name={NavigationNames.AppointmentScreen}
         component={AppointmentScreen}

@@ -59,9 +59,9 @@ export const LoginScreen: React.FC<TProps> = props => {
             body: bd
         })
             .then((response) => {
-                // alert(JSON.stringify(response.json()));
+                //alert(JSON.stringify(response.json()));
                 let result = response.json();
-
+              
                 return result;
             })
             .then((responseData) => {
