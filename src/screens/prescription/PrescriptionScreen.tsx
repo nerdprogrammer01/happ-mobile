@@ -26,11 +26,12 @@ export const PrescriptionScreen: React.FC<TProps> = props => {
   const [profile, setProfile] = useState(null);
 
   const prescription =JSON.parse(route.params["prescription"])
-
+  //console.log(prescription);
  
   const onPressMemberSearch = () => {
     navigation.navigate(NavigationNames.MemberSearchScreen,{
       page_request: "prescription",
+      
     });
   };
 
@@ -42,6 +43,7 @@ export const PrescriptionScreen: React.FC<TProps> = props => {
       let profile = await AsyncStorage.getItem('profile')
       .then((data) => {
         setProfile(JSON.parse(data));
+       // console.log(data)
     })
     .catch((err) => {
        console.log(err);
@@ -107,7 +109,11 @@ export const PrescriptionScreen: React.FC<TProps> = props => {
                 }
                 
                 <Text style={styles.daysText}>{moment(prescription.created_at).fromNow()}</Text>
+               
+
                 <Text style={styles.px_nameText}>{prescription.pharmacy}</Text>
+
+
                 <Text style={styles.drug_titleText}>Drugs Prescribed</Text>
 
                 {prescription.drugs.map((item, index) => {

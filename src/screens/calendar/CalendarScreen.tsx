@@ -82,13 +82,13 @@ export const CalendarScreen: React.FC<{}> = props => {
       }
     };
 
-    console.log(profile_id)
+    //console.log(profile.token)
 
     
     fetch(Environment.SERVER_API+"/api/appointment/GetProfileAppointments?profile_id="+profile_id, request)
       .then((response) => response.json())
       .then(responseJson => {
-
+       console.log(responseJson);
         var appointments = responseJson as AppointmentModel[]
 
         appointments.forEach( appointment => {  

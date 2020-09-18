@@ -113,7 +113,7 @@ export const PrescriptionsScreen: React.FC<TProps> = props => {
                   return (
                     <TouchableHighlight key={index}  onPress={() =>
                       navigation.navigate(NavigationNames.PrescriptionScreen, {
-                        prescription: JSON.stringify(item),
+                        prescription: JSON.stringify(item)
                       })
                     }>
                     <View>
@@ -121,13 +121,13 @@ export const PrescriptionsScreen: React.FC<TProps> = props => {
 
                         {profile.role=="clinician" &&
                          <Text style={styles.titleText}>{item.profile.fullName}</Text>
+                         
                         }
                         
                         {profile.role=="client" &&
                          <Text style={styles.titleText}>From {item.clinician.fullName}</Text>
                         }
                          <Text style={styles.daysText}>{moment(item.created_at).fromNow()} - {item.drug_count} drugs</Text>
-
                         <Divider style={styles.divider} />
                       </View>
                   </TouchableHighlight>

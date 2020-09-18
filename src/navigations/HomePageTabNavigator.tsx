@@ -80,7 +80,7 @@ const LoginTabStack = () => {
     </Stack.Navigator>
   );
 };
-
+    
 const HomeTabStack = () => {
   const { getString } = useLocalization();
   return (

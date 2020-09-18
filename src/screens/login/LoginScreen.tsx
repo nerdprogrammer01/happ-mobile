@@ -9,6 +9,7 @@ import { useLocalization } from "../../localization";
 import NavigationNames from "../../navigations/NavigationNames";
 import { Theme } from "../../theme";
 import { Environment } from "../../datas";
+import { Body } from "native-base";
 
 
 type TProps = {};
@@ -48,7 +49,7 @@ export const LoginScreen: React.FC<TProps> = props => {
             Password: password
         });
 
-    
+        console.log(bd);
 
         fetch(Environment.SERVER_API + '/auth/GenerateToken', {
             method: 'POST',
@@ -57,16 +58,18 @@ export const LoginScreen: React.FC<TProps> = props => {
                 'Content-Type': 'application/json'
             },
             body: bd
+                    
         })
             .then((response) => {
                 //alert(JSON.stringify(response.json()));
                 let result = response.json();
-              
+                 
                 return result;
             })
             .then((responseData) => {
                 //navigation.navigate("Home");
                 //alert(JSON.stringify(responseData));
+               //alert(responseData);
                 console.log("response: " + JSON.stringify(responseData)); 
                 setLoading(false);
                 //check the response, if the user is authenticated, save the data and navigate the user to another screen

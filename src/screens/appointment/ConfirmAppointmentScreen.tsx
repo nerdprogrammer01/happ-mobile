@@ -38,6 +38,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       await AsyncStorage.getItem('profile')
       .then((data) => {
         setProfile(JSON.parse(data));
+        //console.log(data)
     })
     .catch((err) => {
        console.log(err);
@@ -65,7 +66,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       setDatePickerVisibility(false);
     };
   
-    // const handleConfirm = (date: Date) => {
+    // const onChange = (date: Date) => {
     //   let datestring = Moment(date).format('YYYY-MM-DD')
     //   setDate(datestring);
     //   hideDatePicker();
@@ -74,7 +75,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
     const onChange = (selectedDate) => {
       const currentDate = selectedDate || date;
-      let datestring = Moment(currentDate).format('DD-MM-YYYY');
+      let datestring = Moment(currentDate).format("DD-MM-YYYY");
       setDatePickerVisibility(Platform.OS === 'ios');
       setDate(datestring);
       setDatePickerVisibility(false);
@@ -97,6 +98,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       .then((response) => {
         JSON.stringify(response, null, 4)
         return response.json();
+        //console.log(response.json())
       })
       .then(responseJson => {
         setDoctorServices(responseJson as DoctorServicesModel[])
@@ -126,9 +128,10 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         'Authorization': 'Bearer '+profile.token
       }
     };
-
+    
     fetch(Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id + "&appointment_activity_sub_id="+appointmentModel.appointmentActivity, request)
-      .then((response) => {
+  
+    .then((response) => {
         JSON.stringify(response, null, 4)
         return response.json();
       })
@@ -180,6 +183,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
           return response.json();
         })
         .then(responseJson => {
+          console.log(responseJson)
           setAvailable(responseJson);
           setAvailable(true);
           if(available == false){
@@ -196,7 +200,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   const postAppointment = () => {
     if(!Moment(start_date).isValid()){
       alert("date is required")
-      return null
+      return "null"
     }
 
     let requestBody = JSON.stringify({
@@ -210,10 +214,10 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
       appointment_service:serviceId,
       appointment_activity_id:appointmentModel.appointmentCategory,
       appointment_activity_sub_id:appointmentModel.appointmentActivity,
-      cancel_reason:""
+     cancel_reason:""
 
     });
-
+  //  console.log(requestBody)
     let request = {
       method: "POST",
       headers: {
@@ -246,16 +250,21 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         'Authorization': 'Bearer '+profile.token
       }
     };
-
+    console.log('Bearer '+profile.token)
+    console.log(date)
+    console.log(Environment.SERVER_API+"/api/Clinician/getlistclinicianavailability?clinician_id="+appointmentModel.doctor.id +"&date="+date)
     fetch(Environment.SERVER_API+"/api/Clinician/getlistclinicianavailability?clinician_id="+appointmentModel.doctor.id +"&date="+date, request)
       .then((response) =>{
-        console.log(JSON.stringify(response, null, 4));
+        // console.log('after date')
+        // console.log(response.json())
+        // console.log('later ')
+       //console.log(JSON.stringify(response, null, 4));
         return response.json();
       })
       .then(responseJson => {
         setAvailabilityList(responseJson);
         //alert(JSON.stringify(responseJson));
-        console.log(JSON.stringify(responseJson));
+        //console.log(JSON.stringify(responseJson));
         setLoading(false);
       })
       .catch(error => {
@@ -290,10 +299,11 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
             <Picker.Item label={item.name} value={item.id} key={key} />)
           )}
 
-        </Picker>
+        </Picker> 
       </View>
       <View>
-        <Text style={styles.titleText}>Your Preferred Appointment Time ?</Text>
+      <Text style={styles.titleText}>Your Preferred Appointment Time ?</Text> 
+        <Text style={styles.titleText}>{serviceId}</Text>
         <View style={styles.calendarSection}>
           <Ionicons style={styles.calendarIcon} name="ios-calendar" size={40} color="#000" />
           <TextInput
@@ -314,6 +324,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
   )
 }
             </Picker>
+            <Text style={styles.titleText}>{date}</Text> 
           </View>
         </View>
 

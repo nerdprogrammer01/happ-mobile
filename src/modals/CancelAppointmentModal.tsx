@@ -34,15 +34,16 @@ export const CancelAppointmentModal: React.FC<TProps> = props => {
       alert("Please let us know why");
       return null
     }
-
+ 
     let requestBody = JSON.stringify({
+
       appointment_id: props.appointment_id,
       cancel_reason: cancelReason,
 
     });
 
     let request = {
-      method: "POST",
+      method: "POST",   
       headers: {
         'Content-Type': "application/json",
         //'Token': profile.token
@@ -52,11 +53,15 @@ export const CancelAppointmentModal: React.FC<TProps> = props => {
 
     fetch(Environment.SERVER_API + "/api/appointment/CancelAppointment", request)
       .then((response) => {
+       
         JSON.stringify(response, null, 4)
         return response.json();
       })
       .then(responseJson => {
+        
+        console.log("ID is:"+ props.appointment_id);
         if(responseJson == 200){
+          alert("Appoinment cancelled");
           navigation.navigate(NavigationNames.CalendarScreen)
         }
       })
@@ -84,7 +89,7 @@ export const CancelAppointmentModal: React.FC<TProps> = props => {
           <Divider style={{marginBottom:10}} />
 
           <TextInput
-          placeholder= "Tell us Why are you cancelling ?" 
+          placeholder= "Tell us Why are you cancelling ?"
           onChangeText={reason => setcancelReason(reason)}
           
           />

@@ -102,14 +102,14 @@ export const NewReferralScreen: React.FC<TProps> = props => {
 
     fetch(Environment.SERVER_API+"/api/options/GetAppointmentSubActivities?parent_id="+appointment_cateogory_id, request)
       .then(async response => {
-        console.log(JSON.stringify(response, null, 4));
-        //alert(response);
+       // console.log(JSON.stringify(response, null, 4));
         return await response.json();
         
       })
       .then(responseJson => {
         setAppointmentActivities(responseJson);
         setAppointmentCategory(appointment_cateogory_id);
+        //alert("first response:"+response);
       })
       .catch(error => {
         console.error(error);
@@ -139,7 +139,7 @@ export const NewReferralScreen: React.FC<TProps> = props => {
         body: bd
     })
         .then((response) => {
-            alert(JSON.stringify(response, null, 4));
+          //console.log(JSON.stringify(response, null, 4));
 
             let result = response.json();
 
@@ -148,7 +148,7 @@ export const NewReferralScreen: React.FC<TProps> = props => {
         .then((responseData) => {
             //navigation.navigate("Home");
            setClinicians(responseData);
-            console.log("response: " + JSON.stringify(responseData)); 
+            //console.log("2 nd response: " + JSON.stringify(responseData)); 
             setLoading(false);
             setStep(2);
             
@@ -171,7 +171,7 @@ const postReferral = () => {
     appointment_activity_id:appointmentCategory,
     appointment_activity_sub_id:appointmentActivity
   }
-
+   //console.log(profile_match)
   let bd = JSON.stringify({
       clinician_id: clinician.id,
       profile_id:member.id,
@@ -184,13 +184,14 @@ const postReferral = () => {
   fetch(Environment.SERVER_API + '/api/referral/Post', {
       method: 'POST',
       headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
+          
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+profile.token
       },
       body: bd
   })
       .then((response) => {
-          alert(JSON.stringify(response, null, 4));
+         // console.log(JSON.stringify(response, null, 4));
 
           let result = response.json();
 

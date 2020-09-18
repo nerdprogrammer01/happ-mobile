@@ -48,7 +48,7 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
         pharmacy_id:pharmacy,
         drugs:drugs
     });
-
+      console.log(bd);
 
 
     fetch(Environment.SERVER_API + '/api/prescription/post', {
@@ -103,7 +103,7 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
       }
     };
 
-    
+    console.log('Bearer '+profile.token)
     fetch(Environment.SERVER_API+"/api/pharmacy/get", request)
       .then(async response => 
         {
@@ -111,7 +111,7 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
           return await response.json();
         })
       .then(responseJson => {
-
+         console.log(responseJson);
         setPharmacies(responseJson);
         setLoading(false);
       })
@@ -189,6 +189,41 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
             )}
         </Picker>
       </View>
+      <Text style={styles.label_titleText}>Address</Text>
+      <View style={styles.pickerstyle}>
+        <Picker
+          onValueChange={(itemValue, itemIndex) => setPharmacy(itemValue)} selectedValue={pharmacy}
+        >
+         <Picker.Item label="Address"></Picker.Item>
+          { pharmacies.map((item, key)=>(
+            <Picker.Item label={item.address} value={item.id} key={key} />)
+            )}
+        </Picker>
+      </View>
+      <Text style={styles.label_titleText}>Email</Text>
+      <View style={styles.pickerstyle}>
+        <Picker
+          onValueChange={(itemValue, itemIndex) => setPharmacy(itemValue)} selectedValue={pharmacy}
+        >
+         <Picker.Item label="Email"></Picker.Item>
+          { pharmacies.map((item, key)=>(
+            <Picker.Item label={item.email} value={item.id} key={key} />)
+            )}
+        </Picker>
+      </View>
+      <Text style={styles.label_titleText}>Phone No.</Text>
+  <View style={styles.pickerstyle}>
+        <Picker
+          onValueChange={(itemValue, itemIndex) => setPharmacy(itemValue)} selectedValue={pharmacy}
+        >
+         <Picker.Item label="Phone No."></Picker.Item>
+          { pharmacies.map((item, key)=>(
+            <Picker.Item label={item.phone} value={item.id} key={key} />)
+            )}
+        </Picker>
+      </View>
+
+
 
       <Text style={styles.label_titleText}>Additional Comment</Text>
       <TextInput
