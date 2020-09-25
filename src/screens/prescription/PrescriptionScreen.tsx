@@ -108,10 +108,13 @@ export const PrescriptionScreen: React.FC<TProps> = props => {
                     </View>
                 }
                 
+                {/* <Text style={styles.daysText}>{moment(prescription.created_at).fromNow()}</Text> */}
                 <Text style={styles.daysText}>{moment(prescription.created_at).fromNow()}</Text>
-               
+                          
 
                 <Text style={styles.px_nameText}>{prescription.pharmacy}</Text>
+                <Text style={styles.daysText}>{prescription.pharmacy_address}</Text>
+                <Text style={styles.daysText}>{prescription.pharmacy_phone}</Text>
 
 
                 <Text style={styles.drug_titleText}>Drugs Prescribed</Text>

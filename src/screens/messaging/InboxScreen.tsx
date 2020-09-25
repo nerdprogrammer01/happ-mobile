@@ -51,7 +51,7 @@ export const InboxScreen: React.FC<TProps> = props => {
   }, []);
 
   useEffect(() => {
-   
+     
       try{
         if (profile  != null){
           getMessages();
@@ -75,6 +75,7 @@ export const InboxScreen: React.FC<TProps> = props => {
           'Authorization': 'Bearer '+profile.token
         }
       };
+      console.log("Bearer "+profile.token)
   
       //alert(JSON.stringify(request));
 

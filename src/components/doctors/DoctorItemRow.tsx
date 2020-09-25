@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState,useEffect } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,15 @@ import {
 } from "react-native";
 import { DoctorModel } from "../../models";
 import { Avatar } from "../avatar";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Theme } from "../../theme";
 import { AirbnbRating } from "react-native-ratings";
 import { Ionicons } from "@expo/vector-icons";
 import { DoctorDetailsBottomSheet } from "../../modals";
 import {Environment} from "../../datas";
+import { NavigationNames } from "../../navigations";
+import { NewAppointmentModel } from "../../models/NewAppointmentModel";
+
 
 type TProps = {
   item: DoctorModel;
@@ -21,6 +25,38 @@ type TProps = {
 
 export const DoctorItemRow: React.FC<TProps> = props => {
   const [visibleModal, setVisibleModal] = useState(false);
+  const [stars, setStars] = useState(0);
+
+    var clinician_id = props.item.id;
+//  console.log("this is: "+clinician_id);
+
+  
+ useEffect(()=>{
+  get_Stars();
+
+})
+
+
+const get_Stars = () => {
+  let request = {
+    method: "GET",
+    headers: {
+      'Content-Type': "application/json",
+
+    }
+  };
+
+  fetch(Environment.SERVER_API+"/api/clinician/GetClinicianRatings?clinician_id="+clinician_id, request)
+    .then((response) => response.json())
+    .then(responseJson => {
+      //console.log(responseJson.averageRating)
+      setStars(responseJson.averageRating)
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+
   return (
     <>
       <View style={[styles.container, props.style]}>
@@ -40,8 +76,8 @@ export const DoctorItemRow: React.FC<TProps> = props => {
               count={5}
               size={17}
               isDisabled
-              selectedColor={"orange"}
-              defaultRating={props.item.rating}
+              selectedColor={"blue"}
+              defaultRating={stars}
             />
           </View>
         </View>

@@ -69,6 +69,7 @@ export const CalendarScreen: React.FC<{}> = props => {
     const today = new Date();
     if (profile != null){
       getAppointments(profile.id);
+    
     }
     refAgenda.current.chooseDay(today);
   };
@@ -83,12 +84,13 @@ export const CalendarScreen: React.FC<{}> = props => {
     };
 
     //console.log(profile.token)
-
+   //console.log("before");
     
     fetch(Environment.SERVER_API+"/api/appointment/GetProfileAppointments?profile_id="+profile_id, request)
       .then((response) => response.json())
       .then(responseJson => {
-       console.log(responseJson);
+        //console.log("after");
+      //  console.log(responseJson);
         var appointments = responseJson as AppointmentModel[]
 
         appointments.forEach( appointment => {  
@@ -102,7 +104,7 @@ export const CalendarScreen: React.FC<{}> = props => {
       })
       .catch(error => {
         console.error(error);
-        alert(error);
+       //alert(error);
       });
   }
 

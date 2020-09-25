@@ -23,7 +23,7 @@ export const MemberSearchScreen: React.FC<TProps> = props => {
     const onMemberPress=(item)=>{
         if (page_request=="prescription"){
             navigation.navigate(NavigationNames.NewPrescriptionScreen, {
-                member: JSON.stringify(item),
+                member: JSON.stringify(item)
               });
         }else if (page_request=="referral"){
             navigation.navigate(NavigationNames.NewReferralScreen, {

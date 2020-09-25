@@ -7,7 +7,8 @@ import {
   ScrollView,
   FlatList,
   NativeSyntheticEvent,
-  NativeScrollEvent
+  NativeScrollEvent,
+  AsyncStorage
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import numeral from "numeral";
@@ -27,12 +28,16 @@ export const DoctorDetailScreen: React.FC<TProps> = props => {
   const route = useRoute();
   const navigation = useNavigation();
   const appointmentModel = JSON.parse(route.params["appointmentModel"]) as NewAppointmentModel;
+ // const [profile, setProfile] = useState(null);
+  const [stars, setStars] = useState(0);
 
   const nextForm = (doctor : DoctorModel) => {
     appointmentModel.doctor = doctor;
     navigation.navigate(NavigationNames.ConfirmAppointmentScreen, {appointmentModel: JSON.stringify(appointmentModel)})
     };
-    
+
+var clinician_id = appointmentModel.doctor.id;
+// console.log("this is: "+clinician_id);
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -65,6 +70,32 @@ export const DoctorDetailScreen: React.FC<TProps> = props => {
       }
     });
   }, []);
+  
+  useEffect(()=>{
+    get_Stars();
+
+  })
+  
+
+  const get_Stars = () => {
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+
+      }
+    };
+  
+    fetch(Environment.SERVER_API+"/api/clinician/GetClinicianRatings?clinician_id="+clinician_id, request)
+      .then((response) => response.json())
+      .then(responseJson => {
+        //console.log(responseJson.averageRating)
+        setStars(responseJson.averageRating)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
 
   return (
     <ScrollView
@@ -85,7 +116,7 @@ export const DoctorDetailScreen: React.FC<TProps> = props => {
         <Text style={styles.doctorInfoTitle}>{appointmentModel.doctor?.title}</Text>
       </View>
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Details</Text>
+        <Text style={styles.sectionTitle}>Detail</Text>
         <Divider />
         <Text style={styles.aboutText}>{appointmentModel.doctor?.about}</Text>
       </View>
@@ -95,15 +126,15 @@ export const DoctorDetailScreen: React.FC<TProps> = props => {
         <Divider />
         <View style={styles.ratingContainer}>
           <Text style={styles.ratingNumberText}>
-            {numeral(appointmentModel.doctor?.rating).format("0.0")}
+            {stars}
           </Text>
           <AirbnbRating
             showRating={false}
             count={5}
             size={28}
             isDisabled
-            selectedColor={"orange"}
-            defaultRating={appointmentModel.doctor?.rating}
+            selectedColor={"blue"}
+            defaultRating={stars}
           />
         </View>
        {/*  <TouchableOpacity style={styles.rateButtonContainer}>

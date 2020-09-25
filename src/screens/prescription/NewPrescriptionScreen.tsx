@@ -48,7 +48,7 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
         pharmacy_id:pharmacy,
         drugs:drugs
     });
-      console.log(bd);
+     // console.log(bd);
 
 
     fetch(Environment.SERVER_API + '/api/prescription/post', {
@@ -72,7 +72,7 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
              //alert(JSON.stringify(responseData));
              setSuccess(true);
              setLoading(false);
-            console.log("response: " + JSON.stringify(responseData)); 
+           // console.log("response: " + JSON.stringify(responseData)); 
             
         }).catch(function(error) {
             setError(true);
@@ -107,11 +107,11 @@ export const NewPrescriptionScreen: React.FC<TProps> = props => {
     fetch(Environment.SERVER_API+"/api/pharmacy/get", request)
       .then(async response => 
         {
-          console.log(JSON.stringify(response, null, 4));
+          //console.log(JSON.stringify(response, null, 4));
           return await response.json();
         })
       .then(responseJson => {
-         console.log(responseJson);
+        // console.log(responseJson);
         setPharmacies(responseJson);
         setLoading(false);
       })

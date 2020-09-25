@@ -69,7 +69,10 @@ export const ProviderAvailabilityScreen: React.FC<TProps> = props => {
             'Token': profile.token
           }
         };
-    
+
+       console.log(profile.token);
+       console.log("https://mhealth.server.visioninfotech.net/api/clinician/getclinicianavailability?clinician_id="+profile.id);
+       
         fetch(Environment.SERVER_API+"/api/clinician/getclinicianavailability?clinician_id="+profile.id, request)
           .then((response) => response.json())
           .then(responseJson => {

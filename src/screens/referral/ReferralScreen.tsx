@@ -124,7 +124,8 @@ export const ReferralScreen: React.FC<TProps> = props => {
                     </View>
                 }
                 
-                <Text style={styles.daysText}>{moment(referral.created_at).fromNow()}</Text>
+                <Text style={styles.daysText}>{ moment(referral.created_at).local().format('YYYY-MM-DD HH:mm')}</Text>
+                {/* moment(referral.created_at).local().format('YYYY-MM-DD HH:mm'); */}
                 
                 <Divider style={{marginTop:15}}/>
 

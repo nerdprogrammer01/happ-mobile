@@ -64,7 +64,9 @@ export const MemberProfileScreen: React.FC<TProps> = props => {
         'Authorization': 'Bearer '+profile.token
       }
     };
-
+    // console.log("Token is: "+profile.token)
+    // console.log("Date is: "+currentDate);
+    //Provider HomeScreenr Api
     
     fetch(Environment.SERVER_API+"/api/appointment/GetDayAppointments?day="+currentDate, request)
       .then(async response => 

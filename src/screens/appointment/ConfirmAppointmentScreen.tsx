@@ -75,7 +75,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
 
     const onChange = (selectedDate) => {
       const currentDate = selectedDate || date;
-      let datestring = Moment(currentDate).format("DD-MM-YYYY");
+      let datestring = Moment(currentDate).format("YYYY-MM-DD");
       setDatePickerVisibility(Platform.OS === 'ios');
       setDate(datestring);
       setDatePickerVisibility(false);
@@ -128,7 +128,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
         'Authorization': 'Bearer '+profile.token
       }
     };
-    
+    console.log("scervice dR : "+Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id + "&appointment_activity_sub_id="+appointmentModel.appointmentActivity, request)
     fetch(Environment.SERVER_API + "/api/servicecost/GetClinicianServiceCost?service_id=" + service_id + "&clinician_id=" + appointmentModel.doctor.id + "&appointment_activity_sub_id="+appointmentModel.appointmentActivity, request)
   
     .then((response) => {
@@ -148,7 +148,7 @@ export const ConfirmAppointmentScreen: React.FC<TProps> = props => {
     setAppointmentTime(timeString);
 
     if(date != null && servicePeriod > 0){
-      var start_date = Moment(date.trim()+" "+timeString.trim()+":00", 'DD-MM-YYYY hh:mm:ss').format()
+      var start_date = Moment(date.trim()+" "+timeString.trim()+":00", 'YYYY-MM-DD hh:mm:ss').format()
       var end_date = Moment(start_date).add(servicePeriod, 'minutes').format();
       
       setStart_date(start_date)

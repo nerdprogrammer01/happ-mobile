@@ -40,7 +40,8 @@ export const ReferralsScreen: React.FC<TProps> = props => {
         'Authorization': 'Bearer '+profile.token
       }
     };
-
+   // console.log(Environment.SERVER_API+"/api/referral/getreferrals");
+    //console.log('Bearer '+profile.token)
     fetch(Environment.SERVER_API+"/api/referral/getreferrals", request)
       .then((response) => response.json())
       .then(responseJson => {

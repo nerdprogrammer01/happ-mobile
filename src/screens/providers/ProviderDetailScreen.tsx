@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState, useDebugValue } from "react";
 import {
   View,
   Text,
@@ -11,25 +11,34 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import numeral from "numeral";
+//import {DoctorReviewItemRow} from "../../components/doctors/DoctorItemRow"
 import { DoctorModel } from "../../models";
 import { Avatar, Divider, Button } from "../../components";
 import { Theme } from "../../theme";
 import { AirbnbRating, Rating } from "react-native-ratings";
 import { DoctorReviewItemRow } from "../../components/reviews";
 import { Ionicons } from "@expo/vector-icons";
-import { NewAppointmentModel } from "../../models/NewAppointmentModel";
+import { AppointmentModel} from "../../models";
 import { NavigationNames } from "../../navigations";
-
+import {Environment} from "../../datas";
+  import { RatingReviewModal } from "../../modals/RatingReviewModal"
 type TProps = {};
 
 export const ProviderDetailScreen: React.FC<TProps> = props => {
   const route = useRoute();
   const navigation = useNavigation();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [stars, setStars] = useState(0);
+   
+  //const appointment =JSON.parse(route.params["appointment"]) as AppointmentModel;
+  //const Appointment = JSON.parse(route.params["Appointment"]) as AppointmentModel;
   const doctor = JSON.parse(route.params["doctor"]) as DoctorModel;
-
+ //console.log(Appointment)
   const [toolbarTitleHided, setToolbarTitleHided] = useState(true);
-
+  var clinician_id = doctor.id ;
+  // var Appointment_id = appointment.id ;
+  //console.log("Appoinment  iD: "+Appointment_id);
+  console.log("clin"+clinician_id);
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
    
     const y = event.nativeEvent.contentOffset.y;
@@ -43,6 +52,7 @@ export const ProviderDetailScreen: React.FC<TProps> = props => {
   };
 
   useEffect(() => {
+  
     navigation.setOptions({
       title: "",
       headerStyle: {
@@ -52,6 +62,34 @@ export const ProviderDetailScreen: React.FC<TProps> = props => {
       }
     });
   }, []);
+
+  useEffect(()=>{
+    get_Stars();
+    console.log("this is sencond effect");
+  })
+  
+  const get_Stars = () => {
+    let request = {
+      method: "GET",
+      headers: {
+        'Content-Type': "application/json",
+
+      }
+    };
+  
+    fetch(Environment.SERVER_API+"/api/clinician/GetClinicianRatings?clinician_id="+clinician_id, request)
+      .then((response) => response.json())
+      .then(responseJson => {
+        //console.log(responseJson.averageRating)
+        setStars(responseJson.averageRating)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  //console.log("this start "+stars);
+
 
   return (
     <ScrollView
@@ -76,25 +114,26 @@ export const ProviderDetailScreen: React.FC<TProps> = props => {
         <Divider />
         <Text style={styles.aboutText}>{doctor?.about}</Text>
       </View>
+     
 
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Rating</Text>
         <Divider />
         <View style={styles.ratingContainer}>
           <Text style={styles.ratingNumberText}>
-            {numeral(doctor?.rating).format("0.0")}
+            {stars}
           </Text>
           <AirbnbRating
             showRating={false}
             count={5}
             size={28}
             isDisabled
-            selectedColor={"orange"}
-            defaultRating={doctor?.rating}            
+            selectedColor={"blue"}
+            defaultRating={stars}            
           />
 
         </View>
-        <TouchableOpacity style={styles.rateButtonContainer}>
+        <TouchableOpacity style={styles.rateButtonContainer}   onPress={() => setModalVisible(true)} >
           <Text style={styles.rateButtonTitle}>Rate & Write Message</Text>
           <Ionicons
             name="ios-arrow-forward"
@@ -114,6 +153,12 @@ export const ProviderDetailScreen: React.FC<TProps> = props => {
           renderItem={row => <DoctorReviewItemRow item={row.item} />}
           contentContainerStyle={{ paddingVertical: 16 }}
         />
+        <RatingReviewModal
+      isVisible={modalVisible}
+      onDismissModal = {() => setModalVisible(false)}
+      onCloseModal = {() => {setModalVisible(false)}}
+      //appointment_id = {appointment.id}
+      />
       </View>
     </ScrollView>
   );

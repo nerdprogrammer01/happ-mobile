@@ -31,7 +31,7 @@ export const PrescriptionsScreen: React.FC<TProps> = props => {
       page_request: "prescription",
     });
   };
-
+  //console.log(prescriptions);
   const get_prescriptions = () => {
     let request = {
       method: "GET",
@@ -40,7 +40,8 @@ export const PrescriptionsScreen: React.FC<TProps> = props => {
         'Authorization': 'Bearer '+profile.token
       }
     };
-
+    console.log("token is:"+ 'Bearer '+profile.token)
+   console.log(Environment.SERVER_API+"/api/prescription/get")
     fetch(Environment.SERVER_API+"/api/prescription/get", request)
       .then((response) => response.json())
       .then(responseJson => {
