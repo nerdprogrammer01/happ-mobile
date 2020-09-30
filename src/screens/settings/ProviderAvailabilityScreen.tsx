@@ -1,14 +1,285 @@
+// import React, { Component,useState,useEffect } from "react";
+// import { useNavigation ,useRoute} from "@react-navigation/native";
+// import { View, Text, ScrollView, StyleSheet, Platform ,AsyncStorage,ActivityIndicator,Picker,TextInput} from "react-native";
+// import { styles } from "../../styles";
+// import { Button } from "../../components/buttons";
+// import { useLocalization } from "../../localization";
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// import moment from "moment";
+// import {Environment} from "../../datas";
+// import { Theme } from "../../theme";
+// import { HeaderButtons} from "react-navigation-header-buttons";
+// import { Ionicons } from "@expo/vector-icons";
+// import { TouchableOpacity } from "react-native-gesture-handler";
+// import {ShowAppointmentCalender} from "../../modals/ShowAppointmentCalender"
+// import Modal from 'react-native-modal';
+
+
+// type TProps = {};
+
+// export const ProviderAvailabilityScreen: React.FC<TProps> = props => {
+//     const { getString } = useLocalization();
+//     const navigation = useNavigation();
+//     const [date, setDate] = useState(new Date(1598051730000));
+//     const [show, setShow] = useState(false);
+//     const [item_selected,setItemSelected]=useState("");
+//     const [isLoading, setLoading] = useState(true);
+//     const [profile, setProfile] = useState(null);
+//     const [success,setSuccess]=useState(false);
+//     const [error,setError]=useState(false);
+//     const [modalVisible, setModalVisible] = useState(false);
+//     const [dte, setDte] = useState(new Date(1598051730000));
+
+//     let days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+
+ 
+//     // const [mode, setMode] = useState('date');
+//     // const [shw, setShw] = useState(false);
+  
+//     // const onChng = (event, selectedDate) => {
+//     //   const currentDate = selectedDate || date;
+//     //   setShow(Platform.OS === 'ios');
+//     //   setDate(currentDate);
+//     // };
+  
+//     // const showMode = (currentMode) => {
+//     //   setShow(true);
+//     //   setMode(currentMode);
+//     // };
+  
+//     // const showDatepicker = () => {
+//     //   showMode('date');
+//     // };
+  
+//     // const showTimepicker = () => {
+//     //   showMode('date');
+//     // };
+  
+
+
+
+//     var dictionary={};
+//  /*    dictionary["Start_Sunday"]="";
+//     dictionary["Start_Monday"]="";
+//     dictionary["Start_Tuesday"]="";
+//     dictionary["Start_Wednesday"]="";
+//     dictionary["Start_Thursday"]="";
+//     dictionary["Start_Friday"]="";
+//     dictionary["Start_Saturday"]="";
+
+//     dictionary["End_Sunday"]="";
+//     dictionary["End_Monday"]="";
+//     dictionary["End_Tuesday"]="";
+//     dictionary["End_Wednesday"]="";
+//     dictionary["End_Thursday"]="";
+//     dictionary["End_Friday"]="";
+//     dictionary["End_Saturday"]=""; */
+
+//     const [dates,setDates]=useState(dictionary);
+
+//     const onChange = (event, selectedDate) => {
+//         const currentDate = selectedDate || date;
+
+//         dictionary=dates;
+//         dictionary[item_selected]=moment(selectedDate, ).format("hh:mm A");
+//         setDates(dictionary);
+
+//         setShow(Platform.OS === 'ios');
+//         setDate(currentDate);
+
+        
+//         setShow(false);
+//       };
+
+
+
+//       const get_availability = () => {
+//         let request = {
+//           method: "GET",
+//           headers: {
+//             'Content-Type': "application/json",
+//             'Token': profile.token
+//           }
+//         };
+
+//        console.log(profile.token);
+//        console.log("https://mhealth.server.visioninfotech.net/api/clinician/getclinicianavailability?clinician_id="+profile.id);
+       
+//         fetch(Environment.SERVER_API+"/api/clinician/getclinicianavailability?clinician_id="+profile.id, request)
+//           .then((response) => response.json())
+//           .then(responseJson => {
+//             setDates(responseJson);
+//             setLoading(false);
+//           })
+//           .catch(error => {
+//             alert(error);
+//             console.error(error);
+//           });
+//       }
+
+//       const postAvailability = () => {
+//         setLoading(true);
+//         setSuccess(false);
+//         setError(false);
+      
+//         let bd = JSON.stringify({
+//             clinician_id: profile.id,
+//             availability:dates
+//         });
+    
+    
+//     console.log("..."+ Environment.SERVER_API + '/api/clinician/PostClinicianAvailability' )
+//     console.log(bd)
+//         fetch(Environment.SERVER_API + '/api/clinician/PostClinicianAvailability', {
+//             method: 'POST',
+//             headers: {
+//                 Accept: 'application/json',
+//                 'Content-Type': 'application/json'
+//             },
+//             body: bd
+//         })
+//             .then((response) => {
+//                // alert(JSON.stringify(response, null, 4));
+    
+//                 let result = response.json();
+    
+//                 return result;
+//             })
+//             .then((responseData) => {
+         
+//                  setSuccess(true);
+//                  setLoading(false);
+//                 console.log("response: " + JSON.stringify(responseData)); 
+                
+//             }).catch(function(error) {
+//                 setError(true);
+//                 setLoading(false);
+//                 get_availability();
+//                 //alert('There has been a problem with your fetch operation: ' + error.message);
+//                 console.log('There has been a problem with your fetch operation: ' + error.message);
+//                  // ADD THIS THROW error
+//                   //throw error;
+//                 });
+//     }
+    
+
+//       useEffect(() => {
+//         async function load_profile() {
+//           let profile = await AsyncStorage.getItem('profile')
+//           .then((data) => {
+//             setProfile(JSON.parse(data));
+//         })
+//         .catch((err) => {
+//            console.log(err);
+//         });   
+//         }
+//        load_profile();
+//       }, []);
+    
+    
+    
+//       useEffect(() => {
+//         if (profile != null){
+//             get_availability();
+//             //alert(JSON.stringify(dictionary));
+//         }
+      
+      
+//       }, [profile]);
+
+
+//       navigation.setOptions({
+//         headerRight: () => (
+//           <HeaderButtons>
+//            {/*  <Item title={getString("Cancel")}  /> */}
+//            <Button
+//             onPress={() => postAvailability()}
+//             title={getString("Update")}
+           
+//           />
+//           </HeaderButtons>
+//         )
+//       });
+
+//     return (
+//     <View style={{marginTop:15}}>
+          
+//           {isLoading &&
+//                     <ActivityIndicator size='large' color={Theme.colors.primaryColor} />}
+//     <ScrollView style={styles.scrollContainer}>
+//     {error && <Text style={styles.errorText}>There was an error updating your availability. Please check your connection and try again</Text> }
+//     {success && <Text style={styles.successText}>Good job. Your availability has been updated successfully.</Text> }
+//     <TouchableOpacity style={{marginLeft:'87%'}} onPress={() => setModalVisible(true)}>
+//      <Ionicons name="ios-calendar" size={38} color={Theme.colors.black} />
+//     </TouchableOpacity>
+//     {/* {show && (
+//         <DateTimePicker
+//           testID="dateTimePicker"
+//           value={new Date()}
+//           mode={mode}
+//           is24Hour={true}
+//           display="default"
+//           onChange={onChange}
+//         />
+//       )} */}
+//         <ShowAppointmentCalender
+//       isVisible={modalVisible}
+//       onDismissModal = {() => setModalVisible(false)}
+//       onCloseModal = {() => {setModalVisible(false)}}
+//       //appointment_id = {appointment.id}
+//       />
+
+//         {days.map((item,index)=>{
+//             return(
+//                 <View>
+//                 <Text>{item}</Text>
+//                 <View style={{flexDirection:"row"}}>
+//                     <View style={{flex:1}}>
+//                         <TextInput placeholder="start date" style={styles.input_left} value={  dates["Start_"+item]}  onFocus={()=>{setShow(true); setItemSelected("Start_"+item);}} />
+//                     </View>
+//                     <View style={{flex:1}}>
+//                         <TextInput placeholder="end date" style={styles.input_right} value={dates["End_"+item]}  onFocus={()=>{setShow(true); setItemSelected("End_"+item);}} />
+//                     </View>
+//                 </View>
+//             </View>
+//             );
+//         })}
+//        {show && 
+//             <DateTimePicker
+//             testID="dateTimePicker"
+//             value={new Date()}
+//             mode="time"
+//             is24Hour={true}
+//             display="default"
+//             onChange={onChange}
+//         />
+//        }
+//      {/*   <ButtonPrimary
+//                     title={getString("Update")}
+//                    onPress={()=>postAvailability()}
+//                     type="outline"
+//                     style={[styles.buttonStyle,{marginRight:10}]}
+//                 /> */}
+//               </ScrollView>
+            
+//     </View>);
+// };
+
+
 import React, { Component,useState,useEffect } from "react";
 import { useNavigation ,useRoute} from "@react-navigation/native";
-import { View, Text, ScrollView, StyleSheet, Platform ,AsyncStorage,ActivityIndicator,Picker,TextInput} from "react-native";
+import { View, Text, ScrollView,TouchableOpacity, StyleSheet, Platform ,AsyncStorage,ActivityIndicator,Picker,TextInput} from "react-native";
 import { styles } from "../../styles";
 import { Button } from "../../components/buttons";
 import { useLocalization } from "../../localization";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
 import {Environment} from "../../datas";
+import { Ionicons } from "@expo/vector-icons";
 import { Theme } from "../../theme";
 import { HeaderButtons} from "react-navigation-header-buttons";
+import {ShowAppointmentCalender} from "../../modals/ShowAppointmentCalender"
 
 type TProps = {};
 
@@ -22,11 +293,12 @@ export const ProviderAvailabilityScreen: React.FC<TProps> = props => {
     const [profile, setProfile] = useState(null);
     const [success,setSuccess]=useState(false);
     const [error,setError]=useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
 
     let days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
  
 
-    var dictionary={};
+
  /*    dictionary["Start_Sunday"]="";
     dictionary["Start_Monday"]="";
     dictionary["Start_Tuesday"]="";
@@ -34,7 +306,6 @@ export const ProviderAvailabilityScreen: React.FC<TProps> = props => {
     dictionary["Start_Thursday"]="";
     dictionary["Start_Friday"]="";
     dictionary["Start_Saturday"]="";
-
     dictionary["End_Sunday"]="";
     dictionary["End_Monday"]="";
     dictionary["End_Tuesday"]="";
@@ -42,7 +313,7 @@ export const ProviderAvailabilityScreen: React.FC<TProps> = props => {
     dictionary["End_Thursday"]="";
     dictionary["End_Friday"]="";
     dictionary["End_Saturday"]=""; */
-
+    var dictionary={};
     const [dates,setDates]=useState(dictionary);
 
     const onChange = (event, selectedDate) => {
@@ -70,7 +341,7 @@ export const ProviderAvailabilityScreen: React.FC<TProps> = props => {
           }
         };
 
-       console.log(profile.token);
+      // console.log(profile.token);
        console.log("https://mhealth.server.visioninfotech.net/api/clinician/getclinicianavailability?clinician_id="+profile.id);
        
         fetch(Environment.SERVER_API+"/api/clinician/getclinicianavailability?clinician_id="+profile.id, request)
@@ -95,7 +366,7 @@ export const ProviderAvailabilityScreen: React.FC<TProps> = props => {
             availability:dates
         });
     
-    
+   console.log(dates)
     
         fetch(Environment.SERVER_API + '/api/clinician/PostClinicianAvailability', {
             method: 'POST',
@@ -176,6 +447,9 @@ export const ProviderAvailabilityScreen: React.FC<TProps> = props => {
     <ScrollView style={styles.scrollContainer}>
     {error && <Text style={styles.errorText}>There was an error updating your availability. Please check your connection and try again</Text> }
     {success && <Text style={styles.successText}>Good job. Your availability has been updated successfully.</Text> }
+    <TouchableOpacity style={{marginLeft:'87%'}} onPress={() => setModalVisible(true)}>
+    <Ionicons name="ios-calendar" size={38} color={Theme.colors.black} />
+     </TouchableOpacity>
         {days.map((item,index)=>{
             return(
                 <View>
@@ -208,5 +482,11 @@ export const ProviderAvailabilityScreen: React.FC<TProps> = props => {
                     style={[styles.buttonStyle,{marginRight:10}]}
                 /> */}
               </ScrollView>
+              <ShowAppointmentCalender
+      isVisible={modalVisible}
+      onDismissModal = {() => setModalVisible(false)}
+      onCloseModal = {() => {setModalVisible(false)}}
+      //appointment_id = {appointment.id}
+      />
     </View>);
 };

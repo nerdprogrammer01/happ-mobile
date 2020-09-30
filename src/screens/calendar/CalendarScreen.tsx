@@ -84,7 +84,7 @@ export const CalendarScreen: React.FC<{}> = props => {
     };
 
     //console.log(profile.token)
-   //console.log("before");
+   console.log(Environment.SERVER_API+"/api/appointment/GetProfileAppointments?profile_id="+profile_id,request);
     
     fetch(Environment.SERVER_API+"/api/appointment/GetProfileAppointments?profile_id="+profile_id, request)
       .then((response) => response.json())

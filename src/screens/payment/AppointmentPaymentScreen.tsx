@@ -64,7 +64,7 @@ export const AppointmentPaymentScreen: React.FC<TProps> = props => {
       },
       body:requestBody
     };
-
+     console.log(Environment.SERVER_API + "/api/credit/PostCredit", request)
     fetch(Environment.SERVER_API + "/api/credit/PostCredit", request)
       .then((response) => {
         JSON.stringify(response, null, 4)

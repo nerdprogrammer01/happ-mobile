@@ -8,6 +8,8 @@ target 'happMobileApp' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'react-native-date-picker', :path => '../node_modules/react-native-date-picker'
+
   target 'happMobileAppTests' do
     inherit! :complete
     # Pods for testing

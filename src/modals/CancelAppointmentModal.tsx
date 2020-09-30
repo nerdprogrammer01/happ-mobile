@@ -50,7 +50,7 @@ export const CancelAppointmentModal: React.FC<TProps> = props => {
       },
       body:requestBody
     };
-     console.log(props.appointment_id);
+     console.log(Environment.SERVER_API + "/api/appointment/CancelAppointment", request);
     fetch(Environment.SERVER_API + "/api/appointment/CancelAppointment", request)
       .then((response) => {
        

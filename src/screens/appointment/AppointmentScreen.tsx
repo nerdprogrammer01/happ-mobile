@@ -124,7 +124,8 @@ export const AppointmentScreen: React.FC<TProps> = props => {
         'Authorization': 'Bearer '+profile.token
       }
     };
-
+    //console.log("Bearer"+profile.token)
+  // console.log(Environment.SERVER_API + "/api/appsession/gettoken?username=" + profile.email + "&appointment_id=" + appointment.id);
     fetch(Environment.SERVER_API + "/api/appsession/gettoken?username=" + profile.email + "&appointment_id=" + appointment.id, request)
       .then((response) => {
         JSON.stringify(response, null, 4)

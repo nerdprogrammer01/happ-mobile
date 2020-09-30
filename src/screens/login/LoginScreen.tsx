@@ -50,7 +50,7 @@ export const LoginScreen: React.FC<TProps> = props => {
         });
 
         console.log(bd);
-
+             
         fetch(Environment.SERVER_API + '/auth/GenerateToken', {
             method: 'POST',
             headers: {
